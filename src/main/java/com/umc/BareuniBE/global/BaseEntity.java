@@ -27,6 +27,7 @@ public class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // createdAt 자동화
     @PrePersist
     public void createdAt(){
         this.createdAt = LocalDateTime.now();

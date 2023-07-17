@@ -18,4 +18,17 @@ public class Scrap extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="scrapIdx")
     private Long scrapIdx;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user")
+    private User user;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "hospital")
+    private Hospital hospital;
+
+    public Scrap(User user, Hospital hospital) {
+        this.user = user;
+        this.hospital = hospital;
+    }
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 //@Getter
@@ -18,4 +19,17 @@ public class Point extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="pointIdx")
     private Long pointIdx;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user")
+    private User user;
+
+    @Column(name = "content", nullable = false)
+    private String content;
+
+    @Column(name = "amount", nullable = false)
+    private Long amount;
+
+    @Column(name = "expiryDate", nullable = false)
+    private LocalDateTime expiryDate;
 }

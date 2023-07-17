@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 //@Getter
@@ -18,4 +19,19 @@ public class Booking extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="bookingIdx")
     private Long alarmIdx;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user")
+    private User user;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "hospital")
+    private Hospital hospital;
+
+    // 예약 방식
+    @Column(name = "method", nullable = false)
+    private String method;
+
+    @Column(name = "bookingDate")
+    private LocalDateTime bookingDate;
 }

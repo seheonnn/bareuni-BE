@@ -13,9 +13,22 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Like extends BaseEntity {
+public class LikeEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="likeIdx")
     private Long likeIdx;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user")
+    private User user;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "community")
+    private Community community;
+
+    public LikeEntity(User user, Community community) {
+        this.user = user;
+        this.community = community;
+    }
 }

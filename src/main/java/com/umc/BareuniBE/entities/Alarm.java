@@ -17,4 +17,14 @@ public class Alarm extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="alarmIdx")
     private Long alarmIdx;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "community")
+    private Community community;
+
+    @Column(name = "alarmType", nullable = false)
+    private String alarmType;
+
+    @Column(name = "content", nullable = false)
+    private String content;
 }
