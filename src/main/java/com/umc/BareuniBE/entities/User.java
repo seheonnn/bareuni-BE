@@ -5,6 +5,7 @@ import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.global.enums.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
-//@Getter
+@Getter
 //@Setter
 @Builder
 @AllArgsConstructor
@@ -41,6 +42,7 @@ public class User extends BaseEntity {
     @Pattern(regexp = "/^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/", message = "전화번호 형식이 맞지 않습니다.")
     private String phone;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "gender", nullable = false)
     private GenderType gender;
 
@@ -51,6 +53,7 @@ public class User extends BaseEntity {
     @Column(name = "ortho", nullable = false)
     private boolean ortho;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "role", nullable = false)
     private RoleType role;
 

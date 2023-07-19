@@ -34,14 +34,17 @@ public class Review extends BaseEntity {
     private int totalScore;
 
     // 진료 결과 점수
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "treatmentScore", nullable = false)
     private ReviewType treatmentScore;
 
     // 서비스 품질 점수
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "serviceScore", nullable = false)
     private ReviewType serviceScore;
 
     // 시설 및 장비 점수
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "equipmentScore", nullable = false)
     private ReviewType equipmentScore;
 

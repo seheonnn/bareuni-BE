@@ -3,12 +3,13 @@ package com.umc.BareuniBE.dto;
 import lombok.*;
 
 public class CommunityReq {
-    @Builder
+//    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-//    @Getter
-//    @Setter
+    @Getter
+    @Setter
     public static class CommunityCreateReq {
-        private String nickname;
+        private Long userIdx;
+        private String content;
     }
 }
