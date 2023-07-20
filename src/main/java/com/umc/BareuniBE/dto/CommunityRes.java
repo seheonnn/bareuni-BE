@@ -9,7 +9,16 @@ public class CommunityRes {
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class CommunityCreateRes {
+    public static class CommunityDetailRes {
         private Community community;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class CommunityListRes extends Community{
+        private int like;
+
     }
 }
