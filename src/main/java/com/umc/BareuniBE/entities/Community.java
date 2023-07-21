@@ -1,16 +1,13 @@
 package com.umc.BareuniBE.entities;
 
 import com.umc.BareuniBE.global.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-//@Setter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

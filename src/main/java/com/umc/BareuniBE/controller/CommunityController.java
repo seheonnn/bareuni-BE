@@ -2,6 +2,7 @@ package com.umc.BareuniBE.controller;
 
 import com.umc.BareuniBE.dto.CommunityReq;
 import com.umc.BareuniBE.dto.CommunityRes;
+import com.umc.BareuniBE.entities.Community;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.CommunityService;

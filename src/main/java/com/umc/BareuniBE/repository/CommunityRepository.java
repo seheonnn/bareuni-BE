@@ -23,7 +23,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
                             "group by c.community_idx",
             nativeQuery = true
     )
-    List<CommunityRes.CommunityListRes> findAllCommunity_Pagination(Pageable pageable);
+    List<Object []> findAllCommunity_Pagination(Pageable pageable);
 
 
 }
