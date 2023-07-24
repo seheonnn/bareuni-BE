@@ -1,7 +1,12 @@
 package com.umc.BareuniBE.dto;
 
+import com.umc.BareuniBE.entities.Comment;
 import com.umc.BareuniBE.entities.Community;
+import com.umc.BareuniBE.entities.User;
 import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class CommunityRes {
 //    @Builder
@@ -9,7 +14,42 @@ public class CommunityRes {
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class CommunityCreateRes {
+    public static class CommunityCreateRes extends Community{
         private Community community;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class CommunityListRes {
+
+
+        private Object communityIdx;
+
+        private Object createdAt;
+
+        private Object updatedAt;
+
+        private User user;
+
+        private Object content;
+        private Object like;
+
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class CommunityDetailRes {
+
+
+        private Long communityIdx;
+
+        private User user;
+        private List<Comment> commentList;
+
+
     }
 }
