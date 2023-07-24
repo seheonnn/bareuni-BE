@@ -48,7 +48,20 @@ public class CommunityRes {
         private Long communityIdx;
 
         private User user;
-        private List<Comment> commentList;
+        private List<CommentSummary> commentList;
+
+
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class CommentSummary {
+
+        private String nickname;
+        private String comment;
+        private LocalDateTime commentCreatedAt;
 
 
     }

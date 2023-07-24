@@ -70,7 +70,16 @@ public class CommunityService {
 
         log.info(String.valueOf(community));
         List<Comment> comments = commentRepository.findAllByCommunity(community);
-        return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), comments);
+        List<CommunityRes.CommentSummary> commentList = comments.stream()
+                .map(comment -> {
+                    CommunityRes.CommentSummary commentSummary = new CommunityRes.CommentSummary();
+                    commentSummary.setNickname(comment.getUser().getNickname());
+                    commentSummary.setComment(comment.getComment());
+                    commentSummary.setCommentCreatedAt(comment.getCreatedAt());
+                    return commentSummary;
+                })
+                .collect(Collectors.toList());
+        return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), commentList);
     }
 
 
