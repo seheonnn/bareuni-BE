@@ -2,9 +2,11 @@ package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.dto.CommunityReq;
 import com.umc.BareuniBE.dto.CommunityRes;
+import com.umc.BareuniBE.entities.Comment;
 import com.umc.BareuniBE.entities.Community;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
+import com.umc.BareuniBE.repository.CommentRepository;
 import com.umc.BareuniBE.repository.CommunityRepository;
 import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +18,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.umc.BareuniBE.global.BaseResponseStatus.COMMUNITY_EMPTY_COMMUNITY_ID;
 import static com.umc.BareuniBE.global.BaseResponseStatus.USERS_EMPTY_USER_ID;
 
 @Slf4j
@@ -27,10 +31,11 @@ public class CommunityService {
 
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
+    private final CommentRepository commentRepository;
 
     private static final int PAGE_POST_COUNT = 10; // 한 페이지 당 게시글 수
 
-    public CommunityRes.CommunityDetailRes createCommunity(CommunityReq.CommunityCreateReq request) throws BaseException {
+    public CommunityRes.CommunityCreateRes createCommunity(CommunityReq.CommunityCreateReq request) throws BaseException {
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
@@ -39,7 +44,7 @@ public class CommunityService {
                 .content(request.getContent())
                 .build();
         Community community = communityRepository.saveAndFlush(newCommunity);
-        return new CommunityRes.CommunityDetailRes(community);
+        return new CommunityRes.CommunityCreateRes(community);
     }
 
     public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page) {
@@ -58,5 +63,15 @@ public class CommunityService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx) throws BaseException {
+        Community community = communityRepository.findById(communityIdx)
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+
+        log.info(String.valueOf(community));
+        List<Comment> comments = commentRepository.findAllByCommunity(community);
+        return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), comments);
+    }
+
 
 }
