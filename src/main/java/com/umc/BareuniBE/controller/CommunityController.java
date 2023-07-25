@@ -6,15 +6,19 @@ import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.CommunityService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 @RequestMapping("/community")
 public class CommunityController {
 
@@ -44,5 +48,11 @@ public class CommunityController {
     @PatchMapping("/{communityIdx}")
     public BaseResponse<CommunityRes.CommunityCreateRes> updateCommunity(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommunityCreateReq request) throws BaseException {
         return new BaseResponse<>(communityService.updateCommunity(communityIdx, request));
+    }
+
+    // 커뮤니티 글 삭제
+    @DeleteMapping("/{communityIdx}")
+    public BaseResponse<String> deleteCommunity(@PathVariable Long communityIdx, @RequestBody Map<String, Long> requestBody) throws BaseException {
+        return new BaseResponse<>(communityService.deleteCommunity(communityIdx, requestBody.get("userIdx")));
     }
 }

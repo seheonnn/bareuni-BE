@@ -16,14 +16,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommunityService {
@@ -67,7 +64,6 @@ public class CommunityService {
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
 
-        log.info(String.valueOf(community));
         List<Comment> comments = commentRepository.findAllByCommunity(community);
         List<CommunityRes.CommentSummary> commentList = comments.stream()
                 .map(comment -> {
@@ -97,6 +93,22 @@ public class CommunityService {
         community.setContent(request.getContent());
 
         return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
+    }
+
+    public String deleteCommunity(Long communityIdx, Long userIdx) throws BaseException {
+        // 해당 글 유저
+        Community community = communityRepository.findById(communityIdx)
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+        // request 로 받은 유저
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
+
+
+        if (community.getUser() != user)
+            throw new BaseException(UPDATE_AUTHORIZED_ERROR);
+
+        communityRepository.delete(community);
+        return "삭제 성공";
     }
 
 
