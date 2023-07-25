@@ -48,6 +48,7 @@ public class CommunityRes {
         private Long communityIdx;
 
         private User user;
+        private String content;
         private List<CommentSummary> commentList;
 
 

@@ -78,7 +78,7 @@ public class CommunityService {
                     return commentSummary;
                 })
                 .collect(Collectors.toList());
-        return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), commentList);
+        return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), community.getContent(), commentList);
     }
 
     public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq request) throws BaseException {
