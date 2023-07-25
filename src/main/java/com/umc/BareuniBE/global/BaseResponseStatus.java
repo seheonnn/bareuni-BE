@@ -58,7 +58,9 @@ public enum BaseResponseStatus {
 
 
     // 5000 : 필요시 만들어서 쓰세요
-    COMMUNITY_EMPTY_COMMUNITY_ID(false, 50000, "커뮤니티 아이디 값을 확인해주세요.");
+    COMMUNITY_EMPTY_COMMUNITY_ID(false, 50000, "커뮤니티 아이디 값을 확인해주세요."),
+    UPDATE_AUTHORIZED_ERROR(false, 50001, "수정 권한이 없습니다.");
+
     // 6000 : 필요시 만들어서 쓰세요
 
 

@@ -39,4 +39,10 @@ public class CommunityController {
     public BaseResponse<CommunityRes.CommunityDetailRes> getCommunityDetails( @PathVariable Long communityIdx ) throws BaseException {
         return new BaseResponse<>(communityService.getCommunityDetails(communityIdx));
     }
+
+    // 커뮤니티 글 수정
+    @PatchMapping("/{communityIdx}")
+    public BaseResponse<CommunityRes.CommunityCreateRes> updateCommunity(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommunityCreateReq request) throws BaseException {
+        return new BaseResponse<>(communityService.updateCommunity(communityIdx, request));
+    }
 }

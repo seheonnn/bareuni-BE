@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.umc.BareuniBE.global.BaseResponseStatus.COMMUNITY_EMPTY_COMMUNITY_ID;
-import static com.umc.BareuniBE.global.BaseResponseStatus.USERS_EMPTY_USER_ID;
+import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
 @Slf4j
 @Service
@@ -43,8 +42,8 @@ public class CommunityService {
                 .user(user)
                 .content(request.getContent())
                 .build();
-        Community community = communityRepository.saveAndFlush(newCommunity);
-        return new CommunityRes.CommunityCreateRes(community);
+
+        return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(newCommunity));
     }
 
     public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page) {
@@ -80,6 +79,24 @@ public class CommunityService {
                 })
                 .collect(Collectors.toList());
         return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), commentList);
+    }
+
+    public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq request) throws BaseException {
+        // 해당 글 유저
+        Community community = communityRepository.findById(communityIdx)
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+        // request 로 받은 유저
+        User user = userRepository.findById(request.getUserIdx())
+                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
+
+
+        if (community.getUser() != user)
+            throw new BaseException(UPDATE_AUTHORIZED_ERROR);
+
+
+        community.setContent(request.getContent());
+
+        return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
     }
 
 
