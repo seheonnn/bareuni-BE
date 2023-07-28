@@ -58,8 +58,10 @@ public enum BaseResponseStatus {
 
 
     // 5000 : 필요시 만들어서 쓰세요
-    COMMUNITY_EMPTY_COMMUNITY_ID(false, 50000, "커뮤니티 아이디 값을 확인해주세요.");
-    // 6000 : 필요시 만들어서 쓰세요
+    COMMUNITY_EMPTY_COMMUNITY_ID(false, 50000, "커뮤니티 아이디 값을 확인해주세요."),
+
+    // 6000 : Hospital 관련 오류
+    HOSPITAL_EMPTY_HOSPITAL_ID(false, 6000, "치과 아이디 값을 확인해주세요.");
 
 
     private final boolean isSuccess;
