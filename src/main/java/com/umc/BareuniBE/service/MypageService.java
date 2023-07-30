@@ -1,10 +1,16 @@
 package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.dto.CommunityRes;
+import com.umc.BareuniBE.dto.HospitalRes;
+import com.umc.BareuniBE.entities.Hospital;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.CommunityRepository;
+import com.umc.BareuniBE.repository.HospitalRepository;
+import com.umc.BareuniBE.repository.ScrapRepository;
 import com.umc.BareuniBE.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +25,12 @@ public class MypageService {
 
     private final CommunityRepository communityRepository;
     private final UserRepository userRepository;
+    private final ScrapRepository scrapRepository;
 
-    public MypageService(CommunityRepository communityRepository, UserRepository userRepository){
+    @Autowired
+    public MypageService(CommunityRepository communityRepository, UserRepository userRepository, ScrapRepository scrapRepository){
         this.communityRepository = communityRepository;
+        this.scrapRepository = scrapRepository;
         this.userRepository = userRepository;
 }
 
@@ -46,5 +55,24 @@ public class MypageService {
                 .collect(Collectors.toList());
     }
 
+    // 치과 저장 목록 조회
+    public List<HospitalRes.HospitalListRes> getMyHospitalList(Long userId, Pageable page) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
+        List<Object[]> scrap = scrapRepository.findHospitalsByUserId(user, page);
+
+        return scrap.stream()
+                .map(hospitalData -> {
+                    HospitalRes.HospitalListRes hospitalRes = new HospitalRes.HospitalListRes();
+                    hospitalRes.setScrapIdx(hospitalData[0]);
+                    hospitalRes.setCreatedAt(hospitalData[1]);
+                    hospitalRes.setUpdatedAt( hospitalData[2]);
+                    hospitalRes.setUser(userRepository.findById(((Long) hospitalData[3]).longValue()).orElse(null));
+                    hospitalRes.setHospital( hospitalData[4]);
+
+                    return hospitalRes;
+                })
+                .collect(Collectors.toList());
+    }
 }

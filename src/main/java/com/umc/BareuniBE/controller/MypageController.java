@@ -1,6 +1,7 @@
 package com.umc.BareuniBE.controller;
 
 import com.umc.BareuniBE.dto.CommunityRes;
+import com.umc.BareuniBE.dto.HospitalRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.MypageService;
@@ -33,5 +34,14 @@ public class MypageController {
             @PageableDefault(page = 0, size = 10, sort = "created_at", direction = Sort.Direction.DESC) Pageable page
     ) throws BaseException {
         return new BaseResponse<>(mypageService.getMyCommunityList(userId, page));
+    }
+
+    // 치과 저장 목록 조회
+    @GetMapping("/scrap/{userId}")
+    public BaseResponse<List<HospitalRes.HospitalListRes>> getMyHospitalList(
+            @PathVariable Long userId,
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
+    ) throws BaseException {
+        return new BaseResponse<>(mypageService.getMyHospitalList(userId, page));
     }
 }
