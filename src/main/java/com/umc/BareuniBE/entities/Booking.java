@@ -18,7 +18,7 @@ public class Booking extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="bookingIdx")
-    private Long alarmIdx;
+    private Long bookingIdx;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user")

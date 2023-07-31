@@ -6,27 +6,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class ReviewRes {
+public class BookingRes {
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class ReviewListRes {
+    public static class BookingListRes {
 
 
-        private Object reviewIdx;
+        private Object bookingIdx;
+
         private Object createdAt;
+
         private Object updatedAt;
+
         private User user;
-        private Object content;
-        private Object equipmentScore;
-        private Object receipt;
-        private Object serviceScore;
-        private Object payment;
-        private Object totalScore;
-        private Object treatmentScore;
+
         private Object hospital;
+
+        private Object method;
+
+        private Object bookingDate;
 
     }
 }

@@ -1,7 +1,9 @@
 package com.umc.BareuniBE.controller;
 
+import com.umc.BareuniBE.dto.BookingRes;
 import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.dto.HospitalRes;
+import com.umc.BareuniBE.dto.ReviewRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.MypageService;
@@ -36,12 +38,30 @@ public class MypageController {
         return new BaseResponse<>(mypageService.getMyCommunityList(userId, page));
     }
 
-    // 치과 저장 목록 조회
+    // 치과 저장 목록 조회 (최신순)
     @GetMapping("/scrap/{userId}")
     public BaseResponse<List<HospitalRes.HospitalListRes>> getMyHospitalList(
             @PathVariable Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
     ) throws BaseException {
         return new BaseResponse<>(mypageService.getMyHospitalList(userId, page));
+    }
+
+    // 작성한 리뷰 목록 조회 (최신순)
+    @GetMapping("/reviews/{userId}")
+    public BaseResponse<List<ReviewRes.ReviewListRes>> getMyReviewList(
+            @PathVariable Long userId,
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
+    ) throws BaseException {
+        return new BaseResponse<>(mypageService.getMyReviewList(userId, page));
+    }
+
+    // 예약 내역 조회 (다가오는 예약 날짜 순?)
+    @GetMapping("/booking/{userId}")
+    public BaseResponse<List<BookingRes.BookingListRes>> getMyBookingList(
+            @PathVariable Long userId,
+            @PageableDefault(page = 0, size = 10, sort = "bookingDate", direction = Sort.Direction.ASC) Pageable page
+    ) throws BaseException {
+        return new BaseResponse<>(mypageService.getMyBookingList(userId, page));
     }
 }

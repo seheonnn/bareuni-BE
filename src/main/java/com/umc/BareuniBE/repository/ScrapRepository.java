@@ -18,5 +18,5 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
                             "FROM Scrap s " +
                             "WHERE s.user = :user "
     )
-    List<Object[]> findHospitalsByUserId(@Param("user") User user, Pageable pageable);
+    List<Object[]> MyScrapList(@Param("user") User user, Pageable pageable);
 }

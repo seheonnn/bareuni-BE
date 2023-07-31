@@ -33,7 +33,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
                             "ON c.user = u.user_idx " +
                             "WHERE c.user = :user " +
                             "GROUP BY c.community_idx " +
-                            "ORDER BY c.created_at DESC", // "created_at" 대신 "c.created_at" 사용
+                            "ORDER BY c.created_at DESC",
             countQuery =
                     "SELECT COUNT(c.community_idx) " +
                             "FROM community c " +
@@ -44,6 +44,6 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
                             "WHERE c.user = :user",
             nativeQuery = true
     )
-    List<Object[]> findAllCommunityByUserOrderByCreatedAtDesc(@Param("user") User user, Pageable pageable);
+    List<Object[]> MyCommunityList(@Param("user") User user, Pageable pageable);
 }
 

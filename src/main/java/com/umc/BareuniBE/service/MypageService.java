@@ -1,16 +1,13 @@
 package com.umc.BareuniBE.service;
 
+import com.umc.BareuniBE.dto.BookingRes;
 import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.dto.HospitalRes;
-import com.umc.BareuniBE.entities.Hospital;
+import com.umc.BareuniBE.dto.ReviewRes;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
-import com.umc.BareuniBE.repository.CommunityRepository;
-import com.umc.BareuniBE.repository.HospitalRepository;
-import com.umc.BareuniBE.repository.ScrapRepository;
-import com.umc.BareuniBE.repository.UserRepository;
+import com.umc.BareuniBE.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -26,19 +23,23 @@ public class MypageService {
     private final CommunityRepository communityRepository;
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
+    private final ReviewRepository reviewRepository;
+    private final BookingRepository bookingRepository;
 
     @Autowired
-    public MypageService(CommunityRepository communityRepository, UserRepository userRepository, ScrapRepository scrapRepository){
+    public MypageService(CommunityRepository communityRepository, UserRepository userRepository, ScrapRepository scrapRepository, ReviewRepository reviewRepository, BookingRepository bookingRepository){
         this.communityRepository = communityRepository;
         this.scrapRepository = scrapRepository;
+        this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
 }
 
     // 작성한 글 목록 조회 (최신순)
     public List<CommunityRes.CommunityListRes> getMyCommunityList(Long userId, Pageable page) throws BaseException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
-        List<Object[]> communities = communityRepository.findAllCommunityByUserOrderByCreatedAtDesc(user, page);
+        List<Object[]> communities = communityRepository.MyCommunityList(user, page);
 
         return communities.stream()
                 .map(communityData -> {
@@ -60,7 +61,7 @@ public class MypageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
-        List<Object[]> scrap = scrapRepository.findHospitalsByUserId(user, page);
+        List<Object[]> scrap = scrapRepository.MyScrapList(user, page);
 
         return scrap.stream()
                 .map(hospitalData -> {
@@ -75,4 +76,58 @@ public class MypageService {
                 })
                 .collect(Collectors.toList());
     }
+
+    // 작성한 리뷰 목록 조회 (최신순)
+
+    public List<ReviewRes.ReviewListRes> getMyReviewList(Long userId, Pageable page) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+
+        List<Object[]> reviews = reviewRepository.MyReviewList(user, page);
+
+        return reviews.stream()
+                .map(reviewData -> {
+                    ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes();
+                    reviewListRes.setReviewIdx(reviewData[0]);
+                    reviewListRes.setCreatedAt(reviewData[1]);
+                    reviewListRes.setUpdatedAt(reviewData[2]);
+                    reviewListRes.setUser(userRepository.findById((Long) reviewData[3]).orElse(null));
+                    reviewListRes.setContent(reviewData[4]);
+                    reviewListRes.setEquipmentScore(reviewData[5]);
+                    reviewListRes.setReceipt(reviewData[6]);
+                    reviewListRes.setServiceScore(reviewData[7]);
+                    reviewListRes.setPayment(reviewData[8]);
+                    reviewListRes.setTotalScore(reviewData[9]);
+                    reviewListRes.setTreatmentScore(reviewData[10]);
+                    reviewListRes.setHospital(reviewData[11]);
+
+                    return reviewListRes;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 예약 내역 조회 (다가오는 예약 날짜 순?)
+    public List<BookingRes.BookingListRes> getMyBookingList(Long userId, Pageable page) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+
+        List<Object[]> bookings = bookingRepository.MyBookingList(user, page);
+
+        return bookings.stream()
+                .map(bookingData -> {
+                    BookingRes.BookingListRes bookingListRes = new BookingRes.BookingListRes();
+                    bookingListRes.setBookingIdx(bookingData[0]);
+                    bookingListRes.setCreatedAt(bookingData[1]);
+                    bookingListRes.setUpdatedAt( bookingData[2]);
+                    bookingListRes.setUser(userRepository.findById((Long) bookingData[3]).orElse(null));
+                    bookingListRes.setHospital(bookingData[4]);
+                    bookingListRes.setMethod(bookingData[5]);
+                    bookingListRes.setBookingDate(bookingData[6]);
+
+                    return bookingListRes;
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }
