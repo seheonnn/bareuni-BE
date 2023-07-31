@@ -5,6 +5,7 @@ import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.CommunityService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,7 @@ public class CommunityController {
     }
 
     // 커뮤니티 글 조회 (최신순, 좋아요순)
+    @ApiOperation(value = "커뮤니티 글 조회 (최신순, 좋아요순)", notes = "ex1) http://localhost:8080/community?page=0&size=3&sort=created_at,desc\n\n ex2) http://localhost:8080/community?page=0&size=3&sort=likeCnt,desc")
     @GetMapping("")
     public BaseResponse<List<CommunityRes.CommunityListRes>> getCommunityList(
             @PageableDefault(page = 0, size = 3, sort = "created_at", direction = Sort.Direction.DESC) Pageable page
