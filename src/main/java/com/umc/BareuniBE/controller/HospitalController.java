@@ -8,6 +8,8 @@ import com.umc.BareuniBE.service.HospitalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/hospital")
@@ -15,9 +17,15 @@ public class HospitalController {
 
     private final HospitalService hospitalService;
 
+    // 홈 - 후기가 좋은 치과 목록 조회
+    @GetMapping("/best")
+    public BaseResponse<List<HospitalRes.HospitalListRes>> getBestHospitalList() throws BaseException {
+        return new BaseResponse<>(hospitalService.getBestHospitalList());
+    }
+
     // 스크랩 추가
     @PostMapping("/{hospitalIdx}/scrap")
-    public BaseResponse<HospitalRes.HospitalScrapCreateRes> createScrap(
+    public BaseResponse<HospitalRes.HospitalScrapCreateRes> createScrap (
             @PathVariable Long hospitalIdx,
             @RequestBody HospitalReq.HospitalScrapCreateReq request
     ) throws BaseException {

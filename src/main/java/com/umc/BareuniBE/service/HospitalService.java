@@ -1,5 +1,6 @@
 package com.umc.BareuniBE.service;
 
+import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.dto.HospitalReq;
 import com.umc.BareuniBE.dto.HospitalRes;
 import com.umc.BareuniBE.entities.Hospital;
@@ -12,6 +13,10 @@ import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
 @Service
@@ -20,6 +25,24 @@ public class HospitalService {
     private final HospitalRepository hospitalRepository;
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
+
+    // 후기가 좋은 치과 목록 조회
+    public List<HospitalRes.HospitalListRes> getBestHospitalList() throws BaseException {
+        List<Object[]> hospitals = hospitalRepository.findBestHospital();
+
+        return hospitals.stream()
+                .map(hospitalData -> {
+                    HospitalRes.HospitalListRes hospitalListRes = new HospitalRes.HospitalListRes();
+                    hospitalListRes.setHospitalIdx(hospitalData[0]);
+                    hospitalListRes.setAddress(hospitalData[1]);
+                    hospitalListRes.setHosName(hospitalData[2]);
+                    hospitalListRes.setScore(hospitalData[3]);
+                    hospitalListRes.setReviewCnt(hospitalData[4]);
+
+                    return hospitalListRes;
+                })
+                .collect(Collectors.toList());
+    }
 
     // 스크랩 추가
     public HospitalRes.HospitalScrapCreateRes createScrap(HospitalReq.HospitalScrapCreateReq request, Long hospitalIdx) throws BaseException {
@@ -37,6 +60,4 @@ public class HospitalService {
         Scrap scrap = scrapRepository.save(newScrap);
         return new HospitalRes.HospitalScrapCreateRes(scrap.getScrapIdx());
     }
-
-
 }
