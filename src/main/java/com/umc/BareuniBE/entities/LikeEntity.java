@@ -16,7 +16,6 @@ import javax.persistence.*;
 public class LikeEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="likeIdx")
     private Long likeIdx;
 
     @ManyToOne(optional = false)

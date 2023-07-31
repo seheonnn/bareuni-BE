@@ -4,10 +4,12 @@ import com.umc.BareuniBE.dto.CommunityReq;
 import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.entities.Comment;
 import com.umc.BareuniBE.entities.Community;
+import com.umc.BareuniBE.entities.LikeEntity;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.CommentRepository;
 import com.umc.BareuniBE.repository.CommunityRepository;
+import com.umc.BareuniBE.repository.LikeRepository;
 import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
@@ -28,8 +31,8 @@ public class CommunityService {
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
-    private static final int PAGE_POST_COUNT = 10; // 한 페이지 당 게시글 수
 
     public CommunityRes.CommunityCreateRes createCommunity(CommunityReq.CommunityCreateReq request) throws BaseException {
         User user = userRepository.findById(request.getUserIdx())
@@ -111,5 +114,25 @@ public class CommunityService {
         return "삭제 성공";
     }
 
+    public String likeToggle(Long userIdx, Long communityIdx) throws BaseException {
+
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
+        Community community = communityRepository.findById(communityIdx)
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+
+
+        Optional<LikeEntity> likeRelation = likeRepository.findByUserAndCommunity(user, community);
+
+        if (likeRelation.isPresent()) {
+            likeRepository.delete(likeRelation.get());
+            return "좋아요 취소";
+        }
+        else {
+            likeRepository.saveAndFlush(new LikeEntity(user, community));
+            return "좋아요 성공";
+        }
+
+    }
 
 }

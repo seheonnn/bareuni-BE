@@ -55,4 +55,10 @@ public class CommunityController {
     public BaseResponse<String> deleteCommunity(@PathVariable Long communityIdx, @RequestBody Map<String, Long> requestBody) throws BaseException {
         return new BaseResponse<>(communityService.deleteCommunity(communityIdx, requestBody.get("userIdx")));
     }
+
+    // 커뮤니티 좋아요
+    @PostMapping("/{communityIdx}/like")
+    public BaseResponse<String> likeToggle(@PathVariable Long communityIdx, @RequestBody Map<String, Long> requestBody) throws BaseException {
+        return new BaseResponse<>(communityService.likeToggle(requestBody.get("userIdx"), communityIdx));
+    }
 }
