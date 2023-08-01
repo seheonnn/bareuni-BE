@@ -67,4 +67,13 @@ public class MypageController {
     ) throws BaseException {
         return new BaseResponse<>(mypageService.userUpdate(userId, myUpdateReq));
     }
+
+    //비밀번호 변경
+    @PatchMapping("/users/password/{userId}")
+    public BaseResponse<String> changePassword(
+            @PathVariable Long userId,
+            @RequestBody PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq
+    ) throws BaseException {
+        return new BaseResponse<>(mypageService.changePassword(userId, passwordUpdateReq));
+    }
 }

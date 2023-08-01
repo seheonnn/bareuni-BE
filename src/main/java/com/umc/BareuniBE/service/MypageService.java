@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.umc.BareuniBE.global.BaseResponseStatus.FAILED_TO_LOGIN;
 import static com.umc.BareuniBE.global.BaseResponseStatus.USERS_EMPTY_USER_ID;
 
 @Service
@@ -155,6 +156,33 @@ public class MypageService {
 
         return "회원 정보 수정 성공";
     }
+
+    public String changePassword(Long userId, PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+
+        // 입력된 현재 비밀번호가 데이터베이스에 저장된 현재 비밀번호와 일치하는지 확인합니다.
+        if (!passwordUpdateReq.getCurrentPassword().equals(user.getPassword())) {
+            throw new BaseException(FAILED_TO_LOGIN);
+        }
+
+        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인합니다.
+        String newPassword = passwordUpdateReq.getNewPassword();
+        String confirmPassword = passwordUpdateReq.getConfirmPassword();
+        if (newPassword != null && !newPassword.equals(confirmPassword)) {
+            throw new BaseException(FAILED_TO_LOGIN);
+        }
+
+        // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트합니다.
+        if (newPassword != null) {
+            user.setPassword(newPassword);
+        }
+
+        userRepository.save(user);
+
+        return "비밀번호 변경 성공";
+    }
+
 }
 
 
