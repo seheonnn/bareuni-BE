@@ -1,9 +1,6 @@
 package com.umc.BareuniBE.controller;
 
-import com.umc.BareuniBE.dto.BookingRes;
-import com.umc.BareuniBE.dto.CommunityRes;
-import com.umc.BareuniBE.dto.HospitalRes;
-import com.umc.BareuniBE.dto.ReviewRes;
+import com.umc.BareuniBE.dto.*;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.MypageService;
@@ -11,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -63,5 +57,14 @@ public class MypageController {
             @PageableDefault(page = 0, size = 10, sort = "bookingDate", direction = Sort.Direction.ASC) Pageable page
     ) throws BaseException {
         return new BaseResponse<>(mypageService.getMyBookingList(userId, page));
+    }
+
+    // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
+    @PatchMapping("/users/{userId}")
+    public BaseResponse<String> userUpdate(
+            @PathVariable Long userId,
+            @RequestBody UserUpdateReq.MyUpdateReq myUpdateReq
+    ) throws BaseException {
+        return new BaseResponse<>(mypageService.userUpdate(userId, myUpdateReq));
     }
 }

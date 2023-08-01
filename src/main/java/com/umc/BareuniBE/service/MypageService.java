@@ -1,9 +1,7 @@
 package com.umc.BareuniBE.service;
 
-import com.umc.BareuniBE.dto.BookingRes;
-import com.umc.BareuniBE.dto.CommunityRes;
-import com.umc.BareuniBE.dto.HospitalRes;
-import com.umc.BareuniBE.dto.ReviewRes;
+import com.umc.BareuniBE.dto.*;
+
 import com.umc.BareuniBE.entities.Review;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
@@ -125,5 +123,35 @@ public class MypageService {
                 .collect(Collectors.toList());
     }
 
+    // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
+    public String userUpdate(Long userId, UserUpdateReq.MyUpdateReq myUpdateReq) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
+        if (myUpdateReq.getNickname() != null) {
+            user.setNickname(myUpdateReq.getNickname());
+        }
+
+        if (myUpdateReq.getName() != null) {
+            user.setName(myUpdateReq.getName());
+        }
+
+        if (myUpdateReq.getGender() != null) {
+            user.setGender(myUpdateReq.getGender());
+        }
+
+        if (myUpdateReq.getAge() != null) {
+            user.setAge(myUpdateReq.getAge());
+        }
+
+        if (myUpdateReq.isOrtho() != user.isOrtho()) {
+            user.setOrtho(myUpdateReq.isOrtho());
+        }
+
+        userRepository.save(user);
+
+        return "회원 정보 수정 성공";
+    }
 }
+
+
