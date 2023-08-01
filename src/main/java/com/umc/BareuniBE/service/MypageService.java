@@ -2,6 +2,7 @@ package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.dto.*;
 
+import com.umc.BareuniBE.entities.Review;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
