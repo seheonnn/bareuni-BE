@@ -43,7 +43,7 @@ public class CommunityController {
         return new BaseResponse<>(communityService.getCommunityList(page));
     }
 
-}
+
     // 커뮤니티 글 상세 조회
     @GetMapping("/{communityIdx}")
     public BaseResponse<CommunityRes.CommunityDetailRes> getCommunityDetails( @PathVariable Long communityIdx ) throws BaseException {
