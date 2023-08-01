@@ -24,6 +24,9 @@ public class MypageService {
     private final ScrapRepository scrapRepository;
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
+    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
+
+
 
     @Autowired
     public MypageService(CommunityRepository communityRepository, UserRepository userRepository, ScrapRepository scrapRepository, ReviewRepository reviewRepository, BookingRepository bookingRepository){
@@ -155,6 +158,10 @@ public class MypageService {
 
     // 비밀번호 변경
 
+    private boolean isValidPassword(String password) {
+        return password.matches(PASSWORD_PATTERN);
+    }
+
     public String changePassword(Long userId, PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq) throws BaseException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
@@ -164,8 +171,13 @@ public class MypageService {
             throw new BaseException(PASSWORD_INCORRECT);
         }
 
-        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
+        // 새로운 비밀번호 형식이 맞는지 확인
         String newPassword = passwordUpdateReq.getNewPassword();
+        if (!isValidPassword(newPassword)) {
+            throw new BaseException(INVALID_PASSWORD_FORMAT);
+        }
+
+        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
         String confirmPassword = passwordUpdateReq.getConfirmPassword();
         if (newPassword != null && !newPassword.equals(confirmPassword)) {
             throw new BaseException(NEW_PASSWORD_INCORRECT);
