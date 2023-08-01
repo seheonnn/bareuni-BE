@@ -13,13 +13,13 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    @Query(
-            value =
-                    "SELECT r.reviewIdx, r.createdAt, r.updatedAt, r.user.userIdx, r.content, r.equipmentScore, r.receipt, r.serviceScore, r.payment, r.totalScore, r.treatmentScore, r.hospital " +
-                            "FROM Review r " +
-                            "WHERE r.user = :user " +
-                            "ORDER BY r.createdAt DESC"
-    )
-    List<Object[]> MyReviewList(@Param("user") User user, Pageable pageable);
+//    @Query(
+//            value =
+//                    "SELECT r.reviewIdx, r.createdAt, r.updatedAt, r.user.userIdx, r.content, r.equipmentScore, r.receipt, r.serviceScore, r.payment, r.totalScore, r.treatmentScore, r.hospital " +
+//                            "FROM Review r " +
+//                            "WHERE r.user = :user " +
+//                            "ORDER BY r.createdAt DESC"
+//    )
+    List<Review> findReviewByUser(Pageable pageable, User user);
     List<Review> findByReceiptAndUserGender(boolean receipt, GenderType gender, Pageable pageable);
 }
