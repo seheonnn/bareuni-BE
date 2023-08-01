@@ -1,6 +1,7 @@
 package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.dto.*;
+
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
@@ -80,23 +81,18 @@ public class MypageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
-        List<Object[]> reviews = reviewRepository.MyReviewList(user, page);
+        List<Review> reviews = reviewRepository.findReviewByUser(page, user);
 
         return reviews.stream()
                 .map(reviewData -> {
                     ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes();
-                    reviewListRes.setReviewIdx(reviewData[0]);
-                    reviewListRes.setCreatedAt(reviewData[1]);
-                    reviewListRes.setUpdatedAt(reviewData[2]);
-                    reviewListRes.setUser(userRepository.findById((Long) reviewData[3]).orElse(null));
-                    reviewListRes.setContent(reviewData[4]);
-                    reviewListRes.setEquipmentScore(reviewData[5]);
-                    reviewListRes.setReceipt(reviewData[6]);
-                    reviewListRes.setServiceScore(reviewData[7]);
-                    reviewListRes.setPayment(reviewData[8]);
-                    reviewListRes.setTotalScore(reviewData[9]);
-                    reviewListRes.setTreatmentScore(reviewData[10]);
-                    reviewListRes.setHospital(reviewData[11]);
+                    reviewListRes.setReviewIdx(reviewData.getReviewIdx());
+                    reviewListRes.setCreatedAt(reviewData.getCreatedAt());
+                    reviewListRes.setUpdatedAt(reviewData.getUpdatedAt());
+                    reviewListRes.setUser(user);
+                    reviewListRes.setContent(reviewData.getContent());
+                    reviewListRes.setReceipt(reviewData.isReceipt());
+                    reviewListRes.setTotalScore(reviewData.getTotalScore());
 
                     return reviewListRes;
                 })

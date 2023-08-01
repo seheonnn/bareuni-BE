@@ -2,16 +2,14 @@ package com.umc.BareuniBE.entities;
 
 import com.umc.BareuniBE.global.BaseEntity;
 import com.umc.BareuniBE.global.enums.ReviewType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
-//@Getter
-//@Setter
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
