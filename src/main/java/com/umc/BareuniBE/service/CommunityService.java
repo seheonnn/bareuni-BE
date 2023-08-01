@@ -63,7 +63,7 @@ public class CommunityService {
                 .collect(Collectors.toList());
     }
 
-}
+
     public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx) throws BaseException {
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
