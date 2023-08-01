@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class CommunityRes {
-//    @Builder
+    //    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
@@ -48,7 +48,9 @@ public class CommunityRes {
         private Long communityIdx;
 
         private User user;
+       
         private String content;
+      
         private List<CommentSummary> commentList;
 
 
@@ -67,3 +69,4 @@ public class CommunityRes {
 
     }
 }
+

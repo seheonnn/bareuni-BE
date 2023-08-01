@@ -5,13 +5,17 @@ import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.CommunityService;
+
+import lombok.RequiredArgsConstructor;
+
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -19,7 +23,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@Slf4j
 @RequestMapping("/community")
 public class CommunityController {
 
@@ -40,6 +43,7 @@ public class CommunityController {
         return new BaseResponse<>(communityService.getCommunityList(page));
     }
 
+}
     // 커뮤니티 글 상세 조회
     @GetMapping("/{communityIdx}")
     public BaseResponse<CommunityRes.CommunityDetailRes> getCommunityDetails( @PathVariable Long communityIdx ) throws BaseException {

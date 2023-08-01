@@ -12,13 +12,14 @@ import com.umc.BareuniBE.repository.CommunityRepository;
 import com.umc.BareuniBE.repository.LikeRepository;
 import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.List;
+
+import static com.umc.BareuniBE.global.BaseResponseStatus.USERS_EMPTY_USER_ID;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,6 @@ public class CommunityService {
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
-
 
     public CommunityRes.CommunityCreateRes createCommunity(CommunityReq.CommunityCreateReq request) throws BaseException {
         User user = userRepository.findById(request.getUserIdx())
@@ -63,6 +63,7 @@ public class CommunityService {
                 .collect(Collectors.toList());
     }
 
+}
     public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx) throws BaseException {
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
