@@ -15,7 +15,7 @@ public class ReviewRes {
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class ReviewCreateRes extends Review {
+    public static class ReviewCreateRes {
         private Review review;
     }
 
