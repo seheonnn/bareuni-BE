@@ -1,6 +1,7 @@
 package com.umc.BareuniBE.repository;
 
 import com.umc.BareuniBE.entities.Review;
+import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.entities.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                             "ORDER BY r.createdAt DESC"
     )
     List<Object[]> MyReviewList(@Param("user") User user, Pageable pageable);
+    List<Review> findByReceiptAndUserGender(boolean receipt, GenderType gender, Pageable pageable);
 }

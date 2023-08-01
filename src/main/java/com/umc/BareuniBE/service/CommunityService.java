@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.List;
-
 import static com.umc.BareuniBE.global.BaseResponseStatus.USERS_EMPTY_USER_ID;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,12 +26,13 @@ import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
-public class CommunityService {
+public class  CommunityService {
 
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+
 
     public CommunityRes.CommunityCreateRes createCommunity(CommunityReq.CommunityCreateReq request) throws BaseException {
         User user = userRepository.findById(request.getUserIdx())
@@ -48,6 +48,7 @@ public class CommunityService {
 
     public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page) {
         List<Object[]> communities = communityRepository.findAllCommunity_Pagination(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
+
         return communities.stream()
                 .map(communityData -> {
                     CommunityRes.CommunityListRes communityRes = new CommunityRes.CommunityListRes();
