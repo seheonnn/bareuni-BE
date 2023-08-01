@@ -7,15 +7,15 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-//@Getter
-//@Setter
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Alarm extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="alarmIdx")
     private Long alarmIdx;
 

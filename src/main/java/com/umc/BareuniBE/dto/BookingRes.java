@@ -6,13 +6,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class UserRes {
+public class BookingRes {
+
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class UserJoinRes {
-        private User user;
-    }
+    public static class BookingListRes {
 
+
+        private Object bookingIdx;
+
+        private Object createdAt;
+
+        private Object updatedAt;
+
+        private User user;
+
+        private Object hospital;
+
+        private Object method;
+
+        private Object bookingDate;
+
+    }
 }
