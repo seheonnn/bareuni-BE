@@ -3,10 +3,8 @@ package com.umc.BareuniBE.entities;
 import com.umc.BareuniBE.global.BaseEntity;
 import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.global.enums.RoleType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,13 +16,13 @@ import java.util.Collection;
 
 @Entity
 @Getter
-//@Setter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends BaseEntity implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="userIdx")
     private Long userIdx;
 

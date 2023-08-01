@@ -6,13 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class HospitalRes {
+public class BookingRes {
+
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class HospitalListRes {
-        private Object scrapIdx;
+    public static class BookingListRes {
+
+
+        private Object bookingIdx;
 
         private Object createdAt;
 
@@ -21,6 +24,10 @@ public class HospitalRes {
         private User user;
 
         private Object hospital;
+
+        private Object method;
+
+        private Object bookingDate;
 
     }
 }

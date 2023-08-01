@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class Review extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="reviewIdx")
     private Long reviewIdx;
 
@@ -30,7 +30,7 @@ public class Review extends BaseEntity {
     private Hospital hospital;
 
     // 별점
-    @Column(name = "score", nullable = false)
+    @Column(name = "totalScore", nullable = false)
     private int totalScore;
 
     // 진료 결과 점수
