@@ -1,20 +1,21 @@
 package com.umc.BareuniBE.entities;
 
 import com.umc.BareuniBE.global.BaseEntity;
+import com.umc.BareuniBE.global.enums.AlarmType;
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-//@Getter
-//@Setter
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Alarm extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="alarmIdx")
     private Long alarmIdx;
 
@@ -22,9 +23,16 @@ public class Alarm extends BaseEntity {
     @JoinColumn(name = "community")
     private Community community;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user")
+    private User user;
+
     @Column(name = "alarmType", nullable = false)
-    private String alarmType;
+    private AlarmType alarmType;
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    @Column(name = "url", nullable = false)
+    private String url;
 }

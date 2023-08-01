@@ -1,7 +1,10 @@
 package com.umc.BareuniBE.repository;
 
+import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.entities.Community;
+
 import com.umc.BareuniBE.entities.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,6 +26,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
             nativeQuery = true
     )
     List<Object []> findAllCommunity_Pagination(Pageable pageable);
+
     @Query(
             value =
                     "SELECT c.community_idx, c.created_at, c.updated_at, c.content, u.user_idx, COUNT(l.like_idx) AS likeCnt " +

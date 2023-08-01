@@ -5,6 +5,7 @@ import com.umc.BareuniBE.entities.Community;
 import com.umc.BareuniBE.entities.User;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class CommunityRes {
@@ -47,8 +48,25 @@ public class CommunityRes {
         private Long communityIdx;
 
         private User user;
-        private List<Comment> commentList;
+       
+        private String content;
+      
+        private List<CommentSummary> commentList;
+
+
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class CommentSummary {
+
+        private String nickname;
+        private String comment;
+        private LocalDateTime commentCreatedAt;
 
 
     }
 }
+
