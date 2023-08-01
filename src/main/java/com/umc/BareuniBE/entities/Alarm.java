@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Alarm extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="alarmIdx")
     private Long alarmIdx;
 

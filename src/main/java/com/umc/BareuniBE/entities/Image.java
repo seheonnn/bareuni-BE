@@ -15,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Image extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="imageIdx")
     private Long imageIdx;
 

@@ -15,8 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class LikeEntity extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="likeIdx")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeIdx;
 
     @ManyToOne(optional = false)

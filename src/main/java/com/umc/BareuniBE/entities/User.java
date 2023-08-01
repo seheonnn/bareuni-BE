@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class User extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="userIdx")
     private Long userIdx;
 
