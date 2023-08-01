@@ -55,7 +55,6 @@ public class UserService {
             System.out.println(request.getProvider());*/
 
             User newUser = User.builder()
-                    .userIdx(request.getUserIdx())
                     .email(request.getEmail())
                     .password(encryptedPw)
                     .nickname(request.getNickname())
@@ -64,7 +63,7 @@ public class UserService {
                     .gender(request.getGender())
                     .age(request.getAge())
                     .ortho(request.isOrtho())
-                    .role(request.getRole())
+                    .role(RoleType.USER)
                     .provider(request.getProvider())
                     .build();
             //System.out.println("새로 가입하는 유저: "+newUser);

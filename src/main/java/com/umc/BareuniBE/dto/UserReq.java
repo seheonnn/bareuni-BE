@@ -7,12 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class UserReq {
-    @NoArgsConstructor
-    @AllArgsConstructor
+
     @Getter
     @Setter
     public static class UserJoinReq extends User { // 회원가입 요청
-        private User user;
+//        private User user;
     }
 
     @NoArgsConstructor

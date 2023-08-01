@@ -5,15 +5,15 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum ReviewType {
-    BAD(0, "나쁨"),
-    NORMAL(1, "보통"),
-    GOOD(2, "좋음");
+    BAD(0, "BAD"),
+    NORMAL(1, "NORMAL"),
+    GOOD(2, "GOOD");
 
     private final Integer value;
     private final String review;
 
-//    @JsonValue
-//    public String getGender() {
-//        return this.review;
-//    }
+    @JsonValue
+    public String getReview() {
+        return this.review;
+    }
 }
