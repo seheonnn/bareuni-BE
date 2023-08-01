@@ -67,4 +67,10 @@ public class CommunityController {
     public BaseResponse<String> likeToggle(@PathVariable Long communityIdx, @RequestBody Map<String, Long> requestBody) throws BaseException {
         return new BaseResponse<>(communityService.likeToggle(requestBody.get("userIdx"), communityIdx));
     }
+
+    // 커뮤니티 댓글 작성
+    @PostMapping("/{communityIdx}/comment")
+    public BaseResponse<CommunityRes.CommentCreateRes> createComment(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommentCreateReq request) throws BaseException {
+        return new BaseResponse<>(communityService.createComment(communityIdx, request));
+    }
 }

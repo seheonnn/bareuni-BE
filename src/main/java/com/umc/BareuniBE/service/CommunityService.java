@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.USERS_EMPTY_USER_ID;
@@ -94,6 +95,7 @@ public class CommunityService {
 
 
         community.setContent(request.getContent());
+        community.setUpdatedAt(LocalDateTime.now());
 
         return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
     }
@@ -133,6 +135,22 @@ public class CommunityService {
             return "좋아요 성공";
         }
 
+    }
+
+    public CommunityRes.CommentCreateRes createComment (Long communityIdx, CommunityReq.CommentCreateReq request) throws BaseException {
+        User user = userRepository.findById(request.getUserIdx())
+                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
+
+        Community community = communityRepository.findById(communityIdx)
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+
+        Comment newComment = Comment.builder()
+                .user(user)
+                .community(community)
+                .comment(request.getComment())
+                .build();
+
+        return new CommunityRes.CommentCreateRes(commentRepository.saveAndFlush(newComment));
     }
 
 }

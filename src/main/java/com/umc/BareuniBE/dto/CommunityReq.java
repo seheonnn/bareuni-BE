@@ -13,4 +13,13 @@ public class CommunityReq {
         private String content;
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class CommentCreateReq {
+        private Long userIdx;
+        private String comment;
+    }
+
 }
