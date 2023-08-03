@@ -46,4 +46,5 @@ public class Hospital extends BaseEntity {
     @Column(name = "bookable", nullable = false)
     private boolean bookable;
 
+
 }
