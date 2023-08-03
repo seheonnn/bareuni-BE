@@ -28,4 +28,5 @@ public class HospitalRes {
         private Object reviewCnt;
         private Object summary;
         // private String[] images; // 일단 이미지 없이 진행
+    }
 }

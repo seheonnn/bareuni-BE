@@ -1,6 +1,7 @@
 package com.umc.BareuniBE.repository;
 
 import com.umc.BareuniBE.entities.Hospital;
+import com.umc.BareuniBE.repository.querydsl.HospitalRepositoryCustom;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
