@@ -9,6 +9,7 @@ import com.umc.BareuniBE.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -28,6 +29,7 @@ public class MypageService {
     private final BookingRepository bookingRepository;
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
 
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 
     @Autowired
@@ -169,7 +171,7 @@ public class MypageService {
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
         // 입력된 현재 비밀번호가 데이터베이스에 저장된 현재 비밀번호와 일치하는지 확인
-        if (!passwordUpdateReq.getCurrentPassword().equals(user.getPassword())) {
+        if (!encoder.matches(passwordUpdateReq.getCurrentPassword(), user.getPassword())) {
             throw new BaseException(PASSWORD_INCORRECT);
         }
 
