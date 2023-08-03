@@ -1,7 +1,5 @@
 package com.umc.BareuniBE.service;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.dto.HospitalReq;
 import com.umc.BareuniBE.dto.HospitalRes;
 import com.umc.BareuniBE.entities.Hospital;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,26 +31,26 @@ public class HospitalService {
     private final ScrapRepository scrapRepository;
 
     // 홈 - 후기가 좋은 치과 목록 조회
-    public List<HospitalRes.HospitalListRes> getBestHospitalList() {
+    public List<HospitalRes.HospitalSummaryListRes> getBestHospitalList() {
         List<Object[]> hospitals = hospitalRepository.findBestHospital();
 
         return hospitals.stream()
                 .map(hospitalData -> {
-                    HospitalRes.HospitalListRes hospitalListRes = new HospitalRes.HospitalListRes();
-                    hospitalListRes.setHospitalIdx(hospitalData[0]);
-                    hospitalListRes.setAddress(hospitalData[1]);
-                    hospitalListRes.setHosName(hospitalData[2]);
-                    hospitalListRes.setScore(hospitalData[3]);
-                    hospitalListRes.setReviewCnt(hospitalData[4]);
+                    HospitalRes.HospitalSummaryListRes hospitalSummaryListRes = new HospitalRes.HospitalSummaryListRes();
+                    hospitalSummaryListRes.setHospitalIdx(hospitalData[0]);
+                    hospitalSummaryListRes.setAddress(hospitalData[1]);
+                    hospitalSummaryListRes.setHosName(hospitalData[2]);
+                    hospitalSummaryListRes.setScore(hospitalData[3]);
+                    hospitalSummaryListRes.setReviewCnt(hospitalData[4]);
 
-                    return hospitalListRes;
+                    return hospitalSummaryListRes;
                 })
                 .collect(Collectors.toList());
     }
 
     // 치과정보 탭 - 추천 치과 목록 조회
-    public List<HospitalRes.HospitalListRes> getRecommendHospitalList(String[] areaList) {
-        List<HospitalRes.HospitalListRes> resList = hospitalRepository.findRecommendHospital(areaList);
+    public List<HospitalRes.HospitalSummaryListRes> getRecommendHospitalList(String[] areaList) {
+        List<HospitalRes.HospitalSummaryListRes> resList = hospitalRepository.findRecommendHospital(areaList);
         return resList;
     }
 

@@ -34,7 +34,7 @@ public class MypageController {
 
     // 치과 저장 목록 조회 (최신순)
     @GetMapping("/scrap/{userId}")
-    public BaseResponse<List<HospitalRes.HospitalListRes>> getMyHospitalList(
+    public BaseResponse<List<HospitalRes.HospitalSummaryListRes>> getMyHospitalList(
             @PathVariable Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
     ) throws BaseException {

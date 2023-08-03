@@ -19,13 +19,13 @@ public class HospitalController {
 
     // 홈 - 후기가 좋은 치과 목록 조회
     @GetMapping("/best")
-    public BaseResponse<List<HospitalRes.HospitalListRes>> getBestHospitalList() throws BaseException {
+    public BaseResponse<List<HospitalRes.HospitalSummaryListRes>> getBestHospitalList() throws BaseException {
         return new BaseResponse<>(hospitalService.getBestHospitalList());
     }
 
     // 치과정보 탭 - 추천 치과 목록 조회
     @GetMapping("/recommend/{area}")
-    public BaseResponse<List<HospitalRes.HospitalListRes>> getRecommendHospitalList(
+    public BaseResponse<List<HospitalRes.HospitalSummaryListRes>> getRecommendHospitalList(
             @PathVariable("area") String areaStr
     ) throws BaseException {
         String[] areaList = areaStr.split(",");

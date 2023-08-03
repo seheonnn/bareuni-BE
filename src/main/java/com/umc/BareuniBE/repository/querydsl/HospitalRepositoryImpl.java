@@ -18,15 +18,15 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<HospitalRes.HospitalListRes> findRecommendHospital(String[] areaList) {
+    public List<HospitalRes.HospitalSummaryListRes> findRecommendHospital(String[] areaList) {
         BooleanBuilder builder = new BooleanBuilder();
         for (String area : areaList) {
             builder.or(hospital.address.contains(area));
         }
 
-        List<HospitalRes.HospitalListRes> hospitals = queryFactory
+        List<HospitalRes.HospitalSummaryListRes> hospitals = queryFactory
                 .select(
-                        Projections.constructor(HospitalRes.HospitalListRes.class,
+                        Projections.constructor(HospitalRes.HospitalSummaryListRes.class,
                                 hospital.hospitalIdx.as("hospitalIdx"),
                                 hospital.hospitalName.as("hosName"),
                                 hospital.address.as("address"),
