@@ -1,22 +1,20 @@
 package com.umc.BareuniBE.entities;
 
 import com.umc.BareuniBE.global.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 
 @Entity
-//@Getter
-//@Setter
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Hospital extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="hospitalIdx")
     private Long hospitalIdx;
 

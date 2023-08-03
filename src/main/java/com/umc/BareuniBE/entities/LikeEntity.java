@@ -1,22 +1,19 @@
 package com.umc.BareuniBE.entities;
 
 import com.umc.BareuniBE.global.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-//@Getter
-//@Setter
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class LikeEntity extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="likeIdx")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeIdx;
 
     @ManyToOne(optional = false)

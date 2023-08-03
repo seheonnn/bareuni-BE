@@ -12,4 +12,5 @@ public class CommunityReq {
         private Long userIdx;
         private String content;
     }
+
 }

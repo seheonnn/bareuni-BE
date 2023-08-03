@@ -4,6 +4,8 @@ import com.umc.BareuniBE.global.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -13,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Scrap extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="scrapIdx")
     private Long scrapIdx;
 

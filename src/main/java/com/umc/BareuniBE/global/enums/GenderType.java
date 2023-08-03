@@ -5,15 +5,15 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum GenderType {
-    MALE(0, "남성"),
-    FEMALE(1, "여성");
+    MALE(0, "MALE"),
+    FEMALE(1, "FEMALE");
 
     private final Integer value;
     private final String gender;
 
 
-//    @JsonValue
-//    public String getGender() {
-//        return this.gender;
-//    }
+    @JsonValue
+    public String getGender() {
+        return this.gender;
+    }
 }

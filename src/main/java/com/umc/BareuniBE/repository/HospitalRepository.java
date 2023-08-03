@@ -8,10 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Locale;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
 
 @Repository
 public interface HospitalRepository extends JpaRepository<Hospital, Long> {
-
     @Query(
             value =
                     "SELECT h.hospital_idx as hospitalIdx, h.address, h.hospital_name as hosName, AVG(r.score) as score, COUNT(*) as reviewCnt\n" +
