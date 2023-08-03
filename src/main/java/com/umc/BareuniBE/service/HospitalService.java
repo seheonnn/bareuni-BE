@@ -1,5 +1,6 @@
 package com.umc.BareuniBE.service;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.dto.HospitalReq;
 import com.umc.BareuniBE.dto.HospitalRes;
@@ -13,21 +14,27 @@ import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.umc.BareuniBE.entities.QHospital.hospital;
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
 public class HospitalService {
+
+    @PersistenceContext
+    private EntityManager em;
     private final HospitalRepository hospitalRepository;
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
 
-    // 후기가 좋은 치과 목록 조회
-    public List<HospitalRes.HospitalListRes> getBestHospitalList() throws BaseException {
+    // 홈 - 후기가 좋은 치과 목록 조회
+    public List<HospitalRes.HospitalListRes> getBestHospitalList() {
         List<Object[]> hospitals = hospitalRepository.findBestHospital();
 
         return hospitals.stream()
@@ -42,6 +49,12 @@ public class HospitalService {
                     return hospitalListRes;
                 })
                 .collect(Collectors.toList());
+    }
+
+    // 치과정보 탭 - 추천 치과 목록 조회
+    public List<HospitalRes.HospitalListRes> getRecommendHospitalList(String[] areaList) {
+        List<HospitalRes.HospitalListRes> resList = hospitalRepository.findRecommendHospital(areaList);
+        return resList;
     }
 
     // 스크랩 추가
@@ -60,4 +73,6 @@ public class HospitalService {
         Scrap scrap = scrapRepository.save(newScrap);
         return new HospitalRes.HospitalScrapCreateRes(scrap.getScrapIdx());
     }
+
+
 }

@@ -23,6 +23,16 @@ public class HospitalController {
         return new BaseResponse<>(hospitalService.getBestHospitalList());
     }
 
+    // 치과정보 탭 - 추천 치과 목록 조회
+    @GetMapping("/recommend/{area}")
+    public BaseResponse<List<HospitalRes.HospitalListRes>> getRecommendHospitalList(
+            @PathVariable("area") String areaStr
+    ) throws BaseException {
+        String[] areaList = areaStr.split(",");
+
+        return new BaseResponse<>(hospitalService.getRecommendHospitalList(areaList));
+    }
+
     // 스크랩 추가
     @PostMapping("/{hospitalIdx}/scrap")
     public BaseResponse<HospitalRes.HospitalScrapCreateRes> createScrap (
