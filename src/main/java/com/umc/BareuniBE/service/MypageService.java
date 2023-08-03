@@ -61,7 +61,7 @@ public class MypageService {
     }
 
     // 치과 저장 목록 조회
-    public List<HospitalRes.HospitalSummaryListRes> getMyHospitalList(Long userId, Pageable page) throws BaseException {
+    public List<HospitalRes.HospitalListRes> getMyHospitalList(Long userId, Pageable page) throws BaseException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
@@ -69,7 +69,7 @@ public class MypageService {
 
         return scrap.stream()
                 .map(hospitalData -> {
-                    HospitalRes.HospitalSummaryListRes hospitalRes = new HospitalRes.HospitalSummaryListRes();
+                    HospitalRes.HospitalListRes hospitalRes = new HospitalRes.HospitalListRes();
                     hospitalRes.setScrapIdx(hospitalData[0]);
                     hospitalRes.setCreatedAt(hospitalData[1]);
                     hospitalRes.setUpdatedAt( hospitalData[2]);

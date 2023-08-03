@@ -29,6 +29,10 @@ public class HospitalRes {
         // private String[] images; // 일단 이미지 없이 진행
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class HospitalListRes {
         private Object scrapIdx;
 

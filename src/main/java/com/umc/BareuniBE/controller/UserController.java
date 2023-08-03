@@ -20,12 +20,13 @@ public class UserController {
     private final UserService userService;
 
     // 회원가입
-    @ApiOperation(value = "회원가입", notes = "ex) {\n" +
-            "    \"email\": \"abc1234@asdasda.com\",\n" +
-            "    \"age\":20,\n" +
-            "    \"password\": \"abc123456\",\n" +
-            "    \"nickname\": \"바른이바른이\",\n" +
-            "    \"gender\":\"MALE\"\n" +
+    @ApiOperation(value = "회원가입", notes = "ex)\n\n " +
+            "{\n\n" +
+            "    \"email\": \"abc1234@asdasda.com\",\n\n" +
+            "    \"age\":20,\n\n" +
+            "    \"password\": \"abc123456\",\n\n" +
+            "    \"nickname\": \"바른이바른이\",\n\n" +
+            "    \"gender\":\"MALE\"\n\n" +
             "}")
     @PostMapping("/join")
     public BaseResponse<UserRes.UserJoinRes> join(@RequestBody UserReq.UserJoinReq request) throws BaseException {
