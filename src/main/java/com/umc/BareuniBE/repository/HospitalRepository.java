@@ -1,12 +1,16 @@
 package com.umc.BareuniBE.repository;
 
 import com.umc.BareuniBE.entities.Hospital;
-import com.umc.BareuniBE.repository.querydsl.HospitalRepositoryCustom;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Locale;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
 
 @Repository
 public interface HospitalRepository extends JpaRepository<Hospital, Long>, HospitalRepositoryCustom {
