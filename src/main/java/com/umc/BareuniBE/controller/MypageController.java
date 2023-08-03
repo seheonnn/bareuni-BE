@@ -81,7 +81,13 @@ public class MypageController {
         return new BaseResponse<>(mypageService.userUpdate(userId, myUpdateReq));
     }
 
-    //비밀번호 변경
+    // 비밀번호 변경
+    @ApiOperation(value = "비밀번호 변경", notes = "ex) http://localhost:8080/mypage/users/password/1\n\n" +
+            "{\n\n" +
+            "  \"confirmPassword\": \"abc123\",\n\n" +
+            "  \"currentPassword\": \"abc123\",\n\n" +
+            "  \"newPassword\": \"abc1234\"\n\n" +
+            "}")
     @PatchMapping("/users/password/{userId}")
     public BaseResponse<String> changePassword(
             @PathVariable Long userId,

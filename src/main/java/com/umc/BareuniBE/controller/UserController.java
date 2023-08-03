@@ -22,9 +22,9 @@ public class UserController {
     // 회원가입
     @ApiOperation(value = "회원가입", notes = "ex)\n\n " +
             "{\n\n" +
-            "    \"email\": \"abc1234@asdasda.com\",\n\n" +
+            "    \"email\": \"abc123@naver.com\",\n\n" +
             "    \"age\":20,\n\n" +
-            "    \"password\": \"abc123456\",\n\n" +
+            "    \"password\": \"abc123\",\n\n" +
             "    \"nickname\": \"바른이바른이\",\n\n" +
             "    \"gender\":\"MALE\"\n\n" +
             "}")
