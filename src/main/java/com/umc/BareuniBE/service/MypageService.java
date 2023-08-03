@@ -6,6 +6,7 @@ import com.umc.BareuniBE.entities.Review;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
 @Service
+@Slf4j
 public class MypageService {
 
     private final CommunityRepository communityRepository;
@@ -150,7 +152,7 @@ public class MypageService {
         if (myUpdateReq.isOrtho() != user.isOrtho()) {
             user.setOrtho(myUpdateReq.isOrtho());
         }
-
+        log.info(user.getPhone());
         userRepository.save(user);
 
         return "회원 정보 수정 성공";

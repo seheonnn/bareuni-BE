@@ -14,7 +14,7 @@ public class CommunityRes {
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class CommunityCreateRes extends Community{
+    public static class CommunityCreateRes {
         private Community community;
     }
 
@@ -66,7 +66,14 @@ public class CommunityRes {
         private String comment;
         private LocalDateTime commentCreatedAt;
 
+    }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class CommentCreateRes {
+        private Comment comment;
     }
 }
 

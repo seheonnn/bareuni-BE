@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
@@ -41,7 +40,7 @@ public class User extends BaseEntity implements UserDetails {
     private String name;
 
     @Column(name = "phone")
-    @Pattern(regexp = "/^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/", message = "전화번호 형식이 맞지 않습니다.")
+    @Pattern(regexp = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$", message = "전화번호 형식이 맞지 않습니다.")
     private String phone;
 
     @Enumerated(value = EnumType.STRING)
