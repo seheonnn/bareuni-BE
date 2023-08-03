@@ -1,14 +1,8 @@
 package com.umc.BareuniBE.controller;
 
-import com.umc.BareuniBE.dto.HospitalReq;
-import com.umc.BareuniBE.dto.HospitalRes;
-import com.umc.BareuniBE.global.BaseException;
-import com.umc.BareuniBE.global.BaseResponse;
-import com.umc.BareuniBE.service.HospitalService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController

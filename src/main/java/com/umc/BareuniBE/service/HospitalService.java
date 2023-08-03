@@ -70,6 +70,4 @@ public class HospitalService {
         Scrap scrap = scrapRepository.save(newScrap);
         return new HospitalRes.HospitalScrapCreateRes(scrap.getScrapIdx());
     }
-
-
 }
