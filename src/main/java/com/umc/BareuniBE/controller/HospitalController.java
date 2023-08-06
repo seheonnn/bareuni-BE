@@ -36,6 +36,14 @@ public class HospitalController {
         return new BaseResponse<>(hospitalService.getRecommendHospitalList(areaList));
     }
 
+    // 치과 정보글 상세 조회
+    @GetMapping("/{hospitalIdx}")
+    public BaseResponse<HospitalRes.HospitalDetailRes> getHospitalDetail(
+            @PathVariable("hospitalIdx") Long hospitalIdx
+    ) throws BaseException {
+        return new BaseResponse<>(hospitalService.getHospitalDetail(hospitalIdx));
+    }
+
     // 스크랩 추가
     @ApiOperation(value = "스크랩 추가", notes = "ex) http://localhost:8080/hospital/1/scrap\n\n" +
             "{\n\n" +

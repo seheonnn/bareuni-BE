@@ -44,4 +44,52 @@ public class HospitalRes {
 
         private Object hospital;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class HospitalDetailRes {
+        private Long hospitalIdx;
+        private String hosName;
+        private boolean bookable;
+        private String closedDay;
+        private boolean todayClosed;
+        private String address;
+        private String keywords;
+        private String openTime;
+        private String lunchTime;
+        private String content;
+        private String Telephone;
+
+        private Double totalScore;
+        private Integer reviewCnt;
+        private String treatment;
+        private Double treatmentRate;
+        private String service;
+        private Double serviceRate;
+        private String equipment;
+        private Double equipmentRate;
+    }
+
+    public interface HospitalDetailResult {
+        Long getHospital_idx();
+        String getHospital_name();
+        String getTelephone();
+        String getKeywords();
+        String getOpen_time();
+        String getClosed_day();
+        String getLunch_time();
+        String getContent();
+        String getAddress();
+        boolean getBookable();
+        String getTreatment();
+        Double getTreatment_ratio();
+        String getService();
+        Double getService_ratio();
+        String getEquipment();
+        Double getEquipment_ratio();
+        Double getTotal_score();
+        Integer getReview_cnt();
+    }
 }
