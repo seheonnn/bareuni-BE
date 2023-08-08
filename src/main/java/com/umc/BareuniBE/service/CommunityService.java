@@ -67,7 +67,7 @@ public class  CommunityService {
 
     public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx) throws BaseException {
         Community community = communityRepository.findById(communityIdx)
-                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
 
         List<Comment> comments = commentRepository.findAllByCommunity(community);
         List<CommunityRes.CommentSummary> commentList = comments.stream()
@@ -85,7 +85,7 @@ public class  CommunityService {
     public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq request) throws BaseException {
         // 해당 글 유저
         Community community = communityRepository.findById(communityIdx)
-                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
         // request 로 받은 유저
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
@@ -104,7 +104,7 @@ public class  CommunityService {
     public String deleteCommunity(Long communityIdx, Long userIdx) throws BaseException {
         // 해당 글 유저
         Community community = communityRepository.findById(communityIdx)
-                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
         // request 로 받은 유저
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
@@ -122,7 +122,7 @@ public class  CommunityService {
         User user = userRepository.findById(userIdx)
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
         Community community = communityRepository.findById(communityIdx)
-                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
 
 
         Optional<LikeEntity> likeRelation = likeRepository.findByUserAndCommunity(user, community);
@@ -143,7 +143,7 @@ public class  CommunityService {
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Community community = communityRepository.findById(communityIdx)
-                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_COMMUNITY_ID));
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
 
         Comment newComment = Comment.builder()
                 .user(user)
@@ -152,6 +152,21 @@ public class  CommunityService {
                 .build();
 
         return new CommunityRes.CommentCreateRes(commentRepository.saveAndFlush(newComment));
+    }
+
+    public String deleteComment (Long commentIdx, CommunityReq.CommentDeleteReq request) throws BaseException {
+        User user = userRepository.findById(request.getUserIdx())
+                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
+
+        Comment comment = commentRepository.findById(commentIdx)
+                .orElseThrow(() -> new BaseException(Comment_EMPTY_ID));
+
+        if (comment.getUser() != user)
+            throw new BaseException(UPDATE_AUTHORIZED_ERROR);
+
+        commentRepository.delete(comment);
+
+        return "댓글 삭제 성공!";
     }
 
 }

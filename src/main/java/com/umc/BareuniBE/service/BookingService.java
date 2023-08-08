@@ -12,7 +12,7 @@ import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.umc.BareuniBE.global.BaseResponseStatus.HOSPITAL_EMPTY_COMMUNITY_ID;
+import static com.umc.BareuniBE.global.BaseResponseStatus.HOSPITAL_EMPTY_ID;
 import static com.umc.BareuniBE.global.BaseResponseStatus.USERS_EMPTY_USER_ID;
 
 @Service
@@ -29,7 +29,7 @@ public class BookingService {
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
         Hospital hospital = hospitalRepository.findById(request.getHospitalIdx())
-                .orElseThrow(() -> new BaseException(HOSPITAL_EMPTY_COMMUNITY_ID));
+                .orElseThrow(() -> new BaseException(HOSPITAL_EMPTY_ID));
 
         Booking newBooking = Booking.builder()
                 .user(user)
