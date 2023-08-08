@@ -63,12 +63,14 @@ public enum BaseResponseStatus {
 
     // 5000 : 필요시 만들어서 쓰세요
 
-    COMMUNITY_EMPTY_COMMUNITY_ID(false, 50000, "커뮤니티 아이디 값을 확인해주세요."),
-    HOSPITAL_EMPTY_COMMUNITY_ID(false, 50001, "병원 아이디 값을 확인해주세요."),
+    COMMUNITY_EMPTY_ID(false, 50000, "커뮤니티 아이디 값을 확인해주세요."),
+    HOSPITAL_EMPTY_ID(false, 50001, "병원 아이디 값을 확인해주세요."),
 
-    REVIEW_EMPTY_COMMUNITY_ID(false, 50002, "리뷰 아이디 값을 확인해주세요."),
+    REVIEW_EMPTY_ID(false, 50002, "리뷰 아이디 값을 확인해주세요."),
 
     UPDATE_AUTHORIZED_ERROR(false, 50003, "해당 글에 대한 수정 및 삭제 권한이 없습니다."),
+    Comment_EMPTY_ID(false, 50004, "댓글 아이디 값을 확인해주세요."),
+
 
     // 6000 : Hospital 관련 오류
     HOSPITAL_EMPTY_HOSPITAL_ID(false, 6000, "치과 아이디 값을 확인해주세요.");

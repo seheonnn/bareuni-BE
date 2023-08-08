@@ -36,7 +36,7 @@ public class ReviewService {
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
         Hospital hospital = hospitalRepository.findById(request.getHospitalIdx())
-                .orElseThrow(() -> new BaseException(HOSPITAL_EMPTY_COMMUNITY_ID));
+                .orElseThrow(() -> new BaseException(HOSPITAL_EMPTY_ID));
 
         Review newReview = Review.builder()
                 .user(user)
@@ -94,7 +94,7 @@ public class ReviewService {
 
     public ReviewRes.ReviewDetailRes getReviewDetail(Long reviewIdx) throws BaseException {
         Review review = reviewRepository.findById(reviewIdx)
-                .orElseThrow(() -> new BaseException(REVIEW_EMPTY_COMMUNITY_ID));
+                .orElseThrow(() -> new BaseException(REVIEW_EMPTY_ID));
 
         ReviewRes.ReviewDetailRes reviewDetailRes = new ReviewRes.ReviewDetailRes();
         reviewDetailRes.setReviewIdx(review.getReviewIdx());
