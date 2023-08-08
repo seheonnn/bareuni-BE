@@ -100,7 +100,7 @@ public class CommunityController {
     }
 
     // 커뮤니티 댓글 삭제
-    @ApiOperation(value = "커뮤니티 댓글 삭제", notes = "ex) http://localhost:8080/community/1/comment/1\n\n" +
+    @ApiOperation(value = "커뮤니티 댓글 삭제", notes = "ex) http://localhost:8080/community/comment/1\n\n" +
             "{\n\n" +
             "\"userIdx\":1\n\n" +
             "}")
