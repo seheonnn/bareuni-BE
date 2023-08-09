@@ -37,6 +37,7 @@ public class HospitalController {
     }
 
     // 치과 정보글 상세 조회
+    @ApiOperation(value = "치과 정보글 상세 조회", notes = "ex) http://localhost:8080/hospital/3")
     @GetMapping("/{hospitalIdx}")
     public BaseResponse<HospitalRes.HospitalDetailRes> getHospitalDetail(
             @PathVariable("hospitalIdx") Long hospitalIdx

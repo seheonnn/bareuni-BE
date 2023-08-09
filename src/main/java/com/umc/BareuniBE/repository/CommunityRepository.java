@@ -49,5 +49,18 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
             nativeQuery = true
     )
     List<Object[]> MyCommunityList(@Param("user") User user, Pageable pageable);
+
+    @Query(
+            value =
+                    "select c.*, COUNT(le.community) as likeCnt\n" +
+                            "    from (SELECT * FROM community where DATE(created_at) >= DATE_SUB(NOW(), INTERVAL 7 DAY)) c\n" +
+                            "    left outer join like_entity le\n" +
+                            "    on c.community_idx = le.community\n" +
+                            "    group by c.community_idx\n" +
+                            "    order by likeCnt DESC\n" +
+                            "    limit 5",
+            nativeQuery = true
+    )
+    List<Object[]> getBestCommunityList();
 }
 
