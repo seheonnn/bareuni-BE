@@ -50,6 +50,8 @@ dependencies {
 	implementation "io.springfox:springfox-swagger-ui:3.0.0"
 
 	// queryDSL
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
 	implementation 'com.querydsl:querydsl-jpa'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
 	
