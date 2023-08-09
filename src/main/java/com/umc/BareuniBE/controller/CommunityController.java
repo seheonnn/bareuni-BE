@@ -98,4 +98,14 @@ public class CommunityController {
     public BaseResponse<CommunityRes.CommentCreateRes> createComment(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommentCreateReq request) throws BaseException {
         return new BaseResponse<>(communityService.createComment(communityIdx, request));
     }
+
+    // 커뮤니티 댓글 삭제
+    @ApiOperation(value = "커뮤니티 댓글 삭제", notes = "ex) http://localhost:8080/community/comment/1\n\n" +
+            "{\n\n" +
+            "\"userIdx\":1\n\n" +
+            "}")
+    @DeleteMapping("/comment/{commentIdx}")
+    public BaseResponse<String> deleteComment(@PathVariable Long commentIdx, @RequestBody CommunityReq.CommentDeleteReq request) throws BaseException {
+        return new BaseResponse<>(communityService.deleteComment(commentIdx, request));
+    }
 }
