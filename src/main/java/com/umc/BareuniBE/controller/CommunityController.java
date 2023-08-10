@@ -110,6 +110,7 @@ public class CommunityController {
     }
 
     // 홈 - 커뮤니티 인기글 조회
+    @ApiOperation(value = "홈 - 커뮤니티 인기글 조회", notes = "ex) http://localhost:8080/community/best")
     @GetMapping("/best")
     public BaseResponse<List<CommunityRes.BestCommunityListRes>> getBestCommunityList(
     ) {

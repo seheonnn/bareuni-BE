@@ -75,7 +75,9 @@ public enum BaseResponseStatus {
 
 
     // 6000 : Hospital 관련 오류
-    HOSPITAL_EMPTY_HOSPITAL_ID(false, 6000, "치과 아이디 값을 확인해주세요.");
+    HOSPITAL_EMPTY_HOSPITAL_ID(false, 6000, "치과 아이디 값을 확인해주세요."),
+    SCRAP_EMPTY_SCRAP_ID(false, 6001, "스크랩 아이디 값을 확인해주세요."),
+    SCRAP_DELETE_AUTHORIZED_ERROR(false, 6002, "해당 스크랩에 대한 삭제 권한이 없습니다.");
 
     private final boolean isSuccess;
     private final int code;

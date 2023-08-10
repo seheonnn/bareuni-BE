@@ -11,7 +11,7 @@ public class HospitalReq {
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class HospitalScrapCreateReq {
+    public static class HospitalScrapReq {
         private Long userIdx;
     }
 }

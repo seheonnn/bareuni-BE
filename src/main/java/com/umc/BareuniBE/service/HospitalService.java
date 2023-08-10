@@ -26,7 +26,6 @@ import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 public class HospitalService {
 
     @PersistenceContext
-    private EntityManager em;
     private final HospitalRepository hospitalRepository;
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
@@ -56,7 +55,7 @@ public class HospitalService {
     }
 
     // 스크랩 추가
-    public HospitalRes.HospitalScrapCreateRes createScrap(HospitalReq.HospitalScrapCreateReq request, Long hospitalIdx) throws BaseException {
+    public HospitalRes.HospitalScrapCreateRes createScrap(HospitalReq.HospitalScrapReq request, Long hospitalIdx) throws BaseException {
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
@@ -109,5 +108,25 @@ public class HospitalService {
         hospitalDetailRes.setEquipmentRate(result.getEquipment_ratio());
 
         return hospitalDetailRes;
+    }
+
+    // 스크랩 삭제
+    public String deleteScrap(HospitalReq.HospitalScrapReq request, Long hospitalIdx, Long scrapIdx) throws BaseException {
+        User user = userRepository.findById(request.getUserIdx())
+                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
+
+        Hospital hospital = hospitalRepository.findById(hospitalIdx)
+                .orElseThrow(() -> new BaseException(HOSPITAL_EMPTY_HOSPITAL_ID));
+
+        Scrap scrap = scrapRepository.findById(scrapIdx)
+                .orElseThrow(() -> new BaseException(SCRAP_EMPTY_SCRAP_ID));
+
+        if (scrap.getUser() != user || scrap.getHospital() != hospital) {
+            throw new BaseException(SCRAP_DELETE_AUTHORIZED_ERROR);
+        }
+
+        scrapRepository.delete(scrap);
+
+        return "스크랩 삭제 성공!";
     }
 }
