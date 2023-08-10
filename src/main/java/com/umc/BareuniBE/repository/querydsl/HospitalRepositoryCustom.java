@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface HospitalRepositoryCustom {
     List<HospitalRes.HospitalSummaryListRes> findRecommendHospital(String[] areaList);
+
+    List<HospitalRes.HospitalSummaryListRes> searchHospital(String keyword);
 }

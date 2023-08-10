@@ -71,4 +71,12 @@ public class HospitalController {
     ) throws BaseException {
         return new BaseResponse<>(hospitalService.deleteScrap(request, hospitalIdx, scrapIdx));
     }
+
+    // 검색 - 치과
+    @GetMapping("/search")
+    public BaseResponse<List<HospitalRes.HospitalSummaryListRes>> searchHospital (
+            @RequestParam(value = "keyword") String keyword
+    ) throws BaseException {
+        return new BaseResponse<>(hospitalService.searchHospital(keyword));
+    }
 }

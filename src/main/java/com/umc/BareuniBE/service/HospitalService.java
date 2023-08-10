@@ -26,6 +26,7 @@ import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 public class HospitalService {
 
     @PersistenceContext
+    private EntityManager em;
     private final HospitalRepository hospitalRepository;
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
@@ -128,5 +129,11 @@ public class HospitalService {
         scrapRepository.delete(scrap);
 
         return "스크랩 삭제 성공!";
+    }
+
+    // 검색 - 치과
+    public List<HospitalRes.HospitalSummaryListRes> searchHospital(String keyword) {
+        List<HospitalRes.HospitalSummaryListRes> hospitalsList = hospitalRepository.searchHospital(keyword);
+        return hospitalsList;
     }
 }
