@@ -6,10 +6,10 @@ import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -32,6 +32,25 @@ public class UserController {
     public BaseResponse<UserRes.UserJoinRes> join(@RequestBody UserReq.UserJoinReq request) throws BaseException {
         System.out.println("controller에서 Service로 join함수 실행직전");
         return new BaseResponse<>(userService.join(request));
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public BaseResponse<List<TokenDTO>> login(@RequestBody UserReq.UserLoginReq request) throws BaseException {
+        System.out.println("controller: login함수 실행");
+        return new BaseResponse<>(userService.login(request));
+    }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public BaseResponse<String> logout(HttpServletRequest httpServletRequest) throws BaseException {
+        return new BaseResponse<>(userService.logout(httpServletRequest));
+    }
+
+    // 회원 탈퇴
+    @PostMapping("/delete")
+    public BaseResponse<String> deactivateUser(HttpServletRequest httpServletRequest) throws BaseException {
+        return new BaseResponse<>(userService.deactivateUser(httpServletRequest));
     }
 
 }

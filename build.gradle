@@ -15,7 +15,7 @@ group = 'com.umc'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '11'
+	sourceCompatibility = '17'
 }
 
 configurations {
@@ -43,6 +43,10 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.4'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.4'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.4'
+
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 
 //	 swagger dependency
 	implementation "io.springfox:springfox-boot-starter:3.0.0"

@@ -20,4 +20,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                             "ORDER BY b.bookingDate ASC"
     )
     List<Object[]> MyBookingList(@Param("user") User user, Pageable pageable);
+
+    void deleteAllByUser(User user);
 }

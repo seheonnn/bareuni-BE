@@ -19,4 +19,6 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
                             "WHERE s.user = :user "
     )
     List<Object[]> MyScrapList(@Param("user") User user, Pageable pageable);
+
+    void deleteAllByUser(User user);
 }

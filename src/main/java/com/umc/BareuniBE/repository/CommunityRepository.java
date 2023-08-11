@@ -49,5 +49,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
             nativeQuery = true
     )
     List<Object[]> MyCommunityList(@Param("user") User user, Pageable pageable);
+
+    void deleteAllByUser(User user);
 }
 

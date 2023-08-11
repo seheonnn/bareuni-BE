@@ -22,4 +22,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 //    )
     List<Review> findReviewByUser(Pageable pageable, User user);
     List<Review> findByReceiptAndUserGender(boolean receipt, GenderType gender, Pageable pageable);
+
+    void deleteAllByUser(User user);
 }

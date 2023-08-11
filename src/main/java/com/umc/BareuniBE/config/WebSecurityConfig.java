@@ -3,9 +3,11 @@ package com.umc.BareuniBE.config;
 //import com.umc.BareuniBE.config.security.JwtAuthenticationFilter;
 import com.umc.BareuniBE.config.security.JwtAuthenticationFilter;
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final RedisTemplate redisTemplate;
 
     //private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -44,15 +48,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session 사용 X
                 .and()
-                //.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class) // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
                 .authorizeRequests()
-                //.antMatchers("/users/**").hasRole("USER")
+                //.antMatchers("/users/test").hasRole("USER")
                 .antMatchers("/**").permitAll()
-                .anyRequest().authenticated();
-                //.and()
-                //.formLogin().disable(); //disable?
-                //.and()
-                //.httpBasic(); // disable?
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().permitAll();
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests();
     }
 }
