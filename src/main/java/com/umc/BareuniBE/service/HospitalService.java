@@ -132,8 +132,13 @@ public class HospitalService {
     }
 
     // 검색 - 치과
-    public List<HospitalRes.HospitalSummaryListRes> searchHospital(String keyword) {
+    public List<HospitalRes.HospitalSummaryListRes> searchHospital(String keyword) throws BaseException {
         List<HospitalRes.HospitalSummaryListRes> hospitalsList = hospitalRepository.searchHospital(keyword);
+
+        if (hospitalsList.isEmpty()) {
+            throw new BaseException(EMPTY_SEARCH_KEYWORD);
+        }
+
         return hospitalsList;
     }
 }
