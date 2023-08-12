@@ -185,4 +185,14 @@ public class  CommunityService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public List<CommunityRes.CommunityListRes> searchCommunity(String keyword) throws BaseException {
+        List<CommunityRes.CommunityListRes> communityList = communityRepository.searchCommunity(keyword);
+
+        if (communityList.isEmpty()) {
+            throw new BaseException(EMPTY_SEARCH_KEYWORD);
+        }
+
+        return communityList;
+    }
 }

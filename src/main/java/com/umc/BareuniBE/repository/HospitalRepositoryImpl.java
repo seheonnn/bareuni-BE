@@ -1,4 +1,4 @@
-package com.umc.BareuniBE.repository.querydsl;
+package com.umc.BareuniBE.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;

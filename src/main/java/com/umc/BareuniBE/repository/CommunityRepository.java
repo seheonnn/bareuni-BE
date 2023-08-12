@@ -1,10 +1,8 @@
 package com.umc.BareuniBE.repository;
 
-import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.entities.Community;
 
 import com.umc.BareuniBE.entities.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CommunityRepository extends JpaRepository<Community, Long> {
+public interface CommunityRepository extends JpaRepository<Community, Long>, CommunityRepositoryCustom {
 
     @Query(
             value =

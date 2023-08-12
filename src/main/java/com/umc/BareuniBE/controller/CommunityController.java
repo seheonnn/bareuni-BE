@@ -117,4 +117,11 @@ public class CommunityController {
         return new BaseResponse<>(communityService.getBestCommunityList());
     }
 
+    // 검색 - 커뮤니티
+    @GetMapping("/search")
+    public BaseResponse<List<CommunityRes.CommunityListRes>> searchCommunity (
+            @RequestParam(value = "keyword") String keyword
+    ) throws BaseException {
+        return new BaseResponse<>(communityService.searchCommunity(keyword));
+    }
 }
