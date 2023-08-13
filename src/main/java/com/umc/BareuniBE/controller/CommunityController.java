@@ -118,6 +118,7 @@ public class CommunityController {
     }
 
     // 검색 - 커뮤니티
+    @ApiOperation(value = "검색 - 커뮤니티", notes = "ex) http://localhost:8080/search?keyword=바른이")
     @GetMapping("/search")
     public BaseResponse<List<CommunityRes.CommunityListRes>> searchCommunity (
             @RequestParam(value = "keyword") String keyword

@@ -73,6 +73,7 @@ public class HospitalController {
     }
 
     // 검색 - 치과
+    @ApiOperation(value = "검색 - 치과", notes = "ex) http://localhost:8080/hospital/search?keyword=휴고")
     @GetMapping("/search")
     public BaseResponse<List<HospitalRes.HospitalSummaryListRes>> searchHospital (
             @RequestParam(value = "keyword") String keyword
