@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,12 +19,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Value("${cloud.aws.cloudfront}")
-    private String cfUrl;
+    private String url;
 
     @Value("${cloud.aws.s3.uploadPath}")
     private String uploadPath;
@@ -35,34 +37,14 @@ public class UploadService {
         // iterator
         List<String> imagesUrls = new ArrayList<>();
         for (MultipartFile file : files) {
-            String originfileName = file.getOriginalFilename();
-            String filePath = uploadPath + UUID.randomUUID() + originfileName.substring(originfileName.lastIndexOf("."));;
+            String filePath = UUID.randomUUID() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getSize());
-            metadata.addUserMetadata("originfilename", URLEncoder.encode(originfileName, StandardCharsets.UTF_8));
-            PutObjectResult result = amazonS3Client.putObject(bucket, filePath, file.getInputStream(), metadata);
-            imagesUrls.add(cfUrl + filePath);
+            metadata.addUserMetadata("originfilename", URLEncoder.encode(uploadPath + filePath, StandardCharsets.UTF_8));
+            amazonS3Client.putObject(bucket, uploadPath + filePath, file.getInputStream(), metadata);
+            imagesUrls.add(url + uploadPath + filePath);
         }
         return imagesUrls.toString();
-
-        // stream
-//        return files.stream()
-//                .map(file -> {
-//                    String originfileName = file.getOriginalFilename();
-//                    String filePath = uploadPath + UUID.randomUUID() + originfileName.substring(originfileName.lastIndexOf("."));;
-//                    ObjectMetadata metadata = new ObjectMetadata();
-//                    metadata.setContentType(file.getContentType());
-//                    metadata.setContentLength(file.getSize());
-//                    metadata.addUserMetadata("originfilename", URLEncoder.encode(originfileName, StandardCharsets.UTF_8));
-//                    try {
-//                        PutObjectResult result = amazonS3Client.putObject(bucket, filePath, file.getInputStream(), metadata);
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                    return cfUrl + filePath;
-//                })
-//                .collect(Collectors.joining());
-
     }
 }
