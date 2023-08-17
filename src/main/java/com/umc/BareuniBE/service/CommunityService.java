@@ -169,4 +169,30 @@ public class  CommunityService {
         return "댓글 삭제 성공!";
     }
 
+    public List<CommunityRes.BestCommunityListRes> getBestCommunityList() {
+        List<Object[]> communities = communityRepository.getBestCommunityList();
+
+        return communities.stream()
+                .map(communityData -> {
+                    CommunityRes.BestCommunityListRes bestCommunityListRes = new CommunityRes.BestCommunityListRes();
+                    bestCommunityListRes.setCommunityIdx(communityData[0]);
+                    bestCommunityListRes.setCreatedAt(communityData[1]);
+                    bestCommunityListRes.setUpdatedAt(communityData[2]);
+                    bestCommunityListRes.setContent(communityData[3]);
+                    bestCommunityListRes.setLikeCnt(communityData[5]);
+
+                    return bestCommunityListRes;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<CommunityRes.CommunityListRes> searchCommunity(String keyword) throws BaseException {
+        List<CommunityRes.CommunityListRes> communityList = communityRepository.searchCommunity(keyword);
+
+        if (communityList.isEmpty()) {
+            throw new BaseException(EMPTY_SEARCH_KEYWORD);
+        }
+
+        return communityList;
+    }
 }

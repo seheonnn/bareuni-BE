@@ -75,5 +75,17 @@ public class CommunityRes {
     public static class CommentCreateRes {
         private Comment comment;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class BestCommunityListRes {
+        private Object communityIdx;
+        private Object createdAt;
+        private Object updatedAt;
+        private Object content;
+        private Object likeCnt;
+    }
 }
 

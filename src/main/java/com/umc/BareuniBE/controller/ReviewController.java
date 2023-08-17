@@ -70,5 +70,14 @@ public class ReviewController {
     public BaseResponse<ReviewRes.ReviewDetailRes> getReviewDetail( @PathVariable Long reviewIdx) throws BaseException {
         return new BaseResponse<>(reviewService.getReviewDetail(reviewIdx));
     }
+
+    // 검색 - 치과 리뷰
+    @ApiOperation(value = "검색 - 치과 리뷰", notes = "ex) http://localhost:8080/reviews/search?keyword=아쉽")
+    @GetMapping("/search")
+    public BaseResponse<List<ReviewRes.ReviewListRes>> searchReview (
+            @RequestParam(value = "keyword") String keyword
+    ) throws BaseException {
+        return new BaseResponse<>(reviewService.searchReview(keyword));
+    }
 }
 

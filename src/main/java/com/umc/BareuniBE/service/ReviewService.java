@@ -109,5 +109,13 @@ public class ReviewService {
         return reviewDetailRes;
     }
 
+    public List<ReviewRes.ReviewListRes> searchReview(String keyword) throws BaseException {
+        List<ReviewRes.ReviewListRes> reviewList = reviewRepository.searchReview(keyword);
 
+        if (reviewList.isEmpty()) {
+            throw new BaseException(EMPTY_SEARCH_KEYWORD);
+        }
+
+        return reviewList;
+    }
 }

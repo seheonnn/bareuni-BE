@@ -37,6 +37,7 @@ public class HospitalController {
     }
 
     // 치과 정보글 상세 조회
+    @ApiOperation(value = "치과 정보글 상세 조회", notes = "ex) http://localhost:8080/hospital/3")
     @GetMapping("/{hospitalIdx}")
     public BaseResponse<HospitalRes.HospitalDetailRes> getHospitalDetail(
             @PathVariable("hospitalIdx") Long hospitalIdx
@@ -52,8 +53,31 @@ public class HospitalController {
     @PostMapping("/{hospitalIdx}/scrap")
     public BaseResponse<HospitalRes.HospitalScrapCreateRes> createScrap (
             @PathVariable Long hospitalIdx,
-            @RequestBody HospitalReq.HospitalScrapCreateReq request
+            @RequestBody HospitalReq.HospitalScrapReq request
     ) throws BaseException {
         return new BaseResponse<>(hospitalService.createScrap(request, hospitalIdx));
+    }
+
+    // 스크랩 삭제
+    @ApiOperation(value = "스크랩 삭제", notes = "ex) http://localhost:8080/hospital/1/scrap/delete/1\n\n" +
+            "{\n\n" +
+            "\"userIdx\":1\n\n" +
+            "}")
+    @DeleteMapping("/{hospitalIdx}/scrap/delete/{scrapIdx}")
+    public BaseResponse<String> deleteScrap (
+            @PathVariable Long hospitalIdx,
+            @PathVariable Long scrapIdx,
+            @RequestBody HospitalReq.HospitalScrapReq request
+    ) throws BaseException {
+        return new BaseResponse<>(hospitalService.deleteScrap(request, hospitalIdx, scrapIdx));
+    }
+
+    // 검색 - 치과
+    @ApiOperation(value = "검색 - 치과", notes = "ex) http://localhost:8080/hospital/search?keyword=휴고")
+    @GetMapping("/search")
+    public BaseResponse<List<HospitalRes.HospitalSummaryListRes>> searchHospital (
+            @RequestParam(value = "keyword") String keyword
+    ) throws BaseException {
+        return new BaseResponse<>(hospitalService.searchHospital(keyword));
     }
 }
