@@ -11,6 +11,10 @@ import com.umc.BareuniBE.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import java.io.IOException;
 
 
 @RequiredArgsConstructor
@@ -23,7 +27,8 @@ public class UserController {
     private final EmailService emailService;
 
     // 회원가입
-    @ApiOperation(value = "회원가입", notes = "ex)\n\n " +
+    @ApiOperation(value = "회원가입", notes = "ex)\n\n" +
+            "request:\n\n " +
             "{\n\n" +
             "    \"email\": \"abc123@naver.com\",\n\n" +
             "    \"age\":20,\n\n" +
@@ -32,9 +37,13 @@ public class UserController {
             "    \"gender\":\"MALE\"\n\n" +
             "}")
     @PostMapping("/join")
-    public BaseResponse<UserRes.UserJoinRes> join(@RequestBody UserReq.UserJoinReq request) throws BaseException {
+    public BaseResponse<UserRes.UserJoinRes> join(
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "request") @Valid UserReq.UserJoinReq request
+
+    ) throws BaseException, IOException {
         System.out.println("controller에서 Service로 join함수 실행직전");
-        return new BaseResponse<>(userService.join(request));
+        return new BaseResponse<>(userService.join(file, request));
     }
 
 

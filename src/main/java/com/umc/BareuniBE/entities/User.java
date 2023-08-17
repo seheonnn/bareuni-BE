@@ -5,6 +5,7 @@ import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.global.enums.RoleType;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -60,6 +61,10 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "provider")
     private String provider;
+
+    @Column(name = "profile")
+    @ColumnDefault("기본 이미지")
+    private String profile;
 
     // UserDetails 상속
     @Override
