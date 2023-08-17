@@ -2,7 +2,6 @@ package com.umc.BareuniBE.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,23 +31,39 @@ public class UploadService {
 
     private final AmazonS3Client amazonS3Client;
 
-    public String uploadImage(List<MultipartFile> files) {
-        // stream
-        List<String> imagesUrls = new ArrayList<>();
-        files.stream().map(file -> {
-            String filePath = UUID.randomUUID() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(file.getContentType());
-            metadata.setContentLength(file.getSize());
-            metadata.addUserMetadata("originfilename", URLEncoder.encode(uploadPath + filePath, StandardCharsets.UTF_8));
-            imagesUrls.add(url + uploadPath + filePath);
-            try {
-                amazonS3Client.putObject(bucket, uploadPath + filePath, file.getInputStream(), metadata);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return "Uploaded successfully!";
-        }).collect(Collectors.toList());
-        return imagesUrls.toString();
+    public String uploadImage(MultipartFile file) throws IOException {
+        String filePath = UUID.randomUUID() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+        metadata.addUserMetadata("originfilename", URLEncoder.encode(uploadPath + filePath, StandardCharsets.UTF_8));
+        amazonS3Client.putObject(bucket, uploadPath + filePath, file.getInputStream(), metadata);
+        return url + uploadPath + filePath;
     }
+
+    public String deleteImage(String image) {
+        amazonS3Client.deleteObject(bucket, uploadPath + image);
+        return "삭제 성공";
+    }
+
+    // 여러 개의 이미지를 업로드하는 경우
+//    public List<String> uploadImages(List<MultipartFile> files) {
+//        // stream
+//        List<String> imagesUrls = new ArrayList<>();
+//        files.stream().map(file -> {
+//            String filePath = UUID.randomUUID() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+//            ObjectMetadata metadata = new ObjectMetadata();
+//            metadata.setContentType(file.getContentType());
+//            metadata.setContentLength(file.getSize());
+//            metadata.addUserMetadata("originfilename", URLEncoder.encode(uploadPath + filePath, StandardCharsets.UTF_8));
+//            imagesUrls.add(url + uploadPath + filePath);
+//            try {
+//                amazonS3Client.putObject(bucket, uploadPath + filePath, file.getInputStream(), metadata);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            return "Uploaded successfully!";
+//        }).collect(Collectors.toList());
+//        return imagesUrls;
+//    }
 }
