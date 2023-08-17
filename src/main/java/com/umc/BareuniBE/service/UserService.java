@@ -20,7 +20,7 @@ import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UploadService uploadService;
+//    private final UploadService uploadService;
 
     private final UserRepository userRepository;
 
@@ -58,7 +58,7 @@ public class UserService {
             System.out.println(request.getRole());
             System.out.println(request.getProvider());*/
 
-            String profileUrl = uploadService.uploadImage(file);
+//            String profileUrl = uploadService.uploadImage(file);
 
             User newUser = User.builder()
                     .email(request.getEmail())
@@ -71,7 +71,7 @@ public class UserService {
                     .ortho(request.isOrtho())
                     .role(RoleType.USER)
                     .provider(request.getProvider())
-                    .profile(profileUrl)
+//                    .profile(profileUrl)
                     .build();
             //System.out.println("새로 가입하는 유저: "+newUser);
             User user = userRepository.saveAndFlush(newUser);
