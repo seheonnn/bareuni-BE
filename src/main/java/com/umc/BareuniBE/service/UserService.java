@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
@@ -18,6 +20,7 @@ import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final UploadService uploadService;
 
     private final UserRepository userRepository;
 
@@ -30,7 +33,7 @@ public class UserService {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 
-    public UserRes.UserJoinRes join(UserReq.UserJoinReq request) throws BaseException {
+    public UserRes.UserJoinRes join(MultipartFile file, UserReq.UserJoinReq request) throws BaseException, IOException {
         //System.out.println("Service의 join함수 실행중");
         if(!request.getEmail().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$"))
             throw new BaseException(POST_USERS_INVALID_EMAIL);
@@ -55,6 +58,8 @@ public class UserService {
             System.out.println(request.getRole());
             System.out.println(request.getProvider());*/
 
+            String profileUrl = uploadService.uploadImage(file);
+
             User newUser = User.builder()
                     .email(request.getEmail())
                     .password(encryptedPw)
@@ -66,6 +71,7 @@ public class UserService {
                     .ortho(request.isOrtho())
                     .role(RoleType.USER)
                     .provider(request.getProvider())
+                    .profile(profileUrl)
                     .build();
             //System.out.println("새로 가입하는 유저: "+newUser);
             User user = userRepository.saveAndFlush(newUser);

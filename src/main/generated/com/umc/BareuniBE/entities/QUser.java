@@ -40,6 +40,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath phone = createString("phone");
 
+    public final StringPath profile = createString("profile");
+
     public final StringPath provider = createString("provider");
 
     public final EnumPath<com.umc.BareuniBE.global.enums.RoleType> role = createEnum("role", com.umc.BareuniBE.global.enums.RoleType.class);
