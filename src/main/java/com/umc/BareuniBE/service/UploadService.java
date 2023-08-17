@@ -32,19 +32,23 @@ public class UploadService {
 
     private final AmazonS3Client amazonS3Client;
 
-    public String uploadImage(List<MultipartFile> files) throws IOException {
-
-        // iterator
+    public String uploadImage(List<MultipartFile> files) {
+        // stream
         List<String> imagesUrls = new ArrayList<>();
-        for (MultipartFile file : files) {
+        files.stream().map(file -> {
             String filePath = UUID.randomUUID() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getSize());
             metadata.addUserMetadata("originfilename", URLEncoder.encode(uploadPath + filePath, StandardCharsets.UTF_8));
-            amazonS3Client.putObject(bucket, uploadPath + filePath, file.getInputStream(), metadata);
             imagesUrls.add(url + uploadPath + filePath);
-        }
+            try {
+                amazonS3Client.putObject(bucket, uploadPath + filePath, file.getInputStream(), metadata);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return "Uploaded successfully!";
+        }).collect(Collectors.toList());
         return imagesUrls.toString();
     }
 }
