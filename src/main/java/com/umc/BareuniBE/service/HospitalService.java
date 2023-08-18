@@ -141,4 +141,10 @@ public class HospitalService {
 
         return hospitalsList;
     }
+
+    // 치과정보 탭 - 내 주변 치과 목록 조회
+    public List<HospitalRes.HospitalSummaryListRes> getNearHospital(String address1, String address2) throws BaseException {
+        List<HospitalRes.HospitalSummaryListRes> hospitalsList = hospitalRepository.findNearHospital(address1, address2);
+        return hospitalsList;
+    }
 }

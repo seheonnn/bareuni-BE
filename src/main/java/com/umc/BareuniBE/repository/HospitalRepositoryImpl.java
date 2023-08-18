@@ -67,4 +67,27 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
 
         return hospitals;
     }
+
+    @Override
+    public List<HospitalRes.HospitalSummaryListRes> findNearHospital(String address1, String address2) {
+        List<HospitalRes.HospitalSummaryListRes> hospitals = queryFactory
+                .select(
+                        Projections.constructor(HospitalRes.HospitalSummaryListRes.class,
+                                hospital.hospitalIdx.as("hospitalIdx"),
+                                hospital.hospitalName.as("hosName"),
+                                hospital.address,
+                                review.totalScore.avg().as("totalScore"),
+                                review.count().as("reviewCnt"),
+                                hospital.summary.as("summary")
+                        )
+                )
+                .from(review, review)
+                .join(review.hospital, hospital)
+                .where(hospital.address.contains(address1), hospital.address.contains(address2))
+                .groupBy(hospital.hospitalIdx)
+                .orderBy(review.totalScore.desc())
+                .fetch();
+
+        return hospitals;
+    }
 }
