@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface LikeRepository extends JpaRepository<LikeEntity, Long> {
     Optional<LikeEntity> findByUserAndCommunity(User user, Community community);
+    void deleteAllByUser(User user);
 }

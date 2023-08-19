@@ -60,5 +60,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long>, Com
             nativeQuery = true
     )
     List<Object[]> getBestCommunityList();
+
+    void deleteAllByUser(User user);
 }
 
