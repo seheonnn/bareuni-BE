@@ -5,29 +5,27 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter  extends GenericFilterBean {
+public class JwtAuthenticationFilter  extends OncePerRequestFilter {
+
     private final JwtTokenProvider jwtTokenProvider;
 
     private final RedisTemplate redisTemplate;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         System.out.println("필터 실행");
         // Request Header에서 JWT 토큰 추출
-        String token = jwtTokenProvider.resolveAccessToken((HttpServletRequest) request);
-        //String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-        //System.out.println("Header atk의 token: "+token);
+        String token = jwtTokenProvider.resolveToken(request);
 
         // validateToken으로 토큰 유효성 검사
             if(token != null && jwtTokenProvider.validateToken(token)) {
@@ -43,7 +41,6 @@ public class JwtAuthenticationFilter  extends GenericFilterBean {
 
                     // SecurityContextHolder.getContext() : 시큐리티의 session 공간
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 }
 
             }

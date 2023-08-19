@@ -5,14 +5,12 @@ import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.UserRepository;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -54,15 +52,12 @@ public class JwtTokenProvider {
         Optional<User> user = userRepository.findByEmail(email);
 
         Claims claims = Jwts.claims().setSubject(email); // JWT payload에 저장되는 정보단위
-        claims.put("userIdx", user.get().getUserIdx());
 
-        /*if(user.isPresent()) {
-            System.out.println("user.get().getRole(): "+user.get().getRole());
-            claims.put("roles", user.get().getRole()); // role넣어주기
-        }*/
+        if(user.isPresent()) {
+            claims.put("roles", user.get().getRole());
+            claims.put("userIdx", user.get().getUserIdx());
+        }
 
-        claims.put("types", "atk"); // accessToken
-        System.out.println("claims: "+claims);
         Date now = new Date();
         Date expiresTime = new Date(now.getTime() + tokenValidTime);
         String token = Jwts.builder()
@@ -70,6 +65,9 @@ public class JwtTokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + tokenValidTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
+                .claim("types", "atk")
+                //.claim("userIdx",user.get().getUserIdx())
+                //.claim("role", user.get().getRole())
                 .compact();
         return new TokenDTO(String.valueOf(TokenType.atk), token, expiresTime);
     }
@@ -95,18 +93,27 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getTokenSub(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // 토큰에서 회원정보 추출 -email (payload의 subject)
-    public String getUserPk(String token) {
+    // 토큰에서 회원정보 추출 - email (payload의 subject)
+    public String getTokenSub(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request 의 Header 에서 token 값을 가져옵니다. "atk" : "token--"
+    // Request 의 Header 에서 access token 값 추출 "atk" : "token--"
     public String resolveAccessToken(HttpServletRequest request) {
         return request.getHeader("atk");
+    }
+
+    // 토큰 재발급 때 Header에 rtk를 넣어 요청, 나머지 경우 atk 사용
+    public String resolveToken(HttpServletRequest request) {
+        if (request.getHeader("rtk") != null){
+            return request.getHeader("rtk");
+        } else {
+            return request.getHeader("atk");
+        }
     }
 
     // 토큰의 유효성 + 만료일자 확인
@@ -121,10 +128,9 @@ public class JwtTokenProvider {
                 if (isLogOut != null) {
                     return false;
                 }
-                return !claims.getBody().getExpiration().before(new Date()); // 만료안됐으면 true, 만료됐으면 false
+                return !claims.getBody().getExpiration().before(new Date());// 만료안됐으면 true, 만료됐으면 false
             } else {
-                // refresh token : 14일 기간 안지났으면 유효
-                System.out.println("refresh token 아직 유효");
+                // Refresh 토큰 유효성 검사
                 return !claims.getBody().getExpiration().before(new Date()); // 만료안됐으면 true, 만료됐으면 false
             }
         }catch (Exception e) {
@@ -140,7 +146,7 @@ public class JwtTokenProvider {
 
     // 토큰에서 회원정보 추출 - userIdx 추출
     public Long getCurrentUser(HttpServletRequest request) throws BaseException { // userIdx 가져오기
-        String jwtToken = resolveAccessToken(request); // 요청의 header에서 토큰 추출
+        String jwtToken = resolveAccessToken(request); // Request의 header에서 Access 토큰 추출
         if(!validateToken(jwtToken)) {
             throw new BaseException(INVALID_JWT);
         }

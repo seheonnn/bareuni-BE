@@ -1,9 +1,7 @@
 package com.umc.BareuniBE.config;
 
-//import com.umc.BareuniBE.config.security.JwtAuthenticationFilter;
 import com.umc.BareuniBE.config.security.JwtAuthenticationFilter;
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +25,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final RedisTemplate redisTemplate;
-
-    //private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

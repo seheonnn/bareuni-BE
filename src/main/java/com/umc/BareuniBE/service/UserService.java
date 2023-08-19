@@ -63,7 +63,6 @@ public class UserService {
                     .role(RoleType.USER)
                     .provider(request.getProvider())
                     .build();
-            //System.out.println("새로 가입하는 유저: "+newUser);
             User user = userRepository.saveAndFlush(newUser);
             return new UserRes.UserJoinRes(user);
         }else{
@@ -97,53 +96,83 @@ public class UserService {
         return tokenDTOList;
     }
 
-    // 로그아웃
-    public String logout(HttpServletRequest httpServletRequest) throws BaseException {
-        try {
-            Long userIdx = jwtTokenProvider.getCurrentUser(httpServletRequest);
-            System.out.println("getCurrentUser()로 가져온 userIdx : "+userIdx);
-            User user = userRepository.findById(userIdx)
-                    .orElseThrow(() -> new BaseException(INVALID_USER_JWT));
+    // 로그아웃 - userIdx
+    public String logout(HttpServletRequest request) throws BaseException {
 
-            // Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
-            if (redisTemplate.opsForValue().get("RT:" + user.getEmail()) != null) {
-                // Refresh Token 삭제
-                redisTemplate.delete("RT:" + user.getEmail());
-            }
-            // 해당 AccessToken 유효시간 가지고 와서 BlackList 로 저장하기
-            String accessToken = jwtTokenProvider.resolveAccessToken(httpServletRequest);
-            Long expiration = jwtTokenProvider.getExpireTime(accessToken).getTime();
-            // Redis 에 --accesstoken--(key) : logout(value) 로 저장, token 만료시간 지나면 자동 삭제
-            redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
 
-            return "로그아웃 성공";
-        } catch (Exception e) {
-            return "유효하지 않은 토큰입니다.";
-        }
-    }
+        System.out.println("getCurrentUser()로 가져온 userIdx : "+userIdx);
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
-    // 회원 탈퇴
-    @Transactional
-    public String deactivateUser(HttpServletRequest httpServletRequest) throws BaseException {
-        //String email = jwtTokenProvider.getCurruntUserEmail(httpServletRequest);
-        String accessToken = jwtTokenProvider.resolveAccessToken(httpServletRequest);
-        String email = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));// 유저아이디확인해주세요<-사용자 찾을수없습니다 추가하기
-
-        //redis에 로그인되어있는 토큰 삭제
         // Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
         if (redisTemplate.opsForValue().get("RT:" + user.getEmail()) != null) {
             // Refresh Token 삭제
             redisTemplate.delete("RT:" + user.getEmail());
         }
+        // 해당 AccessToken 유효시간 가지고 와서 BlackList 로 저장하기
+        String accessToken = jwtTokenProvider.resolveAccessToken(request);
+        Long expiration = jwtTokenProvider.getExpireTime(accessToken).getTime();
+        // Redis 에 --accesstoken--(key) : logout(value) 로 저장, token 만료시간 지나면 자동 삭제
+        redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
 
+        return "로그아웃 성공";
+    }
+
+    // 토큰 재발급 - 요청 온 refresh token으로 access, refresh token을 모두 새로 발급한다
+    public List<TokenDTO> reissue(HttpServletRequest request) throws BaseException {
+        String rtk = request.getHeader("rtk");
+        System.out.println("reissue함수실행 rtk: "+rtk);
+
+        // refresh token 유효성 검증
+        if (!jwtTokenProvider.validateToken(rtk))
+            throw new BaseException(INVALID_JWT);
+
+        String email = jwtTokenProvider.getTokenSub(rtk);
+        System.out.println("rtk subject인 email: "+email);
+
+        // Redis에서 email 기반으로 저장된 refresh token 값 가져오기
+        String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + email);
+        if(!refreshToken.equals(rtk)) {
+            throw new BaseException(RTK_INCORRECT);
+        }
+
+        // refresh token 유효할 경우 새로운 토큰 생성
+        List<TokenDTO> tokenDTOList = new ArrayList<>();
+        TokenDTO newRefreshToken = jwtTokenProvider.createRefreshToken(email);
+        TokenDTO newAccessToken = jwtTokenProvider.createAccessToken(email);
+        tokenDTOList.add(newRefreshToken);
+        tokenDTOList.add(newAccessToken);
+        System.out.println("Access Token, Refresh Token 재발행: " +tokenDTOList);
+
+        // Redis에 refresh token 업데이트
+        redisTemplate.opsForValue().set("RT:"+email,newRefreshToken.getToken(),newRefreshToken.getTokenExpriresTime().getTime(),TimeUnit.MILLISECONDS);
+
+        return tokenDTOList;
+    }
+
+    // 회원 탈퇴 - userIdx
+    @Transactional
+    public String deactivateUser(HttpServletRequest request) throws BaseException {
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
+
+        System.out.println("getCurrentUser()로 가져온 userIdx : "+userIdx);
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+
+        // Redis에 로그인되어있는 토큰 삭제
+        // Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
+        if (redisTemplate.opsForValue().get("RT:" + user.getEmail()) != null) {
+            // Refresh Token 삭제
+            redisTemplate.delete("RT:" + user.getEmail());
+        }
+        String accessToken = jwtTokenProvider.resolveAccessToken(request);
         // 탈퇴한 토큰을 차단 (deactivateUser 토큰 블랙리스트)
         Long expiration = jwtTokenProvider.getExpireTime(accessToken).getTime();
         // Redis 에 --accesstoken--(key) : logout(value) 로 저장, token 만료시간 지나면 자동 삭제
         redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
 
-        // 해당 회원삭제
+        // 해당 회원 삭제
         communityRepository.deleteAllByUser(user);
         likeRepository.deleteAllByUser(user);
         commentRepository.deleteAllByUser(user);
@@ -155,5 +184,12 @@ public class UserService {
         //시큐리티
         //SecurityContextHolder.clearContext();
         return "회원 탈퇴 성공";
+    }
+
+    // 회원 테스트
+    public String test(HttpServletRequest request) throws BaseException {
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
+        System.out.println("getCurrentUser()로 가져온 userIdx: "+userIdx);
+        return "test성공";
     }
 }
