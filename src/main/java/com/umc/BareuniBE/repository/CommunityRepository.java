@@ -1,10 +1,8 @@
 package com.umc.BareuniBE.repository;
 
-import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.entities.Community;
 
 import com.umc.BareuniBE.entities.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CommunityRepository extends JpaRepository<Community, Long> {
+public interface CommunityRepository extends JpaRepository<Community, Long>, CommunityRepositoryCustom {
 
     @Query(
             value =
@@ -49,6 +47,19 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
             nativeQuery = true
     )
     List<Object[]> MyCommunityList(@Param("user") User user, Pageable pageable);
+
+    @Query(
+            value =
+                    "select c.*, COUNT(le.community) as likeCnt\n" +
+                            "    from (SELECT * FROM community where DATE(created_at) >= DATE_SUB(NOW(), INTERVAL 7 DAY)) c\n" +
+                            "    left outer join like_entity le\n" +
+                            "    on c.community_idx = le.community\n" +
+                            "    group by c.community_idx\n" +
+                            "    order by likeCnt DESC\n" +
+                            "    limit 5",
+            nativeQuery = true
+    )
+    List<Object[]> getBestCommunityList();
 
     void deleteAllByUser(User user);
 }

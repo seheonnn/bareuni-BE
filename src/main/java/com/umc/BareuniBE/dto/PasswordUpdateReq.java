@@ -1,6 +1,5 @@
 package com.umc.BareuniBE.dto;
 
-import com.umc.BareuniBE.global.enums.GenderType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,15 @@ public class PasswordUpdateReq {
     @Setter
     public static class MyPasswordUpdateReq {
         private String currentPassword;
+        private String newPassword;
+        private String confirmPassword;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class NewPasswordUpdateReq {
         private String newPassword;
         private String confirmPassword;
     }
