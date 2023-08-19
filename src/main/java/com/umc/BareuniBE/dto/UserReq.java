@@ -11,19 +11,15 @@ public class UserReq {
     @Getter
     @Setter
     public static class UserJoinReq extends User { // 회원가입 요청
-//        private User user;
+       //private User user;
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class UserLoginReq extends User { // 로그인 요청
+    public static class UserLoginReq { // 로그인 요청
         private String email;
         private String password;
     }
-    // 이메일, 비밀번호,,,,,,,,,,,,
-
-
-
 }

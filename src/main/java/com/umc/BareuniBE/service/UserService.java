@@ -5,15 +5,21 @@ import com.umc.BareuniBE.dto.*;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.enums.RoleType;
-import com.umc.BareuniBE.repository.UserRepository;
+import com.umc.BareuniBE.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
@@ -23,40 +29,37 @@ public class UserService {
     private final UploadService uploadService;
 
     private final UserRepository userRepository;
+    private final CommunityRepository communityRepository;
+    private final LikeRepository likeRepository;
+
+    private final CommentRepository commentRepository;
+
+    private final BookingRepository bookingRepository;
+
+    private final ScrapRepository scrapRepository;
+
+    private final ReviewRepository reviewRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
+    private final RedisTemplate redisTemplate;
 
+    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
 
     //private final BCryptPasswordEncoder bCryptPasswordEncoder;
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-
     public UserRes.UserJoinRes join(MultipartFile file, UserReq.UserJoinReq request) throws BaseException, IOException {
         //System.out.println("Service의 join함수 실행중");
+
         if(!request.getEmail().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$"))
             throw new BaseException(POST_USERS_INVALID_EMAIL);
-        System.out.println("UserService의 Join메소드 실행");
-        // 이메일을 찾아봐. 근데 이미 있었어? 그럼 중복된 이메일입니다 오류!
-        // 이메일 없으면
-        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
-        System.out.println("DB에 이메일 있는지 확인 :" + userOptional);
 
-        if(userOptional.isEmpty()){ // 이메일 없었으면 회원가입 시작~
-            //String encryptedPw = bCryptPasswordEncoder.encode(request.getPassword());
-            System.out.println("가입안된 이메일이므로 회원가입을 시작함.");
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+
+        if(userOptional.isEmpty()){
+
             String encryptedPw = encoder.encode(request.getPassword());
-            /*System.out.println("encryptedPw: "+encryptedPw);
-            System.out.println(request.getEmail());
-            System.out.println(request.getNickname());
-            System.out.println(request.getName());
-            System.out.println(request.getPhone());
-            System.out.println(request.getGender());
-            System.out.println(request.getAge());
-            System.out.println(request.isOrtho());
-            System.out.println(request.getRole());
-            System.out.println(request.getProvider());*/
 
             String profileUrl = uploadService.uploadImage(file);
 
@@ -64,8 +67,6 @@ public class UserService {
                     .email(request.getEmail())
                     .password(encryptedPw)
                     .nickname(request.getNickname())
-                    //.name(request.getName()) // 이름과 전화번호는 상담신청 이후에 생기도록,,,,,
-                    //.phone(request.getPhone())
                     .gender(request.getGender())
                     .age(request.getAge())
                     .ortho(request.isOrtho())
@@ -73,7 +74,6 @@ public class UserService {
                     .provider(request.getProvider())
                     .profile(profileUrl)
                     .build();
-            //System.out.println("새로 가입하는 유저: "+newUser);
             User user = userRepository.saveAndFlush(newUser);
             return new UserRes.UserJoinRes(user);
         }else{
@@ -104,7 +104,6 @@ public class UserService {
         return false;
     }
 
-
     public Long findUserByEmail(String email) throws BaseException{
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
@@ -115,7 +114,6 @@ public class UserService {
             throw new BaseException(POST_USERS_NOT_FOUND_EMAIL);
         }
     }
-
 
     //코드확인 후 비밀번호 재설정
     private boolean isValidPassword(String password) {
@@ -148,8 +146,125 @@ public class UserService {
         return "비밀번호 변경 성공";
     }
 
+    // 로그인
+    public List<TokenDTO> login(UserReq.UserLoginReq request) throws BaseException {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BaseException(FAILED_TO_LOGIN)); // 가입안된 이메일
+        if(!encoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BaseException(FAILED_TO_LOGIN); // 비밀번호 일치 X
+        }
 
+        // 토큰 발급해서
+        TokenDTO refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
+        TokenDTO accessToken = jwtTokenProvider.createAccessToken(user.getEmail());
 
+        // login 시 Redis에 RT:bareuni@email.com(key): --refresh token실제값--(value) 형태로 refresh 토큰 저장하기
+        // opsForValue() : set을 통해 key,value값 저장하고 get(key)통해 value가져올 수 있음.
+        // refreshToken.getTokenExpriresTime().getTime() : 리프레시 토큰의 만료시간이 지나면 해당 값 자동 삭제
+        redisTemplate.opsForValue().set("RT:"+user.getEmail(),refreshToken.getToken(),refreshToken.getTokenExpriresTime().getTime(),TimeUnit.MILLISECONDS);
 
+        List<TokenDTO> tokenDTOList = new ArrayList<>();
+        tokenDTOList.add(refreshToken);
+        tokenDTOList.add(accessToken);
+        System.out.println(tokenDTOList);
 
+        return tokenDTOList;
+    }
+
+    // 로그아웃 - userIdx
+    public String logout(HttpServletRequest request) throws BaseException {
+
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
+
+        System.out.println("getCurrentUser()로 가져온 userIdx : "+userIdx);
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+
+        // Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
+        if (redisTemplate.opsForValue().get("RT:" + user.getEmail()) != null) {
+            // Refresh Token 삭제
+            redisTemplate.delete("RT:" + user.getEmail());
+        }
+        // 해당 AccessToken 유효시간 가지고 와서 BlackList 로 저장하기
+        String accessToken = jwtTokenProvider.resolveAccessToken(request);
+        Long expiration = jwtTokenProvider.getExpireTime(accessToken).getTime();
+        // Redis 에 --accesstoken--(key) : logout(value) 로 저장, token 만료시간 지나면 자동 삭제
+        redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+
+        return "로그아웃 성공";
+    }
+
+    // 토큰 재발급 - 요청 온 refresh token으로 access, refresh token을 모두 새로 발급한다
+    public List<TokenDTO> reissue(HttpServletRequest request) throws BaseException {
+        String rtk = request.getHeader("rtk");
+        System.out.println("reissue함수실행 rtk: "+rtk);
+
+        // refresh token 유효성 검증
+        if (!jwtTokenProvider.validateToken(rtk))
+            throw new BaseException(INVALID_JWT);
+
+        String email = jwtTokenProvider.getTokenSub(rtk);
+        System.out.println("rtk subject인 email: "+email);
+
+        // Redis에서 email 기반으로 저장된 refresh token 값 가져오기
+        String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + email);
+        if(!refreshToken.equals(rtk)) {
+            throw new BaseException(RTK_INCORRECT);
+        }
+
+        // refresh token 유효할 경우 새로운 토큰 생성
+        List<TokenDTO> tokenDTOList = new ArrayList<>();
+        TokenDTO newRefreshToken = jwtTokenProvider.createRefreshToken(email);
+        TokenDTO newAccessToken = jwtTokenProvider.createAccessToken(email);
+        tokenDTOList.add(newRefreshToken);
+        tokenDTOList.add(newAccessToken);
+        System.out.println("Access Token, Refresh Token 재발행: " +tokenDTOList);
+
+        // Redis에 refresh token 업데이트
+        redisTemplate.opsForValue().set("RT:"+email,newRefreshToken.getToken(),newRefreshToken.getTokenExpriresTime().getTime(),TimeUnit.MILLISECONDS);
+
+        return tokenDTOList;
+    }
+
+    // 회원 탈퇴 - userIdx
+    @Transactional
+    public String deactivateUser(HttpServletRequest request) throws BaseException {
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
+
+        System.out.println("getCurrentUser()로 가져온 userIdx : "+userIdx);
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+
+        // Redis에 로그인되어있는 토큰 삭제
+        // Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제
+        if (redisTemplate.opsForValue().get("RT:" + user.getEmail()) != null) {
+            // Refresh Token 삭제
+            redisTemplate.delete("RT:" + user.getEmail());
+        }
+        String accessToken = jwtTokenProvider.resolveAccessToken(request);
+        // 탈퇴한 토큰을 차단 (deactivateUser 토큰 블랙리스트)
+        Long expiration = jwtTokenProvider.getExpireTime(accessToken).getTime();
+        // Redis 에 --accesstoken--(key) : logout(value) 로 저장, token 만료시간 지나면 자동 삭제
+        redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+
+        // 해당 회원 삭제
+        communityRepository.deleteAllByUser(user);
+        likeRepository.deleteAllByUser(user);
+        commentRepository.deleteAllByUser(user);
+        bookingRepository.deleteAllByUser(user);
+        scrapRepository.deleteAllByUser(user);
+        reviewRepository.deleteAllByUser(user);
+        userRepository.deleteById(user.getUserIdx());
+
+        //시큐리티
+        //SecurityContextHolder.clearContext();
+        return "회원 탈퇴 성공";
+    }
+
+    // 회원 테스트
+    public String test(HttpServletRequest request) throws BaseException {
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
+        System.out.println("getCurrentUser()로 가져온 userIdx: "+userIdx);
+        return "test성공";
+    }
 }
