@@ -43,7 +43,7 @@ public class UserController {
     @PostMapping("/join")
     public BaseResponse<UserRes.UserJoinRes> join(
             @RequestPart(value = "file", required = false) MultipartFile file,
-            @RequestPart(value = "request") @Valid UserReq.UserJoinReq request
+            @RequestBody @Valid UserReq.UserJoinReq request
 
     ) throws BaseException, IOException {
         System.out.println("controller에서 Service로 join함수 실행직전");
