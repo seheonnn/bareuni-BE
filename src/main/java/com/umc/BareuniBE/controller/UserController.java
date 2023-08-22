@@ -40,7 +40,7 @@ public class UserController {
             "    \"nickname\": \"바른이바른이\",\n\n" +
             "    \"gender\":\"MALE\"\n\n" +
             "}")
-    @PostMapping("/join")
+    @PostMapping(value = "/join", consumes = {"multipart/form-data"})
     public BaseResponse<UserRes.UserJoinRes> join(
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart(value = "request") @Valid UserReq.UserJoinReq request
