@@ -34,7 +34,7 @@ jobs:
     - name: docker image build
       run: | 
         sudo docker rmi spring-docker
-        docker build --platform amd64 -t ${{ secrets.DOCKER_USERNAME }}/spring-docker --pull --no-cache . #image명 기입
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/spring-docker --pull --no-cache . #image명 기입
 
 
     # DockerHub Login (3)
