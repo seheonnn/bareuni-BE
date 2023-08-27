@@ -215,10 +215,7 @@ public class MypageService {
     // 전화번호 인증
     public String PhoneNumberCheck(String to) throws CoolsmsException {
 
-        String api_key = "NCSHSYRJHSQJ3AEJ";
-        String api_secret = "VA7YCIYXACP2Y4BYURTWCOBSB7JOA95O";
-
-        Message coolsms = new Message(api_key, api_secret);
+        Message coolsms = new Message(num_api_key, num_api_secret);
 
         Random rand  = new Random();
         String numStr = "";
