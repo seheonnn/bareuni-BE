@@ -60,8 +60,7 @@ public class UserService {
         if(userOptional.isEmpty()){
 
             String encryptedPw = encoder.encode(request.getPassword());
-
-            String profileUrl = uploadService.uploadImage(file);
+            String profileUrl = file == null ? "기본 이미지" : uploadService.uploadImage(file);
 
             User newUser = User.builder()
                     .email(request.getEmail())
