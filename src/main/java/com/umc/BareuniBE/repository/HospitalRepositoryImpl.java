@@ -32,7 +32,8 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                                 hospital.address.as("address"),
                                 review.totalScore.avg().as("totalScore"),
                                 review.count().as("reviewCnt"),
-                                hospital.summary.as("summary")
+                                hospital.summary.as("summary"),
+                                hospital.image.as("image")
                         )
                 )
                 .from(review, review)
@@ -55,7 +56,8 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                                 hospital.address,
                                 review.totalScore.avg().as("totalScore"),
                                 review.count().as("reviewCnt"),
-                                hospital.summary.as("summary")
+                                hospital.summary.as("summary"),
+                                hospital.image.as("image")
                         )
                 )
                 .from(review, review)
@@ -78,7 +80,8 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                                 hospital.address,
                                 review.totalScore.avg().as("totalScore"),
                                 review.count().as("reviewCnt"),
-                                hospital.summary.as("summary")
+                                hospital.summary.as("summary"),
+                                hospital.image.as("image")
                         )
                 )
                 .from(review, review)

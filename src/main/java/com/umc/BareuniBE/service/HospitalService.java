@@ -38,11 +38,12 @@ public class HospitalService {
         return hospitals.stream()
                 .map(hospitalData -> {
                     HospitalRes.HospitalSummaryListRes hospitalSummaryListRes = new HospitalRes.HospitalSummaryListRes();
-                    hospitalSummaryListRes.setHospitalIdx(hospitalData[0]);
-                    hospitalSummaryListRes.setAddress(hospitalData[1]);
-                    hospitalSummaryListRes.setHosName(hospitalData[2]);
-                    hospitalSummaryListRes.setScore(hospitalData[3]);
-                    hospitalSummaryListRes.setReviewCnt(hospitalData[4]);
+                    hospitalSummaryListRes.setHospitalIdx(Long.parseLong(String.valueOf(hospitalData[0])));
+                    hospitalSummaryListRes.setAddress(String.valueOf(hospitalData[1]));
+                    hospitalSummaryListRes.setHosName(String.valueOf(hospitalData[2]));
+                    hospitalSummaryListRes.setScore(Double.parseDouble(String.valueOf(hospitalData[3])));
+                    hospitalSummaryListRes.setReviewCnt(Long.parseLong(String.valueOf(hospitalData[4])));
+                    hospitalSummaryListRes.setImage(String.valueOf(hospitalData[5]));
 
                     return hospitalSummaryListRes;
                 })
@@ -87,6 +88,7 @@ public class HospitalService {
         hospitalDetailRes.setLunchTime(result.getLunch_time());
         hospitalDetailRes.setContent(result.getContent());
         hospitalDetailRes.setTelephone(result.getTelephone());
+        hospitalDetailRes.setImage(result.getImage());
 
         // 오늘 휴무일인지 아닌지 여부
         GregorianCalendar calendar_new = new GregorianCalendar();
