@@ -30,7 +30,7 @@ public class User extends BaseEntity implements UserDetails {
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     @Pattern(regexp = "^(?=.*[a-zA-Z0-9]).{8,64}$", message = "비밀번호가 형식에 맞지 않습니다.")
     private String password;
 
@@ -64,7 +64,7 @@ public class User extends BaseEntity implements UserDetails {
     private String provider;
 
     @Column(name = "profile")
-    @ColumnDefault("기본 이미지")
+    @ColumnDefault("'기본 이미지'")
     private String profile;
 
     // UserDetails 상속
