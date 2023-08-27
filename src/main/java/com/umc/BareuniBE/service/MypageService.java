@@ -2,18 +2,24 @@ package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.dto.*;
 
+import com.umc.BareuniBE.dto.UserUpdateReq;
 import com.umc.BareuniBE.entities.Review;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import net.nurigo.java_sdk.api.Message;
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
@@ -27,18 +33,20 @@ public class MypageService {
     private final ScrapRepository scrapRepository;
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
+    private final PhoneRepository phoneRepository;
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 
     @Autowired
-    public MypageService(CommunityRepository communityRepository, UserRepository userRepository, ScrapRepository scrapRepository, ReviewRepository reviewRepository, BookingRepository bookingRepository){
+    public MypageService(CommunityRepository communityRepository, UserRepository userRepository, ScrapRepository scrapRepository, ReviewRepository reviewRepository, BookingRepository bookingRepository, PhoneRepository phoneRepository){
         this.communityRepository = communityRepository;
         this.scrapRepository = scrapRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
+        this.phoneRepository = phoneRepository;
 }
 
     // 작성한 글 목록 조회 (최신순)
@@ -191,10 +199,35 @@ public class MypageService {
         if (newPassword != null) {
             user.setPassword(newPassword);
         }
-
         userRepository.save(user);
-
         return "비밀번호 변경 성공";
+    }
+
+    // 전화번호 인증
+    public String PhoneNumberCheck(String to) throws CoolsmsException {
+
+        String api_key = "NCSHSYRJHSQJ3AEJ";
+        String api_secret = "VA7YCIYXACP2Y4BYURTWCOBSB7JOA95O";
+
+        Message coolsms = new Message(api_key, api_secret);
+
+        Random rand  = new Random();
+        String numStr = "";
+        for(int i=0; i<4; i++) {
+            String ran = Integer.toString(rand.nextInt(10));
+            numStr+=ran;
+        }
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("to", to);    // 수신전화번호 (ajax로 view 화면에서 받아온 값으로 넘김)
+        params.put("from", "01072791324");    // 발신전화번호. 테스트시에는 발신,수신 둘다 본인 번호로 하면 됨
+        params.put("type", "sms");
+        params.put("text", "인증번호는 [" + numStr + "] 입니다.");
+
+        coolsms.send(params); // 메시지 전송
+
+        return numStr;
+
     }
 
 }

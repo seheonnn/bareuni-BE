@@ -5,6 +5,7 @@ import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.service.MypageService;
 import io.swagger.annotations.ApiOperation;
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/mypage")
@@ -95,4 +97,21 @@ public class MypageController {
     ) throws BaseException {
         return new BaseResponse<>(mypageService.changePassword(userId, passwordUpdateReq));
     }
+
+    // 전화번호 인증
+
+    // coolSMS 테스트 화면
+    @GetMapping("/sms")
+    public String mySms() {
+        return "order/sms";
+    }
+
+    // coolSMS 구현 로직 연결
+    @GetMapping("/check/sendSMS")
+    public @ResponseBody String sendSMS(
+            @RequestParam(value="to") String to
+    ) throws CoolsmsException {
+        return mypageService.PhoneNumberCheck(to);
+    }
+
 }
