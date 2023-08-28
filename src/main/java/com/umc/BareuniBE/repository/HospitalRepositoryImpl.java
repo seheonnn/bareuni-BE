@@ -20,8 +20,10 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
     @Override
     public List<HospitalRes.HospitalSummaryListRes> findRecommendHospital(String[] areaList) {
         BooleanBuilder builder = new BooleanBuilder();
-        for (String area : areaList) {
-            builder.or(hospital.address.contains(area));
+        for (String area : areaList) { // ex : 서울-강북구
+            System.out.println(area);
+            String[] keywords = area.split("-");
+            builder.or(hospital.address.contains(keywords[0]).and(hospital.address.contains(keywords[1])));
         }
 
         List<HospitalRes.HospitalSummaryListRes> hospitals = queryFactory
@@ -32,7 +34,8 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                                 hospital.address.as("address"),
                                 review.totalScore.avg().as("totalScore"),
                                 review.count().as("reviewCnt"),
-                                hospital.summary.as("summary")
+                                hospital.summary.as("summary"),
+                                hospital.image.as("image")
                         )
                 )
                 .from(review, review)
@@ -55,12 +58,37 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                                 hospital.address,
                                 review.totalScore.avg().as("totalScore"),
                                 review.count().as("reviewCnt"),
-                                hospital.summary.as("summary")
+                                hospital.summary.as("summary"),
+                                hospital.image.as("image")
                         )
                 )
                 .from(review, review)
                 .join(review.hospital, hospital)
                 .where(hospital.hospitalName.contains(keyword))
+                .groupBy(hospital.hospitalIdx)
+                .orderBy(review.totalScore.desc())
+                .fetch();
+
+        return hospitals;
+    }
+
+    @Override
+    public List<HospitalRes.HospitalSummaryListRes> findNearHospital(String address1, String address2) {
+        List<HospitalRes.HospitalSummaryListRes> hospitals = queryFactory
+                .select(
+                        Projections.constructor(HospitalRes.HospitalSummaryListRes.class,
+                                hospital.hospitalIdx.as("hospitalIdx"),
+                                hospital.hospitalName.as("hosName"),
+                                hospital.address,
+                                review.totalScore.avg().as("totalScore"),
+                                review.count().as("reviewCnt"),
+                                hospital.summary.as("summary"),
+                                hospital.image.as("image")
+                        )
+                )
+                .from(review, review)
+                .join(review.hospital, hospital)
+                .where(hospital.address.contains(address1), hospital.address.contains(address2))
                 .groupBy(hospital.hospitalIdx)
                 .orderBy(review.totalScore.desc())
                 .fetch();
