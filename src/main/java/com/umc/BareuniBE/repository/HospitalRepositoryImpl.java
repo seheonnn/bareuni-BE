@@ -20,8 +20,10 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
     @Override
     public List<HospitalRes.HospitalSummaryListRes> findRecommendHospital(String[] areaList) {
         BooleanBuilder builder = new BooleanBuilder();
-        for (String area : areaList) {
-            builder.or(hospital.address.contains(area));
+        for (String area : areaList) { // ex : 서울-강북구
+            System.out.println(area);
+            String[] keywords = area.split("-");
+            builder.or(hospital.address.contains(keywords[0]).and(hospital.address.contains(keywords[1])));
         }
 
         List<HospitalRes.HospitalSummaryListRes> hospitals = queryFactory

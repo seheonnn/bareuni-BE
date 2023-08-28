@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/uploadImage")
@@ -23,4 +25,11 @@ public class S3TestController {
         String image = path.substring(path.lastIndexOf('/')+1);
         return new ResponseEntity<>(uploadService.deleteImage(image), HttpStatus.OK);
     }
+
+    @PostMapping(value = "/images")
+    public ResponseEntity uploadImages(@RequestPart(value = "file", required = false) List<MultipartFile> file) throws Exception{
+        List<String> urls = uploadService.uploadImages(file);
+        return new ResponseEntity<>(urls, HttpStatus.OK);
+    }
+
 }

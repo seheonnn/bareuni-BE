@@ -26,13 +26,12 @@ public class HospitalController {
     }
 
     // 치과정보 탭 - 추천 치과 목록 조회
-    @ApiOperation(value = "치과정보 탭 - 추천 치과 목록 조회", notes = "ex) http://localhost:8080/hospital/recommend/서림동,청담동")
+    @ApiOperation(value = "치과정보 탭 - 추천 치과 목록 조회", notes = "ex) http://localhost:8080/hospital/recommend/서울-강북구,서울-강동구")
     @GetMapping("/recommend/{area}")
     public BaseResponse<List<HospitalRes.HospitalSummaryListRes>> getRecommendHospitalList(
             @PathVariable("area") String areaStr
     ) throws BaseException {
-        String[] areaList = areaStr.split(",");
-
+        String[] areaList = areaStr.split(","); // 서울-강북구 , 서울-강동구 로 분리됨
         return new BaseResponse<>(hospitalService.getRecommendHospitalList(areaList));
     }
 
