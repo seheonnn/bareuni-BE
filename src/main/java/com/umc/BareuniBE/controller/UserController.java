@@ -20,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 
+import static com.umc.BareuniBE.global.BaseResponseStatus.SUCCESS;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -41,13 +43,13 @@ public class UserController {
             "    \"gender\":\"MALE\"\n\n" +
             "}")
     @PostMapping(value = "/join", consumes = {"multipart/form-data"})
-    public BaseResponse<UserRes.UserJoinRes> join(
-            @RequestPart(value = "file", required = false) MultipartFile file,
-            @RequestPart(value = "request") @Valid UserReq.UserJoinReq request
+    public BaseResponse<Void> join(
+            @ModelAttribute UserReq.UserJoinRequestWrapper requestWrapper
 
     ) throws BaseException, IOException {
         System.out.println("controller에서 Service로 join함수 실행직전");
-        return new BaseResponse<>(userService.join(file, request));
+        userService.join(requestWrapper.getFile(), requestWrapper.getUserJoinReq());
+        return new BaseResponse<>(SUCCESS);
     }
 
 
