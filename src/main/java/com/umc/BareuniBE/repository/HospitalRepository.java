@@ -14,7 +14,7 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long>, Hospi
 
     @Query(
             value =
-                    "SELECT h.hospital_idx as hospitalIdx, h.address, h.hospital_name as hosName, AVG(r.total_score) as score, COUNT(*) as reviewCnt\n" +
+                    "SELECT h.hospital_idx as hospitalIdx, h.address, h.hospital_name as hosName, AVG(r.total_score) as score, COUNT(*) as reviewCnt, h.image\n" +
                             "FROM hospital h INNER JOIN review r\n" +
                             "ON h.hospital_idx = r.hospital\n" +
                             "GROUP BY h.hospital_idx\n" +
@@ -35,6 +35,7 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long>, Hospi
                             "    h.lunch_time,\n" +
                             "    h.content,\n" +
                             "    h.address,\n" +
+                            "    h.image,\n" +
                             "    h.bookable,\n" +
                             "    (CASE\n" +
                             "        WHEN IFNULL(treatment_stats.bad, 0) >= IFNULL(treatment_stats.normal, 0) AND IFNULL(treatment_stats.bad, 0) >= IFNULL(treatment_stats.good, 0)\n" +

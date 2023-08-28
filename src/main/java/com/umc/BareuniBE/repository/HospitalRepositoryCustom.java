@@ -8,4 +8,6 @@ public interface HospitalRepositoryCustom {
     List<HospitalRes.HospitalSummaryListRes> findRecommendHospital(String[] areaList);
 
     List<HospitalRes.HospitalSummaryListRes> searchHospital(String keyword);
+
+    List<HospitalRes.HospitalSummaryListRes> findNearHospital(String address1, String address2);
 }

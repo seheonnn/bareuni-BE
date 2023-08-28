@@ -80,4 +80,14 @@ public class HospitalController {
     ) throws BaseException {
         return new BaseResponse<>(hospitalService.searchHospital(keyword));
     }
+
+    // 치과정보 탭 - 내 주변 치과 목록 조회
+    @ApiOperation(value = "치과정보 탭 - 내 주변 치과 목록 조회", notes = "ex) http://localhost:8080/hospital/near?address=서울시 관악구 서림동")
+    @GetMapping("/near")
+    public BaseResponse<List<HospitalRes.HospitalSummaryListRes>> searchNearHospital (
+            @RequestParam(value = "address") String address
+    ) throws BaseException {
+        String[] tokenList = address.split(" ");
+        return new BaseResponse<>(hospitalService.getNearHospital(tokenList[tokenList.length - 1], tokenList[tokenList.length - 2]));
+    }
 }

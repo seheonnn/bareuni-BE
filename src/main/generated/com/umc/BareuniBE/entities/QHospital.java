@@ -36,6 +36,8 @@ public class QHospital extends EntityPathBase<Hospital> {
 
     public final StringPath hospitalName = createString("hospitalName");
 
+    public final StringPath image = createString("image");
+
     public final StringPath keywords = createString("keywords");
 
     public final StringPath lunchTime = createString("lunchTime");
