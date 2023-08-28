@@ -47,8 +47,6 @@ public class UserController {
             @ModelAttribute UserReq.UserJoinRequestWrapper requestWrapper
 
     ) throws BaseException, IOException {
-        System.out.println(requestWrapper.getFile());
-        System.out.println(requestWrapper.getUserJoinReq());
         System.out.println("controller에서 Service로 join함수 실행직전");
         userService.join(requestWrapper.getFile(), requestWrapper.getUserJoinReq());
         return new BaseResponse<>(SUCCESS);
