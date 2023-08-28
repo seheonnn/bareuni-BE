@@ -56,8 +56,6 @@ jobs:
         
         # 도커 작업
         script: |
-          sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
-
           sudo docker stop spring-docker
           sudo docker rm spring-docker
           sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/spring-docker
@@ -71,3 +69,4 @@ jobs:
           docker network create my-network
           docker run --name my-redis --network my-network -d redis
           docker run -it -d -p 8080:8080 --name spring-docker -e TZ=Asia/Seoul --network my-network ${{ secrets.DOCKER_USERNAME }}/spring-docker
+          sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
