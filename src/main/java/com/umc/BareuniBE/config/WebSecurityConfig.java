@@ -2,6 +2,8 @@ package com.umc.BareuniBE.config;
 
 import com.umc.BareuniBE.config.security.JwtAuthenticationFilter;
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
+import com.umc.BareuniBE.config.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.umc.BareuniBE.config.security.oauth2.UserOAuth2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,8 +25,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
     private final RedisTemplate redisTemplate;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final UserOAuth2Service userOAuth2Service;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -47,7 +50,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //.antMatchers("/users/test").hasRole("USER")
                 .antMatchers("/**").permitAll()
-                .anyRequest().permitAll();
+                .anyRequest().permitAll()
+                //kakao로그인
+                .and()
+                .oauth2Login()
+                .defaultSuccessUrl("/login-success")
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .userInfoEndpoint()
+                .userService(userOAuth2Service);
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests();
     }

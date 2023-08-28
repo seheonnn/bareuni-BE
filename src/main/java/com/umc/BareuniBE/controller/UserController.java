@@ -118,4 +118,19 @@ public class UserController {
         System.out.println("test함수 실행");
         return new BaseResponse<>(userService.test(request));
     }
+
+    // 소셜 로그인 가입 시 프로필 설정
+    @PostMapping("/profile")
+    public BaseResponse<UserRes.SocialLoginRes> createProfile(
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "request") @Valid UserReq.UserProfileReq request
+    ) throws BaseException, IOException {
+        return new BaseResponse<>(userService.createProfile(file, request));
+    }
+
+    // 회원가입 시에 이메일 중복 확인
+    @PostMapping("/checkEmail")
+    public BaseResponse<Boolean> checkEmail(@RequestParam String email) throws BaseException {
+        return new BaseResponse<>(userService.findUserByEmail(email));
+    }
 }

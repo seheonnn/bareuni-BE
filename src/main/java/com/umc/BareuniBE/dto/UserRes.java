@@ -15,4 +15,11 @@ public class UserRes {
         private User user;
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class SocialLoginRes {
+        private User user;
+    }
 }

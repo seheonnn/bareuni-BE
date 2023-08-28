@@ -4,9 +4,11 @@ import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.*;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
+import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.global.enums.RoleType;
 import com.umc.BareuniBE.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -61,7 +64,7 @@ public class UserService {
 
             String encryptedPw = encoder.encode(request.getPassword());
 
-            String profileUrl = uploadService.uploadImage(file);
+           String profileUrl = uploadService.uploadImage(file);
 
             User newUser = User.builder()
                     .email(request.getEmail())
@@ -104,14 +107,15 @@ public class UserService {
         return false;
     }
 
-    public Long findUserByEmail(String email) throws BaseException{
+    public Boolean findUserByEmail(String email) throws BaseException{
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return user.getUserIdx();
+            return true; // 중복됨
+            //return user.getUserIdx();
         } else {
-            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL);
+            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL); // 중복 안됨 사용가능
         }
     }
 
@@ -266,5 +270,54 @@ public class UserService {
         Long userIdx = jwtTokenProvider.getCurrentUser(request);
         System.out.println("getCurrentUser()로 가져온 userIdx: "+userIdx);
         return "test성공";
+    }
+
+    // 회원가입 시 중복된 이메일인지 확인
+    public Boolean checkEmail(String email) throws BaseException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+
+        if(user != null) {
+            return true; // 중복된 이메일
+        }else {
+            return false; // 사용가능한 이메일
+        }
+    }
+
+    // 소셜로그인 - 프로필 설정
+    public UserRes.SocialLoginRes createProfile(MultipartFile file, UserReq.UserProfileReq request) throws BaseException, IOException {
+        String profileUrl = uploadService.uploadImage(file);
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BaseException(FAILED_TO_LOGIN));
+        user.setNickname(request.getNickname());
+        user.setGender(request.getGender());
+        user.setAge(request.getAge());
+        user.setOrtho(request.isOrtho());
+        user.setRole(RoleType.USER);
+        user.setProvider("카카오");
+        user.setProfile(profileUrl);
+
+        return new UserRes.SocialLoginRes(user);
+        /*if(userOptional.isEmpty()){
+
+            String profileUrl = uploadService.uploadImage(file);
+
+            User user = userOptional;
+
+            User newUser = User.builder()
+                    .nickname(request.getNickname())
+                    .gender(request.getGender())
+                    .age(request.getAge())
+                    .ortho(request.isOrtho())
+                    .role(RoleType.USER)
+                    .provider("카카오")
+                    .profile(profileUrl)
+                    .build();
+            User user = userRepository.saveAndFlush(newUser);
+            return new UserRes.SocialLoginRes(user);
+        }else{
+            throw new BaseException(POST_USERS_EXISTS_EMAIL);
+        }*/
     }
 }
