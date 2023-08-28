@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -66,6 +68,24 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "profile")
     @ColumnDefault("'기본 이미지'")
     private String profile;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<Booking>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<Comment>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Community> communities = new ArrayList<Community>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<LikeEntity> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<Review>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Scrap> scraps = new ArrayList<>();
 
     // UserDetails 상속
     @Override

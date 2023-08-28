@@ -3,7 +3,6 @@ package com.umc.BareuniBE.controller;
 import com.umc.BareuniBE.dto.PasswordUpdateReq;
 import com.umc.BareuniBE.dto.TokenDTO;
 import com.umc.BareuniBE.dto.UserReq;
-import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.global.BaseResponseStatus;
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.IOException;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.SUCCESS;
@@ -113,6 +110,14 @@ public class UserController {
     public BaseResponse<String> deactivateUser(HttpServletRequest request) throws BaseException {
         return new BaseResponse<>(userService.deactivateUser(request));
     }
+
+//    // 회원 탈퇴2 test
+//    private final UserRepository userRepository;
+//    @DeleteMapping("/delete2/{useridx}")
+//    public BaseResponse<Void> deleteUserTest(@PathVariable Long useridx) throws BaseException {
+//        userRepository.deleteById(useridx);
+//        return new BaseResponse<>(SUCCESS);
+//    }
 
     // 테스트
     @PostMapping("/test")
