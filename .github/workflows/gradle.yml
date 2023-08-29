@@ -68,4 +68,4 @@ jobs:
           docker pull redis
           docker network create my-network
           docker run --name my-redis --network my-network -d redis
-          docker run -it -d -p 8080:8080 --name spring-docker -e TZ=Asia/Seoul --network my-network ${{ secrets.DOCKER_USERNAME }}/spring-docker
+          docker run -it -d -p 80:80 --name spring-docker -e TZ=Asia/Seoul --network my-network ${{ secrets.DOCKER_USERNAME }}/spring-docker
