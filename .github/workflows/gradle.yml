@@ -60,4 +60,12 @@ jobs:
           sudo docker rm spring-docker
           sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/spring-docker
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/spring-docker
-          sudo docker run -it -d -p 8080:8080 --name spring-docker -e TZ=Asia/Seoul ${{ secrets.DOCKER_USERNAME }}/spring-docker
+
+          docker stop my-redis
+          docker rm my-redis
+          docker rmi redis
+
+          docker pull redis
+          docker network create my-network
+          docker run --name my-redis --network my-network -d redis
+          docker run -it -d -p 443:443 --name spring-docker -e TZ=Asia/Seoul --network my-network ${{ secrets.DOCKER_USERNAME }}/spring-docker

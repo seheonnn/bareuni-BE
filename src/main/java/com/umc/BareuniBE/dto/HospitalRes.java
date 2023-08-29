@@ -20,13 +20,13 @@ public class HospitalRes {
     @Getter
     @Setter
     public static class HospitalSummaryListRes {
-        private Object hospitalIdx;
-        private Object hosName;
-        private Object address;
-        private Object score;
-        private Object reviewCnt;
-        private Object summary;
-        // private String[] images; // 일단 이미지 없이 진행
+        private Long hospitalIdx;
+        private String hosName;
+        private String address;
+        private Double score;
+        private Long reviewCnt;
+        private String summary;
+        private String image;
     }
 
     @NoArgsConstructor
@@ -60,7 +60,8 @@ public class HospitalRes {
         private String openTime;
         private String lunchTime;
         private String content;
-        private String Telephone;
+        private String telephone;
+        private String image;
 
         private Double totalScore;
         private Integer reviewCnt;
@@ -82,6 +83,7 @@ public class HospitalRes {
         String getLunch_time();
         String getContent();
         String getAddress();
+        String getImage();
         boolean getBookable();
         String getTreatment();
         Double getTreatment_ratio();

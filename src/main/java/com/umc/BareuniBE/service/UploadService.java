@@ -44,7 +44,8 @@ public class UploadService {
         return "삭제 성공";
     }
 
-//     여러 개의 이미지를 업로드하는 경우
+
+    // 여러 개의 이미지를 업로드하는 경우
     public List<String> uploadImages(List<MultipartFile> files) {
         // stream
         List<String> imagesUrls = new ArrayList<>();
