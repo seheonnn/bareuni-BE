@@ -69,4 +69,3 @@ jobs:
           docker network create my-network
           docker run --name my-redis --network my-network -d redis
           docker run -it -d -p 8080:8080 --name spring-docker -e TZ=Asia/Seoul --network my-network ${{ secrets.DOCKER_USERNAME }}/spring-docker
-          sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080 
