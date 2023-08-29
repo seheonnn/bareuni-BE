@@ -33,6 +33,8 @@ public class QReview extends EntityPathBase<Review> {
 
     public final QHospital hospital;
 
+    public final StringPath images = createString("images");
+
     public final NumberPath<Long> payment = createNumber("payment", Long.class);
 
     public final BooleanPath receipt = createBoolean("receipt");

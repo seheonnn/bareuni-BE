@@ -56,6 +56,9 @@ public class Review extends BaseEntity {
     @Column(name = "receipt", nullable = false)
     private boolean receipt;
 
+    @Column(name = "images")
+    private String images; 
+
     public Review(User user, Hospital hospital) {
         this.user = user;
         this.hospital = hospital;

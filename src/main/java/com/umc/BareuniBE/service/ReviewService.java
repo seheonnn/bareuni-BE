@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,12 @@ public class ReviewService {
 
     private final HospitalRepository hospitalRepository;
 
-    public ReviewRes.ReviewCreateRes createReview(ReviewReq.ReviewCreateReq request) throws BaseException {
+    private final UploadService uploadService;
+
+    public ReviewRes.ReviewCreateRes createReview(List<MultipartFile> files, ReviewReq.ReviewCreateReq request) throws BaseException {
+        List<String> imagesUrl = uploadService.uploadImages(files);
+        String imagesString = String.join(",", imagesUrl);
+
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
@@ -48,6 +54,7 @@ public class ReviewService {
                 .content(request.getContent())
                 .payment(request.getPayment())
                 .receipt(request.isReceipt())
+                .images(imagesString)
                 .build();
 
         Review review = reviewRepository.saveAndFlush(newReview);
