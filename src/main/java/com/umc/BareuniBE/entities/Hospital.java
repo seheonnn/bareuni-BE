@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -51,4 +53,11 @@ public class Hospital extends BaseEntity {
 
     @Column(name = "image", nullable = true)
     private String image;
+
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<Booking>();
+
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<Review>();
+
 }
