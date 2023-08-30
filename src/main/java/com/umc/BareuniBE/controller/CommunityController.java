@@ -76,8 +76,8 @@ public class CommunityController {
             "\"userIdx\":1\n\n" +
             "}")
     @DeleteMapping("/{communityIdx}")
-    public BaseResponse<String> deleteCommunity(@PathVariable Long communityIdx, @RequestBody Map<String, Long> requestBody) throws BaseException {
-        return new BaseResponse<>(communityService.deleteCommunity(communityIdx, requestBody.get("userIdx")));
+    public BaseResponse<String> deleteCommunity(@PathVariable Long communityIdx, HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(communityService.deleteCommunity(communityIdx, request));
     }
 
     // 커뮤니티 글 좋아요
@@ -86,8 +86,8 @@ public class CommunityController {
             "\"userIdx\":1\n\n" +
             "}")
     @PostMapping("/{communityIdx}/like")
-    public BaseResponse<String> likeToggle(@PathVariable Long communityIdx, @RequestBody Map<String, Long> requestBody) throws BaseException {
-        return new BaseResponse<>(communityService.likeToggle(requestBody.get("userIdx"), communityIdx));
+    public BaseResponse<String> likeToggle(@PathVariable Long communityIdx, HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(communityService.likeToggle(communityIdx, request));
     }
 
     // 커뮤니티 댓글 작성

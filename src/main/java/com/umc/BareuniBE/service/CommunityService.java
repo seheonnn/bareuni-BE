@@ -3,12 +3,12 @@ package com.umc.BareuniBE.service;
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.CommunityReq;
 import com.umc.BareuniBE.dto.CommunityRes;
-import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.entities.Comment;
 import com.umc.BareuniBE.entities.Community;
 import com.umc.BareuniBE.entities.LikeEntity;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
+import com.umc.BareuniBE.global.BaseResponseStatus;
 import com.umc.BareuniBE.repository.CommentRepository;
 import com.umc.BareuniBE.repository.CommunityRepository;
 import com.umc.BareuniBE.repository.LikeRepository;
@@ -109,12 +109,12 @@ public class  CommunityService {
         return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
     }
 
-    public String deleteCommunity(Long communityIdx, Long userIdx) throws BaseException {
+    public BaseResponseStatus deleteCommunity(Long communityIdx, HttpServletRequest request) throws BaseException {
         // 해당 글 유저
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
         // request 로 받은 유저
-        User user = userRepository.findById(userIdx)
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
 
@@ -122,12 +122,12 @@ public class  CommunityService {
             throw new BaseException(UPDATE_AUTHORIZED_ERROR);
 
         communityRepository.delete(community);
-        return "삭제 성공";
+        return SUCCESS;
     }
 
-    public String likeToggle(Long userIdx, Long communityIdx) throws BaseException {
+    public BaseResponseStatus likeToggle(Long communityIdx, HttpServletRequest request) throws BaseException {
 
-        User user = userRepository.findById(userIdx)
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
@@ -137,11 +137,11 @@ public class  CommunityService {
 
         if (likeRelation.isPresent()) {
             likeRepository.delete(likeRelation.get());
-            return "좋아요 취소";
+            return CANCELED_LIKE;
         }
         else {
             likeRepository.saveAndFlush(new LikeEntity(user, community));
-            return "좋아요 성공";
+            return SUCCESS_LIKE;
         }
 
     }
