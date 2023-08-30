@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ReviewRes {
 
@@ -30,6 +31,7 @@ public class ReviewRes {
         private String content;
         private int totalScore;
         private boolean receipt;
+        private List<String> images;
     }
 
     @NoArgsConstructor
@@ -43,7 +45,7 @@ public class ReviewRes {
         private String content;
         private int totalScore;
         private boolean receipt;
-
+        private List<String> images;
     }
 
     @NoArgsConstructor
@@ -58,6 +60,7 @@ public class ReviewRes {
         private int totalScore;
         private boolean receipt;
         private Long payment;
+        private List<String> images;
     }
 
 }
