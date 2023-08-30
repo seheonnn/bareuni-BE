@@ -9,7 +9,7 @@ public class CommunityReq {
     @Getter
     @Setter
     public static class CommunityCreateReq {
-        private Long userIdx;
+        private Long userIdx;/**/
         private String content;
     }
 

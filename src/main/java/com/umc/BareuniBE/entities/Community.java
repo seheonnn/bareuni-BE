@@ -1,5 +1,6 @@
 package com.umc.BareuniBE.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.umc.BareuniBE.global.BaseEntity;
 import lombok.*;
 
@@ -19,7 +20,7 @@ public class Community extends BaseEntity {
     @Column(name="communityIdx")
     private Long communityIdx;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user")
     private User user;
 
@@ -27,8 +28,10 @@ public class Community extends BaseEntity {
     private String content;
 
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<LikeEntity> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<Comment>();
 }

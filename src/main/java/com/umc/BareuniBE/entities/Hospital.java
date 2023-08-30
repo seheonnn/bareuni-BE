@@ -1,5 +1,6 @@
 package com.umc.BareuniBE.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.umc.BareuniBE.global.BaseEntity;
 import lombok.*;
 
@@ -55,9 +56,11 @@ public class Hospital extends BaseEntity {
     private String image;
 
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Booking> bookings = new ArrayList<Booking>();
 
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Review> reviews = new ArrayList<Review>();
 
 }

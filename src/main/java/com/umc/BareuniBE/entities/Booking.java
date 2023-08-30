@@ -18,11 +18,11 @@ public class Booking extends BaseEntity {
     @Column(name="bookingIdx")
     private Long bookingIdx;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user")
     private User user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital")
     private Hospital hospital;
 

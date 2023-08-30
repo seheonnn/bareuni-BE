@@ -1,7 +1,9 @@
 package com.umc.BareuniBE.service;
 
+import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.CommunityReq;
 import com.umc.BareuniBE.dto.CommunityRes;
+import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.entities.Comment;
 import com.umc.BareuniBE.entities.Community;
 import com.umc.BareuniBE.entities.LikeEntity;
@@ -12,10 +14,12 @@ import com.umc.BareuniBE.repository.CommunityRepository;
 import com.umc.BareuniBE.repository.LikeRepository;
 import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class  CommunityService {
@@ -33,15 +38,17 @@ public class  CommunityService {
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
-    public CommunityRes.CommunityCreateRes createCommunity(CommunityReq.CommunityCreateReq request) throws BaseException {
-        User user = userRepository.findById(request.getUserIdx())
+    public CommunityRes.CommunityCreateRes createCommunity(CommunityReq.CommunityCreateReq communityCreateReq, HttpServletRequest request) throws BaseException {
+        log.info(String.valueOf(jwtTokenProvider.getCurrentUser(request)));
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Community newCommunity = Community.builder()
                 .user(user)
-                .content(request.getContent())
+                .content(communityCreateReq.getContent())
                 .build();
 
         return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(newCommunity));
@@ -82,24 +89,24 @@ public class  CommunityService {
         return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), community.getContent(), commentList);
     }
 
-    public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq request) throws BaseException {
-        // 해당 글 유저
-        Community community = communityRepository.findById(communityIdx)
-                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
-        // request 로 받은 유저
-        User user = userRepository.findById(request.getUserIdx())
-                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
-
-
-        if (community.getUser() != user)
-            throw new BaseException(UPDATE_AUTHORIZED_ERROR);
-
-
-        community.setContent(request.getContent());
-        community.setUpdatedAt(LocalDateTime.now());
-
-        return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
-    }
+//    public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq request) throws BaseException {
+//        // 해당 글 유저
+//        Community community = communityRepository.findById(communityIdx)
+//                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
+//        // request 로 받은 유저
+//        User user = userRepository.findById(request.getUserIdx())
+//                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
+//
+//
+//        if (community.getUser() != user)
+//            throw new BaseException(UPDATE_AUTHORIZED_ERROR);
+//
+//
+//        community.setContent(request.getContent());
+//        community.setUpdatedAt(LocalDateTime.now());
+//
+//        return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
+//    }
 
     public String deleteCommunity(Long communityIdx, Long userIdx) throws BaseException {
         // 해당 글 유저

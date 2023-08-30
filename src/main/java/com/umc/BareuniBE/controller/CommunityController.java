@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +37,8 @@ public class CommunityController {
             "\n" +
             "}")
     @PostMapping("")
-    public BaseResponse<CommunityRes.CommunityCreateRes> createCommunity(@RequestBody CommunityReq.CommunityCreateReq request) throws BaseException {
-        return new BaseResponse<>(communityService.createCommunity(request));
+    public BaseResponse<CommunityRes.CommunityCreateRes> createCommunity(@RequestBody CommunityReq.CommunityCreateReq communityCreateReq, HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(communityService.createCommunity(communityCreateReq, request));
     }
 
     // 커뮤니티 글 조회 (최신순, 좋아요순)
@@ -58,15 +59,15 @@ public class CommunityController {
     }
 
     // 커뮤니티 글 수정
-    @ApiOperation(value = "커뮤니티 글 수정", notes = "ex) http://localhost:8080/community/1\n\n" +
-            "{\n\n" +
-            "\"userIdx\":1,\n\n" +
-            "\"content\":\"커뮤니티 글 수정입니다.\"\n\n" +
-            "}")
-    @PatchMapping("/{communityIdx}")
-    public BaseResponse<CommunityRes.CommunityCreateRes> updateCommunity(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommunityCreateReq request) throws BaseException {
-        return new BaseResponse<>(communityService.updateCommunity(communityIdx, request));
-    }
+//    @ApiOperation(value = "커뮤니티 글 수정", notes = "ex) http://localhost:8080/community/1\n\n" +
+//            "{\n\n" +
+//            "\"userIdx\":1,\n\n" +
+//            "\"content\":\"커뮤니티 글 수정입니다.\"\n\n" +
+//            "}")
+//    @PatchMapping("/{communityIdx}")
+//    public BaseResponse<CommunityRes.CommunityCreateRes> updateCommunity(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommunityCreateReq request) throws BaseException {
+//        return new BaseResponse<>(communityService.updateCommunity(communityIdx, request));
+//    }
 
     // 커뮤니티 글 삭제
     @ApiOperation(value = "커뮤니티 글 삭제", notes = "ex) http://localhost:8080/community/1\n\n" +

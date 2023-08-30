@@ -9,14 +9,25 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class CommunityRes {
-    //    @Builder
+//    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     @Setter
     public static class CommunityCreateRes {
-        private Community community;
+
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private String content;
+        private UserRes.UserSummary user;
+
+    public CommunityCreateRes(Community community) {
+        this.createdAt = community.getCreatedAt();
+        this.updatedAt = community.getUpdatedAt();
+        this.content = community.getContent();
+        this.user = new UserRes.UserSummary(community.getUser());
     }
+}
 
     @NoArgsConstructor
     @AllArgsConstructor

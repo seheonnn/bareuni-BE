@@ -19,11 +19,11 @@ public class Review extends BaseEntity {
     @Column(name="reviewIdx")
     private Long reviewIdx;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user")
     private User user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital")
     private Hospital hospital;
 
