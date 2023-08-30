@@ -17,11 +17,11 @@ public class Scrap extends BaseEntity {
     @Column(name="scrapIdx")
     private Long scrapIdx;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user")
     private User user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital")
     private Hospital hospital;
 

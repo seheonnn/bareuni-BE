@@ -1,10 +1,13 @@
 package com.umc.BareuniBE.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.umc.BareuniBE.global.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -51,4 +54,13 @@ public class Hospital extends BaseEntity {
 
     @Column(name = "image", nullable = true)
     private String image;
+
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Booking> bookings = new ArrayList<Booking>();
+
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Review> reviews = new ArrayList<Review>();
+
 }

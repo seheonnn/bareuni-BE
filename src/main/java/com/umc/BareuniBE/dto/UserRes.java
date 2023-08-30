@@ -15,4 +15,20 @@ public class UserRes {
         private User user;
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class UserSummary {
+        private Long userIdx;
+        private String nickName;
+        private String profile;
+
+        public UserSummary(User user) {
+            this.userIdx = user.getUserIdx();
+            this.nickName = user.getNickname();
+            this.profile = user.getProfile();
+        }
+    }
+
 }

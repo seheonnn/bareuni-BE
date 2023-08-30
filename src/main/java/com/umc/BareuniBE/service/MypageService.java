@@ -7,10 +7,9 @@ import com.umc.BareuniBE.entities.Review;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
 @Service
-@Slf4j
+@RequiredArgsConstructor
 public class MypageService {
 
     @Value("${num.api.key}")
@@ -42,21 +41,10 @@ public class MypageService {
     private final ScrapRepository scrapRepository;
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
-    private final PhoneRepository phoneRepository;
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-
-    @Autowired
-    public MypageService(CommunityRepository communityRepository, UserRepository userRepository, ScrapRepository scrapRepository, ReviewRepository reviewRepository, BookingRepository bookingRepository, PhoneRepository phoneRepository){
-        this.communityRepository = communityRepository;
-        this.scrapRepository = scrapRepository;
-        this.reviewRepository = reviewRepository;
-        this.userRepository = userRepository;
-        this.bookingRepository = bookingRepository;
-        this.phoneRepository = phoneRepository;
-}
 
     // 작성한 글 목록 조회 (최신순)
     public List<CommunityRes.CommunityListRes> getMyCommunityList(Long userId, Pageable page) throws BaseException {
@@ -71,7 +59,7 @@ public class MypageService {
                     communityRes.setCreatedAt( communityData[1]);
                     communityRes.setUpdatedAt( communityData[2]);
                     communityRes.setContent( communityData[3]);
-                    communityRes.setUser(userRepository.findById(((BigInteger) communityData[4]).longValue()).orElse(null));
+//                    communityRes.setUser(userRepository.findById(((BigInteger) communityData[4]).longValue()).orElse(null));
                     communityRes.setLike(communityData[5]);
 
                     return communityRes;
@@ -171,7 +159,6 @@ public class MypageService {
         if (myUpdateReq.isOrtho() != user.isOrtho()) {
             user.setOrtho(myUpdateReq.isOrtho());
         }
-        log.info(user.getPhone());
         userRepository.save(user);
 
         return "회원 정보 수정 성공";
