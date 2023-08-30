@@ -10,11 +10,12 @@ import java.util.List;
 
 public class CommunityRes {
 //    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+//    @NoArgsConstructor
+//    @AllArgsConstructor
     @Getter
     @Setter
     public static class CommunityCreateRes {
+        private Long communityIdx;
 
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -22,6 +23,7 @@ public class CommunityRes {
         private UserRes.UserSummary user;
 
     public CommunityCreateRes(Community community) {
+        this.communityIdx = community.getCommunityIdx();
         this.createdAt = community.getCreatedAt();
         this.updatedAt = community.getUpdatedAt();
         this.content = community.getContent();

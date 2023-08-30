@@ -89,24 +89,26 @@ public class  CommunityService {
         return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), community.getContent(), commentList);
     }
 
-//    public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq request) throws BaseException {
-//        // 해당 글 유저
-//        Community community = communityRepository.findById(communityIdx)
-//                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
-//        // request 로 받은 유저
-//        User user = userRepository.findById(request.getUserIdx())
-//                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
-//
-//
-//        if (community.getUser() != user)
-//            throw new BaseException(UPDATE_AUTHORIZED_ERROR);
-//
-//
-//        community.setContent(request.getContent());
-//        community.setUpdatedAt(LocalDateTime.now());
-//
-//        return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
-//    }
+    public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq communityCreateReq, HttpServletRequest request) throws BaseException {
+        // 해당 글 유저
+        Community community = communityRepository.findById(communityIdx)
+                .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
+        // request 로 받은 유저
+
+        Long currentUserIdx = jwtTokenProvider.getCurrentUser(request);
+        User user = userRepository.findById(currentUserIdx)
+                .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
+
+
+        if (community.getUser() != user)
+            throw new BaseException(UPDATE_AUTHORIZED_ERROR);
+
+
+        community.setContent(communityCreateReq.getContent());
+        community.setUpdatedAt(LocalDateTime.now());
+
+        return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
+    }
 
     public String deleteCommunity(Long communityIdx, Long userIdx) throws BaseException {
         // 해당 글 유저

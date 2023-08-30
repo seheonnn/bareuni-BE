@@ -59,15 +59,15 @@ public class CommunityController {
     }
 
     // 커뮤니티 글 수정
-//    @ApiOperation(value = "커뮤니티 글 수정", notes = "ex) http://localhost:8080/community/1\n\n" +
-//            "{\n\n" +
-//            "\"userIdx\":1,\n\n" +
-//            "\"content\":\"커뮤니티 글 수정입니다.\"\n\n" +
-//            "}")
-//    @PatchMapping("/{communityIdx}")
-//    public BaseResponse<CommunityRes.CommunityCreateRes> updateCommunity(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommunityCreateReq request) throws BaseException {
-//        return new BaseResponse<>(communityService.updateCommunity(communityIdx, request));
-//    }
+    @ApiOperation(value = "커뮤니티 글 수정", notes = "ex) http://localhost:8080/community/1\n\n" +
+            "{\n\n" +
+            "\"userIdx\":1,\n\n" +
+            "\"content\":\"커뮤니티 글 수정입니다.\"\n\n" +
+            "}")
+    @PatchMapping("/{communityIdx}")
+    public BaseResponse<CommunityRes.CommunityCreateRes> updateCommunity(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommunityCreateReq communityCreateReq, HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(communityService.updateCommunity(communityIdx, communityCreateReq, request));
+    }
 
     // 커뮤니티 글 삭제
     @ApiOperation(value = "커뮤니티 글 삭제", notes = "ex) http://localhost:8080/community/1\n\n" +
