@@ -54,7 +54,8 @@ public class  CommunityService {
         return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(newCommunity));
     }
 
-    public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page) {
+    public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
+        jwtTokenProvider.getCurrentUser(request);
         List<Object[]> communities = communityRepository.findAllCommunity_Pagination(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
 
         return communities.stream()
@@ -72,21 +73,19 @@ public class  CommunityService {
                 .collect(Collectors.toList());
     }
 
-    public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx) throws BaseException {
+    public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx, HttpServletRequest request) throws BaseException {
+        jwtTokenProvider.getCurrentUser(request);
+
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
 
         List<Comment> comments = commentRepository.findAllByCommunity(community);
         List<CommunityRes.CommentSummary> commentList = comments.stream()
                 .map(comment -> {
-                    CommunityRes.CommentSummary commentSummary = new CommunityRes.CommentSummary();
-                    commentSummary.setNickname(comment.getUser().getNickname());
-                    commentSummary.setComment(comment.getComment());
-                    commentSummary.setCommentCreatedAt(comment.getCreatedAt());
-                    return commentSummary;
+                    return new CommunityRes.CommentSummary(comment);
                 })
                 .collect(Collectors.toList());
-        return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), community.getContent(), commentList);
+        return new CommunityRes.CommunityDetailRes(community, commentList);
     }
 
     public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq communityCreateReq, HttpServletRequest request) throws BaseException {

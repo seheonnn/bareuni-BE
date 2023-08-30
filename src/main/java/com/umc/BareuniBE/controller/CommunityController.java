@@ -45,17 +45,18 @@ public class CommunityController {
     @ApiOperation(value = "커뮤니티 글 조회 (최신순, 좋아요순)", notes = "ex1) http://localhost:8080/community?page=0&size=3&sort=created_at,desc\n\n ex2) http://localhost:8080/community?page=0&size=3&sort=likeCnt,desc")
     @GetMapping("")
     public BaseResponse<List<CommunityRes.CommunityListRes>> getCommunityList(
-            @PageableDefault(page = 0, size = 3, sort = "created_at", direction = Sort.Direction.DESC) Pageable page
-    ) {
-        return new BaseResponse<>(communityService.getCommunityList(page));
+            @PageableDefault(page = 0, size = 3, sort = "created_at", direction = Sort.Direction.DESC) Pageable page,
+            HttpServletRequest request
+    ) throws BaseException {
+        return new BaseResponse<>(communityService.getCommunityList(page, request));
     }
 
 
     // 커뮤니티 글 상세 조회
     @ApiOperation(value = "커뮤니티 글 상세 조회", notes = "ex) http://localhost:8080/community/1")
     @GetMapping("/{communityIdx}")
-    public BaseResponse<CommunityRes.CommunityDetailRes> getCommunityDetails( @PathVariable Long communityIdx ) throws BaseException {
-        return new BaseResponse<>(communityService.getCommunityDetails(communityIdx));
+    public BaseResponse<CommunityRes.CommunityDetailRes> getCommunityDetails( @PathVariable Long communityIdx, HttpServletRequest request ) throws BaseException {
+        return new BaseResponse<>(communityService.getCommunityDetails(communityIdx, request));
     }
 
     // 커뮤니티 글 수정

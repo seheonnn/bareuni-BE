@@ -59,7 +59,7 @@ public class MypageService {
                     communityRes.setCreatedAt( communityData[1]);
                     communityRes.setUpdatedAt( communityData[2]);
                     communityRes.setContent( communityData[3]);
-                    communityRes.setUser(userRepository.findById(((BigInteger) communityData[4]).longValue()).orElse(null));
+//                    communityRes.setUser(userRepository.findById(((BigInteger) communityData[4]).longValue()).orElse(null));
                     communityRes.setLike(communityData[5]);
 
                     return communityRes;

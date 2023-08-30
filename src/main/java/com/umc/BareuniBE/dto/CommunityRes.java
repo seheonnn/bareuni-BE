@@ -44,11 +44,15 @@ public class CommunityRes {
 
         private Object updatedAt;
 
-        private User user;
+        private UserRes.UserSummary user;
 
         private Object content;
         private Object like;
 
+
+        public void setUser(User user) {
+            this.user = new UserRes.UserSummary(user);
+        }
     }
 
     @NoArgsConstructor
@@ -60,13 +64,18 @@ public class CommunityRes {
 
         private Long communityIdx;
 
-        private User user;
+        private UserRes.UserSummary user;
        
         private String content;
       
         private List<CommentSummary> commentList;
 
-
+        public CommunityDetailRes(Community community, List<CommentSummary> commentSummaryList) {
+            this.communityIdx = community.getCommunityIdx();
+            this.user = new UserRes.UserSummary(community.getUser());
+            this.content = community.getContent();
+            this.commentList = commentSummaryList;
+        }
     }
 
     @NoArgsConstructor
@@ -74,11 +83,15 @@ public class CommunityRes {
     @Getter
     @Setter
     public static class CommentSummary {
-
-        private String nickname;
+        private UserRes.UserSummary user;
         private String comment;
         private LocalDateTime commentCreatedAt;
 
+        public CommentSummary(Comment comment) {
+            this.user = new UserRes.UserSummary(comment.getUser());
+            this.comment = comment.getComment();
+            this.commentCreatedAt = comment.getCreatedAt();
+        }
     }
 
     @NoArgsConstructor
