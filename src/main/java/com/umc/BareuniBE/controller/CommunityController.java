@@ -4,6 +4,7 @@ import com.umc.BareuniBE.dto.CommunityReq;
 import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
+import com.umc.BareuniBE.global.BaseResponseStatus;
 import com.umc.BareuniBE.service.CommunityService;
 
 import lombok.RequiredArgsConstructor;
@@ -97,8 +98,8 @@ public class CommunityController {
             "\"comment\":\"커뮤니티 댓글입니다.\"\n\n" +
             "}")
     @PostMapping("/{communityIdx}/comment")
-    public BaseResponse<CommunityRes.CommentCreateRes> createComment(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommentCreateReq request) throws BaseException {
-        return new BaseResponse<>(communityService.createComment(communityIdx, request));
+    public BaseResponse<CommunityRes.CommentSummary> createComment(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommentCreateReq commentCreateReq, HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(communityService.createComment(communityIdx, commentCreateReq, request));
     }
 
     // 커뮤니티 댓글 삭제
@@ -107,7 +108,7 @@ public class CommunityController {
             "\"userIdx\":1\n\n" +
             "}")
     @DeleteMapping("/comment/{commentIdx}")
-    public BaseResponse<String> deleteComment(@PathVariable Long commentIdx, @RequestBody CommunityReq.CommentDeleteReq request) throws BaseException {
+    public BaseResponse<BaseResponseStatus> deleteComment(@PathVariable Long commentIdx, HttpServletRequest request) throws BaseException {
         return new BaseResponse<>(communityService.deleteComment(commentIdx, request));
     }
 

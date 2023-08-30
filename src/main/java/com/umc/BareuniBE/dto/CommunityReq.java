@@ -22,12 +22,4 @@ public class CommunityReq {
         private String comment;
     }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    public static class CommentDeleteReq {
-        private Long userIdx;
-    }
-
 }

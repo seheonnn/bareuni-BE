@@ -83,23 +83,17 @@ public class CommunityRes {
     @Getter
     @Setter
     public static class CommentSummary {
+        private Long communityIdx;
         private UserRes.UserSummary user;
         private String comment;
         private LocalDateTime commentCreatedAt;
 
         public CommentSummary(Comment comment) {
+            this.communityIdx = comment.getCommunity().getCommunityIdx();
             this.user = new UserRes.UserSummary(comment.getUser());
             this.comment = comment.getComment();
             this.commentCreatedAt = comment.getCreatedAt();
         }
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    public static class CommentCreateRes {
-        private Comment comment;
     }
 
     @NoArgsConstructor

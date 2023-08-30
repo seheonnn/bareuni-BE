@@ -146,8 +146,8 @@ public class  CommunityService {
 
     }
 
-    public CommunityRes.CommentCreateRes createComment (Long communityIdx, CommunityReq.CommentCreateReq request) throws BaseException {
-        User user = userRepository.findById(request.getUserIdx())
+    public CommunityRes.CommentSummary createComment (Long communityIdx, CommunityReq.CommentCreateReq commentCreateReq, HttpServletRequest request) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Community community = communityRepository.findById(communityIdx)
@@ -156,14 +156,14 @@ public class  CommunityService {
         Comment newComment = Comment.builder()
                 .user(user)
                 .community(community)
-                .comment(request.getComment())
+                .comment(commentCreateReq.getComment())
                 .build();
 
-        return new CommunityRes.CommentCreateRes(commentRepository.saveAndFlush(newComment));
+        return new CommunityRes.CommentSummary(commentRepository.saveAndFlush(newComment));
     }
 
-    public String deleteComment (Long commentIdx, CommunityReq.CommentDeleteReq request) throws BaseException {
-        User user = userRepository.findById(request.getUserIdx())
+    public BaseResponseStatus deleteComment (Long commentIdx, HttpServletRequest request) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Comment comment = commentRepository.findById(commentIdx)
@@ -174,7 +174,7 @@ public class  CommunityService {
 
         commentRepository.delete(comment);
 
-        return "댓글 삭제 성공!";
+        return SUCCESS;
     }
 
     public List<CommunityRes.BestCommunityListRes> getBestCommunityList() {
