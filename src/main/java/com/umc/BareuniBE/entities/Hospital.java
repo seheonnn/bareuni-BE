@@ -53,7 +53,7 @@ public class Hospital extends BaseEntity {
     private String summary;
 
     @Column(name = "image", nullable = true)
-    private String image;
+    private String images;
 
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
     @JsonIgnore

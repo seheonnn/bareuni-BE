@@ -21,4 +21,10 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
     List<Object[]> MyScrapList(@Param("user") User user, Pageable pageable);
 
     void deleteAllByUser(User user);
+
+    @Query(
+            value =  "select t.hospital_idx, t.hospital_name, t.summary, t.address, t.image, t.reviewAvg  from (select h.*, AVG(r.total_score) as reviewAvg from hospital h left outer join review r on h.hospital_idx = r.hospital group by h.hospital_idx) t left outer join scrap s on t.hospital_idx = s.hospital where s.user = :user_idx ;",
+            nativeQuery = true
+    )
+    List<Object[]> findAllMyScrapHosList(@Param("user_idx") Long user_idx);
 }

@@ -84,12 +84,14 @@ public class CommunityRes {
     @Setter
     public static class CommentSummary {
         private Long communityIdx;
+        private Long commentIdx;
         private UserRes.UserSummary user;
         private String comment;
         private LocalDateTime commentCreatedAt;
 
         public CommentSummary(Comment comment) {
             this.communityIdx = comment.getCommunity().getCommunityIdx();
+            this.commentIdx = comment.getCommentIdx();
             this.user = new UserRes.UserSummary(comment.getUser());
             this.comment = comment.getComment();
             this.commentCreatedAt = comment.getCreatedAt();

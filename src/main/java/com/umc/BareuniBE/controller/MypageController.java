@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -28,22 +29,19 @@ public class MypageController {
 
     // 작성한 글 목록 조회 (최신순)
     @ApiOperation(value = "작성한 글 목록 조회(최신순)", notes = "ex) http://localhost:8080/mypage/community/1?page=0&size=10&sort=created_at,desc")
-    @GetMapping("/community/{userId}")
+    @GetMapping("/community")
     public BaseResponse<List<CommunityRes.CommunityListRes>> getMyCommunityList(
-            @PathVariable Long userId,
-            @PageableDefault(page = 0, size = 10, sort = "created_at", direction = Sort.Direction.DESC) Pageable page
+            @PageableDefault(page = 0, size = 10, sort = "created_at", direction = Sort.Direction.DESC) Pageable page,
+            HttpServletRequest request
     ) throws BaseException {
-        return new BaseResponse<>(mypageService.getMyCommunityList(userId, page));
+        return new BaseResponse<>(mypageService.getMyCommunityList(page, request));
     }
 
     // 치과 저장 목록 조회 (최신순)
     @ApiOperation(value = "치과 저장 목록(스크랩) 조회 (최신순)", notes = "ex) http://localhost:8080/mypage/scrap/1?page=0&size=10&sort=createdAt,desc\n\n")
-    @GetMapping("/scrap/{userId}")
-    public BaseResponse<List<HospitalRes.HospitalListRes>> getMyHospitalList(
-            @PathVariable Long userId,
-            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
-    ) throws BaseException {
-        return new BaseResponse<>(mypageService.getMyHospitalList(userId, page));
+    @GetMapping("/scrap")
+    public BaseResponse<List<HospitalRes.HospitalListRes>> getMyHospitalList(HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(mypageService.getMyHospitalList(request));
     }
 
     // 작성한 리뷰 목록 조회 (최신순)

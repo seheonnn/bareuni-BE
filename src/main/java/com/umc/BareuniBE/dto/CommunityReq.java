@@ -9,7 +9,6 @@ public class CommunityReq {
     @Getter
     @Setter
     public static class CommunityCreateReq {
-        private Long userIdx;/**/
         private String content;
     }
 
@@ -18,7 +17,6 @@ public class CommunityReq {
     @Getter
     @Setter
     public static class CommentCreateReq {
-        private Long userIdx;
         private String comment;
     }
 
