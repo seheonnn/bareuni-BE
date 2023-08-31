@@ -1,13 +1,17 @@
 package com.umc.BareuniBE.service;
 
+import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.*;
 
 import com.umc.BareuniBE.dto.UserUpdateReq;
+import com.umc.BareuniBE.entities.Hospital;
 import com.umc.BareuniBE.entities.Review;
+import com.umc.BareuniBE.entities.Scrap;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +30,7 @@ import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MypageService {
 
     @Value("${num.api.key}")
@@ -41,14 +47,15 @@ public class MypageService {
     private final ScrapRepository scrapRepository;
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
+    private final JwtTokenProvider jwtTokenProvider;
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 
     // 작성한 글 목록 조회 (최신순)
-    public List<CommunityRes.CommunityListRes> getMyCommunityList(Long userId, Pageable page) throws BaseException {
-        User user = userRepository.findById(userId)
+    public List<CommunityRes.CommunityListRes> getMyCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
         List<Object[]> communities = communityRepository.MyCommunityList(user, page);
 
@@ -59,7 +66,7 @@ public class MypageService {
                     communityRes.setCreatedAt( communityData[1]);
                     communityRes.setUpdatedAt( communityData[2]);
                     communityRes.setContent( communityData[3]);
-//                    communityRes.setUser(userRepository.findById(((BigInteger) communityData[4]).longValue()).orElse(null));
+                    communityRes.setUser(userRepository.findById(((BigInteger)communityData[4]).longValue()).orElse(null));
                     communityRes.setLike(communityData[5]);
 
                     return communityRes;
@@ -68,24 +75,17 @@ public class MypageService {
     }
 
     // 치과 저장 목록 조회
-    public List<HospitalRes.HospitalListRes> getMyHospitalList(Long userId, Pageable page) throws BaseException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+    public List<HospitalRes.HospitalListRes> getMyHospitalList(HttpServletRequest request) throws BaseException {
 
-        List<Object[]> scrap = scrapRepository.MyScrapList(user, page);
+        List<Object[]> scraps = scrapRepository.findAllMyScrapHosList(jwtTokenProvider.getCurrentUser(request));
 
-        return scrap.stream()
-                .map(hospitalData -> {
-                    HospitalRes.HospitalListRes hospitalRes = new HospitalRes.HospitalListRes();
-                    hospitalRes.setScrapIdx(hospitalData[0]);
-                    hospitalRes.setCreatedAt(hospitalData[1]);
-                    hospitalRes.setUpdatedAt( hospitalData[2]);
-                    hospitalRes.setUser(userRepository.findById(((Long) hospitalData[3]).longValue()).orElse(null));
-                    hospitalRes.setHospital( hospitalData[4]);
+        List<HospitalRes.HospitalListRes> result = scraps.stream()
+                .map(scrapData -> {
+                    return new HospitalRes.HospitalListRes(scrapData);
+                }).collect(Collectors.toList());
 
-                    return hospitalRes;
-                })
-                .collect(Collectors.toList());
+
+        return result;
     }
 
     // 작성한 리뷰 목록 조회 (최신순)
