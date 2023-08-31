@@ -1,10 +1,13 @@
 package com.umc.BareuniBE.dto;
 
+import com.umc.BareuniBE.entities.Hospital;
 import com.umc.BareuniBE.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 public class HospitalRes {
     @NoArgsConstructor
@@ -34,15 +37,25 @@ public class HospitalRes {
     @Getter
     @Setter
     public static class HospitalListRes {
-        private Object scrapIdx;
+        private Object hospital_idx;
+        private Object hospital_name;
 
-        private Object createdAt;
+        private Object summary;
 
-        private Object updatedAt;
+        private Object address;
 
-        private User user;
+        private List<String> images;
 
-        private Object hospital;
+        private Object reviewAVG;
+
+        public HospitalListRes(Object[] object) {
+            this.hospital_idx = object[0];
+            this.hospital_name = object[1];
+            this.summary = object[2];
+            this.address = object[3];
+            this.images = List.of(object[4].toString().split(","));
+            this.reviewAVG = object[5];
+        }
     }
 
     @NoArgsConstructor

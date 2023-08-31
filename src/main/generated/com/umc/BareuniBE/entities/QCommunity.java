@@ -24,12 +24,16 @@ public class QCommunity extends EntityPathBase<Community> {
 
     public final com.umc.BareuniBE.global.QBaseEntity _super = new com.umc.BareuniBE.global.QBaseEntity(this);
 
+    public final ListPath<Comment, QComment> comments = this.<Comment, QComment>createList("comments", Comment.class, QComment.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> communityIdx = createNumber("communityIdx", Long.class);
 
     public final StringPath content = createString("content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    public final ListPath<LikeEntity, QLikeEntity> likes = this.<LikeEntity, QLikeEntity>createList("likes", LikeEntity.class, QLikeEntity.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

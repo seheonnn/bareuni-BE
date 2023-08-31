@@ -17,11 +17,11 @@ public class Comment extends BaseEntity {
     @Column(name="commentIdx")
     private Long commentIdx;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user")
     private User user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "community")
     private Community community;
 

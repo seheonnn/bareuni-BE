@@ -77,6 +77,9 @@ public enum BaseResponseStatus {
     UPDATE_AUTHORIZED_ERROR(false, 50003, "해당 글에 대한 수정 및 삭제 권한이 없습니다."),
     Comment_EMPTY_ID(false, 50004, "댓글 아이디 값을 확인해주세요."),
 
+    SUCCESS_LIKE(true, 50005, "좋아요 성공"),
+    CANCELED_LIKE(false, 50006, "좋아요 취소"),
+
 
     // 6000 : Hospital 관련 오류
     HOSPITAL_EMPTY_HOSPITAL_ID(false, 6000, "치과 아이디 값을 확인해주세요."),

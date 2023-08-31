@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -25,6 +26,8 @@ public class QHospital extends EntityPathBase<Hospital> {
 
     public final BooleanPath bookable = createBoolean("bookable");
 
+    public final ListPath<Booking, QBooking> bookings = this.<Booking, QBooking>createList("bookings", Booking.class, QBooking.class, PathInits.DIRECT2);
+
     public final StringPath closedDay = createString("closedDay");
 
     public final StringPath content = createString("content");
@@ -36,13 +39,15 @@ public class QHospital extends EntityPathBase<Hospital> {
 
     public final StringPath hospitalName = createString("hospitalName");
 
-    public final StringPath image = createString("image");
+    public final StringPath images = createString("images");
 
     public final StringPath keywords = createString("keywords");
 
     public final StringPath lunchTime = createString("lunchTime");
 
     public final StringPath openTime = createString("openTime");
+
+    public final ListPath<Review, QReview> reviews = this.<Review, QReview>createList("reviews", Review.class, QReview.class, PathInits.DIRECT2);
 
     public final StringPath summary = createString("summary");
 

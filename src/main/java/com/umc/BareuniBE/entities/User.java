@@ -1,5 +1,6 @@
 package com.umc.BareuniBE.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.umc.BareuniBE.global.BaseEntity;
 import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.global.enums.RoleType;
@@ -70,21 +71,27 @@ public class User extends BaseEntity implements UserDetails {
     private String profile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Booking> bookings = new ArrayList<Booking>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<Comment>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Community> communities = new ArrayList<Community>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<LikeEntity> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Review> reviews = new ArrayList<Review>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Scrap> scraps = new ArrayList<>();
 
     // UserDetails 상속

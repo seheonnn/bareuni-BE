@@ -1,5 +1,6 @@
 package com.umc.BareuniBE.service;
 
+import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.CommunityReq;
 import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.entities.Comment;
@@ -7,15 +8,18 @@ import com.umc.BareuniBE.entities.Community;
 import com.umc.BareuniBE.entities.LikeEntity;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
+import com.umc.BareuniBE.global.BaseResponseStatus;
 import com.umc.BareuniBE.repository.CommentRepository;
 import com.umc.BareuniBE.repository.CommunityRepository;
 import com.umc.BareuniBE.repository.LikeRepository;
 import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class  CommunityService {
@@ -33,21 +38,24 @@ public class  CommunityService {
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
-    public CommunityRes.CommunityCreateRes createCommunity(CommunityReq.CommunityCreateReq request) throws BaseException {
-        User user = userRepository.findById(request.getUserIdx())
+    public CommunityRes.CommunityCreateRes createCommunity(CommunityReq.CommunityCreateReq communityCreateReq, HttpServletRequest request) throws BaseException {
+        log.info(String.valueOf(jwtTokenProvider.getCurrentUser(request)));
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Community newCommunity = Community.builder()
                 .user(user)
-                .content(request.getContent())
+                .content(communityCreateReq.getContent())
                 .build();
 
         return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(newCommunity));
     }
 
-    public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page) {
+    public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
+        jwtTokenProvider.getCurrentUser(request);
         List<Object[]> communities = communityRepository.findAllCommunity_Pagination(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
 
         return communities.stream()
@@ -65,29 +73,29 @@ public class  CommunityService {
                 .collect(Collectors.toList());
     }
 
-    public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx) throws BaseException {
+    public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx, HttpServletRequest request) throws BaseException {
+        jwtTokenProvider.getCurrentUser(request);
+
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
 
         List<Comment> comments = commentRepository.findAllByCommunity(community);
         List<CommunityRes.CommentSummary> commentList = comments.stream()
                 .map(comment -> {
-                    CommunityRes.CommentSummary commentSummary = new CommunityRes.CommentSummary();
-                    commentSummary.setNickname(comment.getUser().getNickname());
-                    commentSummary.setComment(comment.getComment());
-                    commentSummary.setCommentCreatedAt(comment.getCreatedAt());
-                    return commentSummary;
+                    return new CommunityRes.CommentSummary(comment);
                 })
                 .collect(Collectors.toList());
-        return new CommunityRes.CommunityDetailRes(community.getCommunityIdx(), community.getUser(), community.getContent(), commentList);
+        return new CommunityRes.CommunityDetailRes(community, commentList);
     }
 
-    public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq request) throws BaseException {
+    public CommunityRes.CommunityCreateRes updateCommunity(Long communityIdx, CommunityReq.CommunityCreateReq communityCreateReq, HttpServletRequest request) throws BaseException {
         // 해당 글 유저
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
         // request 로 받은 유저
-        User user = userRepository.findById(request.getUserIdx())
+
+        Long currentUserIdx = jwtTokenProvider.getCurrentUser(request);
+        User user = userRepository.findById(currentUserIdx)
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
 
@@ -95,18 +103,18 @@ public class  CommunityService {
             throw new BaseException(UPDATE_AUTHORIZED_ERROR);
 
 
-        community.setContent(request.getContent());
+        community.setContent(communityCreateReq.getContent());
         community.setUpdatedAt(LocalDateTime.now());
 
         return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(community));
     }
 
-    public String deleteCommunity(Long communityIdx, Long userIdx) throws BaseException {
+    public BaseResponseStatus deleteCommunity(Long communityIdx, HttpServletRequest request) throws BaseException {
         // 해당 글 유저
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
         // request 로 받은 유저
-        User user = userRepository.findById(userIdx)
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
 
@@ -114,12 +122,12 @@ public class  CommunityService {
             throw new BaseException(UPDATE_AUTHORIZED_ERROR);
 
         communityRepository.delete(community);
-        return "삭제 성공";
+        return SUCCESS;
     }
 
-    public String likeToggle(Long userIdx, Long communityIdx) throws BaseException {
+    public BaseResponseStatus likeToggle(Long communityIdx, HttpServletRequest request) throws BaseException {
 
-        User user = userRepository.findById(userIdx)
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
         Community community = communityRepository.findById(communityIdx)
                 .orElseThrow(() -> new BaseException(COMMUNITY_EMPTY_ID));
@@ -129,17 +137,17 @@ public class  CommunityService {
 
         if (likeRelation.isPresent()) {
             likeRepository.delete(likeRelation.get());
-            return "좋아요 취소";
+            return CANCELED_LIKE;
         }
         else {
             likeRepository.saveAndFlush(new LikeEntity(user, community));
-            return "좋아요 성공";
+            return SUCCESS_LIKE;
         }
 
     }
 
-    public CommunityRes.CommentCreateRes createComment (Long communityIdx, CommunityReq.CommentCreateReq request) throws BaseException {
-        User user = userRepository.findById(request.getUserIdx())
+    public CommunityRes.CommentSummary createComment (Long communityIdx, CommunityReq.CommentCreateReq commentCreateReq, HttpServletRequest request) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Community community = communityRepository.findById(communityIdx)
@@ -148,14 +156,14 @@ public class  CommunityService {
         Comment newComment = Comment.builder()
                 .user(user)
                 .community(community)
-                .comment(request.getComment())
+                .comment(commentCreateReq.getComment())
                 .build();
 
-        return new CommunityRes.CommentCreateRes(commentRepository.saveAndFlush(newComment));
+        return new CommunityRes.CommentSummary(commentRepository.saveAndFlush(newComment));
     }
 
-    public String deleteComment (Long commentIdx, CommunityReq.CommentDeleteReq request) throws BaseException {
-        User user = userRepository.findById(request.getUserIdx())
+    public BaseResponseStatus deleteComment (Long commentIdx, HttpServletRequest request) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Comment comment = commentRepository.findById(commentIdx)
@@ -166,7 +174,7 @@ public class  CommunityService {
 
         commentRepository.delete(comment);
 
-        return "댓글 삭제 성공!";
+        return SUCCESS;
     }
 
     public List<CommunityRes.BestCommunityListRes> getBestCommunityList() {

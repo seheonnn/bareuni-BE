@@ -27,7 +27,6 @@ public class BookingService {
     public BookingRes.BookingCreateRes createBooking(BookingReq.BookingCreateReq request) throws BaseException {
         User user = userRepository.findById(request.getUserIdx())
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
-
         Hospital hospital = hospitalRepository.findById(request.getHospitalIdx())
                 .orElseThrow(() -> new BaseException(HOSPITAL_EMPTY_ID));
 

@@ -13,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,8 +39,11 @@ public class ReviewController {
             "  \"userIdx\": 1\n\n" +
             "}")
     @PostMapping("")
-    public BaseResponse<ReviewRes.ReviewCreateRes> createReview(@RequestBody ReviewReq.ReviewCreateReq request) throws BaseException {
-        return new BaseResponse<>(reviewService.createReview(request));
+    public BaseResponse<ReviewRes.ReviewCreateRes> createReview(
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @RequestPart(value = "request") @Valid ReviewReq.ReviewCreateReq request
+    ) throws BaseException {
+        return new BaseResponse<>(reviewService.createReview(files, request));
     }
 
 

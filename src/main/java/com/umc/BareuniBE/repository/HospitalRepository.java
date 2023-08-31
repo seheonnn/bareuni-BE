@@ -18,7 +18,8 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long>, Hospi
                             "FROM hospital h INNER JOIN review r\n" +
                             "ON h.hospital_idx = r.hospital\n" +
                             "GROUP BY h.hospital_idx\n" +
-                            "ORDER BY score DESC",
+                            "ORDER BY score DESC\n" +
+                            "LIMIT 3",
             nativeQuery = true
     )
     List<Object []> findBestHospital();

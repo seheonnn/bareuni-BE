@@ -1,2 +1,2 @@
-package com.umc.BareuniBE.repository;public interface UserUpdateReq {
-}
+//package com.umc.BareuniBE.repository;public interface UserUpdateReq {
+//}
