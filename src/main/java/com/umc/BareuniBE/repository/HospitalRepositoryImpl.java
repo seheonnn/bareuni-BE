@@ -35,7 +35,7 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                                 review.totalScore.avg().as("totalScore"),
                                 review.count().as("reviewCnt"),
                                 hospital.summary.as("summary"),
-                                hospital.images.as("image")
+                                hospital.images.as("images")
                         )
                 )
                 .from(review, review)
@@ -59,7 +59,7 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                                 review.totalScore.avg().as("totalScore"),
                                 review.count().as("reviewCnt"),
                                 hospital.summary.as("summary"),
-                                hospital.images.as("image")
+                                hospital.images.as("images")
                         )
                 )
                 .from(review, review)
@@ -83,7 +83,7 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                                 review.totalScore.avg().as("totalScore"),
                                 review.count().as("reviewCnt"),
                                 hospital.summary.as("summary"),
-                                hospital.images.as("image")
+                                hospital.images.as("images")
                         )
                 )
                 .from(review, review)
@@ -94,5 +94,9 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                 .fetch();
 
         return hospitals;
+
+
+
+
     }
 }
