@@ -19,6 +19,14 @@ public class UserRes {
     @AllArgsConstructor
     @Getter
     @Setter
+    public static class SocialLoginRes {
+        private User user;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class UserSummary {
         private Long userIdx;
         private String nickName;
@@ -30,5 +38,4 @@ public class UserRes {
             this.profile = user.getProfile();
         }
     }
-
 }

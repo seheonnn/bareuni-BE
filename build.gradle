@@ -48,6 +48,9 @@ dependencies {
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	// OAuth2
+	//implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 	// swagger dependency
 	implementation "io.springfox:springfox-boot-starter:3.0.0"
 	implementation "io.springfox:springfox-swagger-ui:3.0.0"
