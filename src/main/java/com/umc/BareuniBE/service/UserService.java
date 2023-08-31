@@ -107,15 +107,14 @@ public class UserService {
         return false;
     }
 
-    public Boolean findUserByEmail(String email) throws BaseException{
+    public Long findUserByEmail(String email) throws BaseException{
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return true; // 중복됨
-            //return user.getUserIdx();
+            return user.getUserIdx();
         } else {
-            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL); // 중복 안됨 사용가능
+            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL);
         }
     }
 
@@ -319,5 +318,17 @@ public class UserService {
         }else{
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }*/
+    }
+
+    // 회원가입 시 이메일 중복 확인
+    public Boolean checkEmail(UserReq.EmailCheckReq request) throws BaseException{
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return true; // 중복됨
+        } else {
+            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL); // 중복 안됨 사용가능
+        }
     }
 }

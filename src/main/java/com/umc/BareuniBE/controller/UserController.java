@@ -3,6 +3,7 @@ package com.umc.BareuniBE.controller;
 import com.umc.BareuniBE.dto.PasswordUpdateReq;
 import com.umc.BareuniBE.dto.TokenDTO;
 import com.umc.BareuniBE.dto.UserReq;
+import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.global.BaseResponseStatus;
@@ -11,8 +12,10 @@ import com.umc.BareuniBE.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 import java.io.IOException;
@@ -135,9 +138,9 @@ public class UserController {
         return new BaseResponse<>(userService.createProfile(file, request));
     }
 
-    // 회원가입 시에 이메일 중복 확인
-    @PostMapping("/checkEmail")
-    public BaseResponse<Boolean> checkEmail(@RequestParam String email) throws BaseException {
-        return new BaseResponse<>(userService.findUserByEmail(email));
+    // 회원가입 시 이메일 중복 확인
+    @PostMapping("/join/check-email")
+    public BaseResponse<Boolean> checkEmail(UserReq.EmailCheckReq request) throws BaseException {
+        return new BaseResponse<>(userService.checkEmail(request));
     }
 }

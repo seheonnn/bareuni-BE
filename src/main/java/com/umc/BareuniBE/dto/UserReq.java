@@ -55,4 +55,13 @@ public class UserReq {
         private String provider;
         //private String profile;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class EmailCheckReq {
+        private String email;
+    }
+
 }
