@@ -56,17 +56,8 @@ public class UserController {
     //이메일 인증
     @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n ")
     @PostMapping("/email")
-    public BaseResponse<String> emailConfirm(@RequestParam String email) throws Exception {
-        if(userService.emailValidation(email)) {
-            try {
-                String ePw = emailService.sendSimpleMessage(email);
-//                이메일 임시비밀번호 발급 및 저장 코드
-//                userService.updatePassword(userService.findUserByEmail(email), ePw);
-                return new BaseResponse<>(ePw);
-            } catch (BaseException exception) {
-                return new BaseResponse<>(exception.getStatus());
-            }
-        } else return new BaseResponse<>(BaseResponseStatus.POST_USERS_INVALID_EMAIL);
+    public BaseResponse<String> emailConfirm(@RequestBody UserReq.EmailCheckReq emailCheckReq) throws Exception {
+        return new BaseResponse<>(emailService.sendSimpleMessage(emailCheckReq.getEmail()));
     }
 
     //비밀번호 찾기
@@ -140,7 +131,7 @@ public class UserController {
 
     // 회원가입 시 이메일 중복 확인
     @PostMapping("/join/check-email")
-    public BaseResponse<Boolean> checkEmail(UserReq.EmailCheckReq request) throws BaseException {
+    public BaseResponse<Boolean> checkEmail(@RequestBody UserReq.EmailCheckReq request) throws BaseException {
         return new BaseResponse<>(userService.checkEmail(request));
     }
 }
