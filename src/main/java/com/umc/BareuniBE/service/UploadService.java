@@ -22,7 +22,6 @@ import static com.umc.BareuniBE.global.BaseResponseStatus.POST_USERS_INVALID_EMA
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -36,8 +35,7 @@ public class UploadService {
     private final AmazonS3Client amazonS3Client;
 
     public String uploadImage(MultipartFile file) throws IOException, BaseException {
-        log.info(String.valueOf(file.getSize()));
-        if (file.getSize() > 1048576) {
+        if (file.getSize() > 1000000) {
             throw new BaseException(FILE_SIZE_LIMIT);
         }
         String filePath = UUID.randomUUID() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));

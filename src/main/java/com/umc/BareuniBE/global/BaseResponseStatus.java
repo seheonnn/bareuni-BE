@@ -89,7 +89,7 @@ public enum BaseResponseStatus {
     EMPTY_SEARCH_KEYWORD(false, 7000, "해당 키워드에 대한 검색 결과가 없습니다."),
 
     // 7000 : 이미지 관련
-    FILE_SIZE_LIMIT(false, 7001, "업로드 가능한 파일의 최대 크기는 1048576 바이트입니다.");
+    FILE_SIZE_LIMIT(false, 7001, "업로드 가능한 파일의 최대 크기는 10MB입니다.");
 
     private final boolean isSuccess;
     private final int code;
