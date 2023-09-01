@@ -2,7 +2,9 @@ package com.umc.BareuniBE.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.umc.BareuniBE.global.BaseException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,8 +17,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.umc.BareuniBE.global.BaseResponseStatus.FILE_SIZE_LIMIT;
+import static com.umc.BareuniBE.global.BaseResponseStatus.POST_USERS_INVALID_EMAIL;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -29,7 +35,11 @@ public class UploadService {
 
     private final AmazonS3Client amazonS3Client;
 
-    public String uploadImage(MultipartFile file) throws IOException {
+    public String uploadImage(MultipartFile file) throws IOException, BaseException {
+        log.info(String.valueOf(file.getSize()));
+        if (file.getSize() > 1048576) {
+            throw new BaseException(FILE_SIZE_LIMIT);
+        }
         String filePath = UUID.randomUUID() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
