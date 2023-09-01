@@ -31,8 +31,6 @@ public class EmailService{
         msgg+= "<div style='margin:20px;'>";
         msgg+= "<h1> Bareuni 인증 코드입니다. </h1>";
         msgg+= "<br>";
-        msgg+= "<p>아래 임시 비밀번호를 입력해주세요.<p>";
-        msgg+= "<br>";
         msgg+= "<div align='center' style='border:1px solid black; font-family:verdana';>";
         msgg+= "<h3 style='color:blue;'>인증 코드</h3>";
         msgg+= "<div style='font-size:130%'>";
