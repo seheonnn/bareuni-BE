@@ -66,15 +66,7 @@ public class ReviewService {
         Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page.getPageNumber(), page.getPageSize()));
 
         return reviews.map(review -> {
-                    ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes();
-                    reviewListRes.setReviewIdx(review.getReviewIdx());
-                    reviewListRes.setCreatedAt(review.getCreatedAt());
-                    reviewListRes.setUpdatedAt(review.getUpdatedAt());
-                    reviewListRes.setUser(review.getUser());
-                    reviewListRes.setContent(review.getContent());
-                    reviewListRes.setTotalScore(review.getTotalScore());
-                    reviewListRes.setReceipt(review.isReceipt());
-
+                    ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes(review, review.getUser());
                     return reviewListRes;
                 });
     }
