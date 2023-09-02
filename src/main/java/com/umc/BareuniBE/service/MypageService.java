@@ -18,8 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +50,8 @@ public class MypageService {
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UploadService uploadService;
+
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -136,7 +140,9 @@ public class MypageService {
     }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
-    public String userUpdate(Long userId, UserUpdateReq.MyUpdateReq myUpdateReq) throws BaseException {
+    public String userUpdate(Long userId, MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq) throws BaseException, IOException {
+
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
@@ -159,6 +165,14 @@ public class MypageService {
         if (myUpdateReq.isOrtho() != user.isOrtho()) {
             user.setOrtho(myUpdateReq.isOrtho());
         }
+
+        if (file != null){
+            uploadService.deleteImage(user.getProfile());
+            String url = uploadService.uploadImage(file);
+            user.setProfile(url);
+        }
+
+
         userRepository.save(user);
 
         return "회원 정보 수정 성공";
