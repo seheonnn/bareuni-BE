@@ -1,6 +1,7 @@
 package com.umc.BareuniBE.dto;
 
 import com.umc.BareuniBE.entities.User;
+import com.umc.BareuniBE.global.enums.GenderType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,5 +38,18 @@ public class UserRes {
             this.nickName = user.getNickname();
             this.profile = user.getProfile();
         }
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class UserInfo {
+        private String email;
+        private String nickname;
+        private GenderType gender;
+        private Long age;
+        private boolean ortho;
+        private String profile;
     }
 }

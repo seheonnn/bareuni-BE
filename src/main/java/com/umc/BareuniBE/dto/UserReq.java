@@ -31,6 +31,7 @@ public class UserReq {
         private GenderType gender;
         private String provider;
         private boolean ortho;
+        private boolean reception;
     }
 
     @NoArgsConstructor
