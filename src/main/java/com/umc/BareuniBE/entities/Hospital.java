@@ -52,8 +52,8 @@ public class Hospital extends BaseEntity {
     @Column(name = "summary", nullable = false)
     private String summary;
 
-    @Column(name = "image", nullable = true)
-    private String image;
+    @Column(name = "images", nullable = true, length = 1000)
+    private String images;
 
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
     @JsonIgnore

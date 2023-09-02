@@ -1,20 +1,27 @@
 package com.umc.BareuniBE.service;
 
+import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.*;
 
 import com.umc.BareuniBE.dto.UserUpdateReq;
+import com.umc.BareuniBE.entities.Hospital;
 import com.umc.BareuniBE.entities.Review;
+import com.umc.BareuniBE.entities.Scrap;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +32,7 @@ import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MypageService {
 
     @Value("${num.api.key}")
@@ -41,14 +49,17 @@ public class MypageService {
     private final ScrapRepository scrapRepository;
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UploadService uploadService;
+
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 
     // 작성한 글 목록 조회 (최신순)
-    public List<CommunityRes.CommunityListRes> getMyCommunityList(Long userId, Pageable page) throws BaseException {
-        User user = userRepository.findById(userId)
+    public List<CommunityRes.CommunityListRes> getMyCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
         List<Object[]> communities = communityRepository.MyCommunityList(user, page);
 
@@ -59,7 +70,7 @@ public class MypageService {
                     communityRes.setCreatedAt( communityData[1]);
                     communityRes.setUpdatedAt( communityData[2]);
                     communityRes.setContent( communityData[3]);
-//                    communityRes.setUser(userRepository.findById(((BigInteger) communityData[4]).longValue()).orElse(null));
+                    communityRes.setUser(userRepository.findById(((BigInteger)communityData[4]).longValue()).orElse(null));
                     communityRes.setLike(communityData[5]);
 
                     return communityRes;
@@ -68,45 +79,30 @@ public class MypageService {
     }
 
     // 치과 저장 목록 조회
-    public List<HospitalRes.HospitalListRes> getMyHospitalList(Long userId, Pageable page) throws BaseException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+    public List<HospitalRes.HospitalListRes> getMyHospitalList(HttpServletRequest request) throws BaseException {
 
-        List<Object[]> scrap = scrapRepository.MyScrapList(user, page);
+        List<Object[]> scraps = scrapRepository.findAllMyScrapHosList(jwtTokenProvider.getCurrentUser(request));
 
-        return scrap.stream()
-                .map(hospitalData -> {
-                    HospitalRes.HospitalListRes hospitalRes = new HospitalRes.HospitalListRes();
-                    hospitalRes.setScrapIdx(hospitalData[0]);
-                    hospitalRes.setCreatedAt(hospitalData[1]);
-                    hospitalRes.setUpdatedAt( hospitalData[2]);
-                    hospitalRes.setUser(userRepository.findById(((Long) hospitalData[3]).longValue()).orElse(null));
-                    hospitalRes.setHospital( hospitalData[4]);
+        List<HospitalRes.HospitalListRes> result = scraps.stream()
+                .map(scrapData -> {
+                    return new HospitalRes.HospitalListRes(scrapData);
+                }).collect(Collectors.toList());
 
-                    return hospitalRes;
-                })
-                .collect(Collectors.toList());
+
+        return result;
     }
 
     // 작성한 리뷰 목록 조회 (최신순)
 
-    public List<ReviewRes.ReviewListRes> getMyReviewList(Long userId, Pageable page) throws BaseException {
-        User user = userRepository.findById(userId)
+    public List<ReviewRes.ReviewListRes> getMyReviewList(Pageable page, HttpServletRequest request) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
         List<Review> reviews = reviewRepository.findReviewByUser(page, user);
 
         return reviews.stream()
                 .map(reviewData -> {
-                    ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes();
-                    reviewListRes.setReviewIdx(reviewData.getReviewIdx());
-                    reviewListRes.setCreatedAt(reviewData.getCreatedAt());
-                    reviewListRes.setUpdatedAt(reviewData.getUpdatedAt());
-                    reviewListRes.setUser(user);
-                    reviewListRes.setContent(reviewData.getContent());
-                    reviewListRes.setReceipt(reviewData.isReceipt());
-                    reviewListRes.setTotalScore(reviewData.getTotalScore());
-
+                    ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes(reviewData, user);
                     return reviewListRes;
                 })
                 .collect(Collectors.toList());
@@ -136,7 +132,9 @@ public class MypageService {
     }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
-    public String userUpdate(Long userId, UserUpdateReq.MyUpdateReq myUpdateReq) throws BaseException {
+    public String userUpdate(Long userId, MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq) throws BaseException, IOException {
+
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
@@ -159,6 +157,14 @@ public class MypageService {
         if (myUpdateReq.isOrtho() != user.isOrtho()) {
             user.setOrtho(myUpdateReq.isOrtho());
         }
+
+        if (file != null){
+            uploadService.deleteImage(user.getProfile());
+            String url = uploadService.uploadImage(file);
+            user.setProfile(url);
+        }
+
+
         userRepository.save(user);
 
         return "회원 정보 수정 성공";
@@ -170,8 +176,8 @@ public class MypageService {
         return password.matches(PASSWORD_PATTERN);
     }
 
-    public String changePassword(Long userId, PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq) throws BaseException {
-        User user = userRepository.findById(userId)
+    public String changePassword(PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq, HttpServletRequest request) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
         // 입력된 현재 비밀번호가 데이터베이스에 저장된 현재 비밀번호와 일치하는지 확인

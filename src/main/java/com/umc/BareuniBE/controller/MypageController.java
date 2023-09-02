@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,43 +30,40 @@ public class MypageController {
 
     // 작성한 글 목록 조회 (최신순)
     @ApiOperation(value = "작성한 글 목록 조회(최신순)", notes = "ex) http://localhost:8080/mypage/community/1?page=0&size=10&sort=created_at,desc")
-    @GetMapping("/community/{userId}")
+    @GetMapping("/community")
     public BaseResponse<List<CommunityRes.CommunityListRes>> getMyCommunityList(
-            @PathVariable Long userId,
-            @PageableDefault(page = 0, size = 10, sort = "created_at", direction = Sort.Direction.DESC) Pageable page
+            @PageableDefault(page = 0, size = 10, sort = "created_at", direction = Sort.Direction.DESC) Pageable page,
+            HttpServletRequest request
     ) throws BaseException {
-        return new BaseResponse<>(mypageService.getMyCommunityList(userId, page));
+        return new BaseResponse<>(mypageService.getMyCommunityList(page, request));
     }
 
     // 치과 저장 목록 조회 (최신순)
     @ApiOperation(value = "치과 저장 목록(스크랩) 조회 (최신순)", notes = "ex) http://localhost:8080/mypage/scrap/1?page=0&size=10&sort=createdAt,desc\n\n")
-    @GetMapping("/scrap/{userId}")
-    public BaseResponse<List<HospitalRes.HospitalListRes>> getMyHospitalList(
-            @PathVariable Long userId,
-            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
-    ) throws BaseException {
-        return new BaseResponse<>(mypageService.getMyHospitalList(userId, page));
+    @GetMapping("/scrap")
+    public BaseResponse<List<HospitalRes.HospitalListRes>> getMyHospitalList(HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(mypageService.getMyHospitalList(request));
     }
 
     // 작성한 리뷰 목록 조회 (최신순)
     @ApiOperation(value = "작성한 리뷰 목록 조회 (최신순)", notes = "ex) http://localhost:8080/mypage/reviews/1?page=0&size=10&sort=createdAt,desc\n\n")
-    @GetMapping("/reviews/{userId}")
+    @GetMapping("/reviews")
     public BaseResponse<List<ReviewRes.ReviewListRes>> getMyReviewList(
-            @PathVariable Long userId,
-            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page,
+            HttpServletRequest request
     ) throws BaseException {
-        return new BaseResponse<>(mypageService.getMyReviewList(userId, page));
+        return new BaseResponse<>(mypageService.getMyReviewList(page, request));
     }
 
-    // 예약 내역 조회 (다가오는 예약 날짜 순?)
-    @ApiOperation(value = "예약 내역 조회", notes = "ex) http://localhost:8080/mypage/booking/1?page=0&size=10&sort=bookingDate,desc")
-    @GetMapping("/booking/{userId}")
-    public BaseResponse<List<BookingRes.BookingListRes>> getMyBookingList(
-            @PathVariable Long userId,
-            @PageableDefault(page = 0, size = 10, sort = "bookingDate", direction = Sort.Direction.ASC) Pageable page
-    ) throws BaseException {
-        return new BaseResponse<>(mypageService.getMyBookingList(userId, page));
-    }
+//    // 예약 내역 조회 (다가오는 예약 날짜 순?)
+//    @ApiOperation(value = "예약 내역 조회", notes = "ex) http://localhost:8080/mypage/booking/1?page=0&size=10&sort=bookingDate,desc")
+//    @GetMapping("/booking/{userId}")
+//    public BaseResponse<List<BookingRes.BookingListRes>> getMyBookingList(
+//            @PathVariable Long userId,
+//            @PageableDefault(page = 0, size = 10, sort = "bookingDate", direction = Sort.Direction.ASC) Pageable page
+//    ) throws BaseException {
+//        return new BaseResponse<>(mypageService.getMyBookingList(userId, page));
+//    }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
     @ApiOperation(value = "회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)", notes = "ex) http://localhost:8080/mypage/users/1\n\n" +
@@ -78,9 +77,10 @@ public class MypageController {
     @PatchMapping("/users/{userId}")
     public BaseResponse<String> userUpdate(
             @PathVariable Long userId,
-            @RequestBody UserUpdateReq.MyUpdateReq myUpdateReq
-    ) throws BaseException {
-        return new BaseResponse<>(mypageService.userUpdate(userId, myUpdateReq));
+            @ModelAttribute UserUpdateReq.UpdateRequestWrapper requestWrapper
+
+    ) throws BaseException, IOException {
+        return new BaseResponse<>(mypageService.userUpdate(userId, requestWrapper.getFile(), requestWrapper.getMyUpdateReq()));
     }
 
     // 비밀번호 변경
@@ -90,12 +90,12 @@ public class MypageController {
             "  \"currentPassword\": \"abc123\",\n\n" +
             "  \"newPassword\": \"abc1234\"\n\n" +
             "}")
-    @PatchMapping("/users/password/{userId}")
+    @PatchMapping("/users/password")
     public BaseResponse<String> changePassword(
-            @PathVariable Long userId,
-            @RequestBody PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq
+            @RequestBody PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq,
+            HttpServletRequest request
     ) throws BaseException {
-        return new BaseResponse<>(mypageService.changePassword(userId, passwordUpdateReq));
+        return new BaseResponse<>(mypageService.changePassword(passwordUpdateReq, request));
     }
 
     // 전화번호 인증

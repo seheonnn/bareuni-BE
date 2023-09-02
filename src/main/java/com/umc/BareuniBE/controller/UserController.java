@@ -3,6 +3,7 @@ package com.umc.BareuniBE.controller;
 import com.umc.BareuniBE.dto.PasswordUpdateReq;
 import com.umc.BareuniBE.dto.TokenDTO;
 import com.umc.BareuniBE.dto.UserReq;
+import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.global.BaseResponseStatus;
@@ -11,8 +12,10 @@ import com.umc.BareuniBE.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 import java.io.IOException;
@@ -53,17 +56,8 @@ public class UserController {
     //이메일 인증
     @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n ")
     @PostMapping("/email")
-    public BaseResponse<String> emailConfirm(@RequestParam String email) throws Exception {
-        if(userService.emailValidation(email)) {
-            try {
-                String ePw = emailService.sendSimpleMessage(email);
-//                이메일 임시비밀번호 발급 및 저장 코드
-//                userService.updatePassword(userService.findUserByEmail(email), ePw);
-                return new BaseResponse<>(ePw);
-            } catch (BaseException exception) {
-                return new BaseResponse<>(exception.getStatus());
-            }
-        } else return new BaseResponse<>(BaseResponseStatus.POST_USERS_INVALID_EMAIL);
+    public BaseResponse<String> emailConfirm(@RequestBody UserReq.EmailCheckReq emailCheckReq) throws Exception {
+        return new BaseResponse<>(emailService.sendSimpleMessage(emailCheckReq.getEmail()));
     }
 
     //비밀번호 찾기
@@ -124,5 +118,20 @@ public class UserController {
     public BaseResponse<String> UserTest(HttpServletRequest request) throws BaseException {
         System.out.println("test함수 실행");
         return new BaseResponse<>(userService.test(request));
+    }
+
+    // 소셜 로그인 가입 시 프로필 설정
+    @PostMapping("/profile")
+    public BaseResponse<UserRes.SocialLoginRes> createProfile(
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "request") @Valid UserReq.UserProfileReq request
+    ) throws BaseException, IOException {
+        return new BaseResponse<>(userService.createProfile(file, request));
+    }
+
+    // 회원가입 시 이메일 중복 확인
+    @PostMapping("/join/check-email")
+    public BaseResponse<Boolean> checkEmail(@RequestBody UserReq.EmailCheckReq request) throws BaseException {
+        return new BaseResponse<>(userService.checkEmail(request));
     }
 }
