@@ -1,7 +1,5 @@
 package com.umc.BareuniBE.dto;
 
-import com.umc.BareuniBE.entities.Hospital;
-import com.umc.BareuniBE.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,7 +64,7 @@ public class HospitalRes {
         private Long hospitalIdx;
         private String hosName;
         private boolean bookable;
-        private String closedDay;
+        private String[] closedDay;
         private boolean todayClosed;
         private String address;
         private String keywords;

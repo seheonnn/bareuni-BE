@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
@@ -81,7 +82,20 @@ public class HospitalService {
         hospitalDetailRes.setHospitalIdx(result.getHospital_idx());
         hospitalDetailRes.setHosName(result.getHospital_name());
         hospitalDetailRes.setBookable(result.getBookable());
-        hospitalDetailRes.setClosedDay(result.getClosed_day());
+//        hospitalDetailRes.setClosedDay(result.getClosed_day());
+
+        String closed_days_str = result.getClosed_day();
+        StringTokenizer st = new StringTokenizer(closed_days_str);
+        String[] closed_days = new String[st.countTokens()];
+
+        int idx = 0;
+        while (st.hasMoreTokens()) {
+            closed_days[idx] = st.nextToken();
+            idx++;
+        }
+
+        hospitalDetailRes.setClosedDay(closed_days);
+
         hospitalDetailRes.setAddress(result.getAddress());
         hospitalDetailRes.setKeywords(result.getKeywords());
         hospitalDetailRes.setOpenTime(result.getOpen_time());
@@ -93,11 +107,19 @@ public class HospitalService {
         // 오늘 휴무일인지 아닌지 여부
         GregorianCalendar calendar_new = new GregorianCalendar();
         int week = calendar_new.get(Calendar.DAY_OF_WEEK);
-        String[] weekname = {"Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"};
+
+        String[] weekname = {"", "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday", "Saturday"};
         boolean todayClosed = false;
-        if (weekname[week].equals(result.getClosed_day())) {
-            todayClosed = true;
+
+        System.out.println(week);
+
+        for (String closedDay : closed_days) {
+            if (weekname[week].equals(closedDay)) {
+                todayClosed = true;
+                break;
+            }
         }
+
         hospitalDetailRes.setTodayClosed(todayClosed);
 
         hospitalDetailRes.setTotalScore(result.getTotal_score());
