@@ -8,6 +8,7 @@ import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.service.ReviewService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -39,11 +41,11 @@ public class ReviewController {
             "  \"userIdx\": 1\n\n" +
             "}")
     @PostMapping("")
-    public BaseResponse<ReviewRes.ReviewCreateRes> createReview(
-            @RequestPart(value = "files", required = false) List<MultipartFile> files,
-            @RequestPart(value = "request") @Valid ReviewReq.ReviewCreateReq request
+    public BaseResponse<ReviewRes.ReviewListRes> createReview(
+            @ModelAttribute ReviewReq.ReviewCreateWrapper reviewCreateWrapper,
+            HttpServletRequest request
     ) throws BaseException {
-        return new BaseResponse<>(reviewService.createReview(files, request));
+        return new BaseResponse<>(reviewService.createReview(reviewCreateWrapper.getFiles(), reviewCreateWrapper.getReviewCreateReq(), request));
     }
 
 
