@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,6 +76,9 @@ public class ReviewService {
                     reviewListRes.setTotalScore(review.getTotalScore());
                     reviewListRes.setReceipt(review.isReceipt());
 
+                    if (review.getImages() != null)
+                        reviewListRes.setImages(Arrays.asList(review.getImages().split(",")));
+
                     return reviewListRes;
                 });
     }
@@ -94,6 +98,9 @@ public class ReviewService {
                     reviewStatisticsRes.setTotalScore(review.getTotalScore());
                     reviewStatisticsRes.setReceipt(review.isReceipt());
 
+                    if (review.getImages() != null)
+                        reviewStatisticsRes.setImages(Arrays.asList(review.getImages().split(",")));
+
                     return reviewStatisticsRes;
                 })
                 .collect(Collectors.toList());
@@ -112,6 +119,9 @@ public class ReviewService {
         reviewDetailRes.setTotalScore(review.getTotalScore());
         reviewDetailRes.setPayment(review.getPayment());
         reviewDetailRes.setReceipt(review.isReceipt());
+
+        if (review.getImages() != null)
+            reviewDetailRes.setImages(Arrays.asList(review.getImages().split(",")));
 
         return reviewDetailRes;
     }
