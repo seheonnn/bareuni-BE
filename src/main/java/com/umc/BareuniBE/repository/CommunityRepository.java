@@ -56,7 +56,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long>, Com
                             "    on c.community_idx = le.community\n" +
                             "    group by c.community_idx\n" +
                             "    order by likeCnt DESC\n" +
-                            "    limit 5",
+                            "    limit 4",
             nativeQuery = true
     )
     List<Object[]> getBestCommunityList();
