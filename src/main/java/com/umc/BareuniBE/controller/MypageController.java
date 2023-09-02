@@ -46,23 +46,23 @@ public class MypageController {
 
     // 작성한 리뷰 목록 조회 (최신순)
     @ApiOperation(value = "작성한 리뷰 목록 조회 (최신순)", notes = "ex) http://localhost:8080/mypage/reviews/1?page=0&size=10&sort=createdAt,desc\n\n")
-    @GetMapping("/reviews/{userId}")
+    @GetMapping("/reviews")
     public BaseResponse<List<ReviewRes.ReviewListRes>> getMyReviewList(
-            @PathVariable Long userId,
-            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page,
+            HttpServletRequest request
     ) throws BaseException {
-        return new BaseResponse<>(mypageService.getMyReviewList(userId, page));
+        return new BaseResponse<>(mypageService.getMyReviewList(page, request));
     }
 
-    // 예약 내역 조회 (다가오는 예약 날짜 순?)
-    @ApiOperation(value = "예약 내역 조회", notes = "ex) http://localhost:8080/mypage/booking/1?page=0&size=10&sort=bookingDate,desc")
-    @GetMapping("/booking/{userId}")
-    public BaseResponse<List<BookingRes.BookingListRes>> getMyBookingList(
-            @PathVariable Long userId,
-            @PageableDefault(page = 0, size = 10, sort = "bookingDate", direction = Sort.Direction.ASC) Pageable page
-    ) throws BaseException {
-        return new BaseResponse<>(mypageService.getMyBookingList(userId, page));
-    }
+//    // 예약 내역 조회 (다가오는 예약 날짜 순?)
+//    @ApiOperation(value = "예약 내역 조회", notes = "ex) http://localhost:8080/mypage/booking/1?page=0&size=10&sort=bookingDate,desc")
+//    @GetMapping("/booking/{userId}")
+//    public BaseResponse<List<BookingRes.BookingListRes>> getMyBookingList(
+//            @PathVariable Long userId,
+//            @PageableDefault(page = 0, size = 10, sort = "bookingDate", direction = Sort.Direction.ASC) Pageable page
+//    ) throws BaseException {
+//        return new BaseResponse<>(mypageService.getMyBookingList(userId, page));
+//    }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
     @ApiOperation(value = "회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)", notes = "ex) http://localhost:8080/mypage/users/1\n\n" +
@@ -88,12 +88,12 @@ public class MypageController {
             "  \"currentPassword\": \"abc123\",\n\n" +
             "  \"newPassword\": \"abc1234\"\n\n" +
             "}")
-    @PatchMapping("/users/password/{userId}")
+    @PatchMapping("/users/password")
     public BaseResponse<String> changePassword(
-            @PathVariable Long userId,
-            @RequestBody PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq
+            @RequestBody PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq,
+            HttpServletRequest request
     ) throws BaseException {
-        return new BaseResponse<>(mypageService.changePassword(userId, passwordUpdateReq));
+        return new BaseResponse<>(mypageService.changePassword(passwordUpdateReq, request));
     }
 
     // 전화번호 인증
