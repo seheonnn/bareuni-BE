@@ -6,7 +6,6 @@ import com.umc.BareuniBE.dto.UserReq;
 import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
-import com.umc.BareuniBE.global.BaseResponseStatus;
 import com.umc.BareuniBE.service.EmailService;
 import com.umc.BareuniBE.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -133,5 +132,11 @@ public class UserController {
     @PostMapping("/join/check-email")
     public BaseResponse<Boolean> checkEmail(@RequestBody UserReq.EmailCheckReq request) throws BaseException {
         return new BaseResponse<>(userService.checkEmail(request));
+    }
+
+    // 회원정보 조회
+    @GetMapping("/info")
+    public BaseResponse<UserRes.UserInfo> getUserInfo(HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(userService.getUserInfo(request));
     }
 }
