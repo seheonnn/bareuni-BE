@@ -76,6 +76,7 @@ public class UserService {
                     .role(RoleType.USER)
                     .provider(request.getProvider())
                     .profile(profileUrl)
+                    .reception(request.isReception())
                     .build();
             User user = userRepository.saveAndFlush(newUser);
             return new UserRes.UserJoinRes(user);
@@ -330,5 +331,21 @@ public class UserService {
         } else {
             throw new BaseException(POST_USERS_NOT_FOUND_EMAIL); // 중복 안됨 사용가능
         }
+    }
+
+    // 회원정보 조회
+    public UserRes.UserInfo getUserInfo(HttpServletRequest request) throws BaseException {
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new BaseException(FAILED_TO_LOGIN));
+
+        UserRes.UserInfo userInfo = new UserRes.UserInfo();
+        userInfo.setEmail(user.getEmail());
+        userInfo.setNickname(user.getNickname());
+        userInfo.setNickname(user.getNickname());
+        userInfo.setAge(user.getAge());
+        userInfo.setOrtho(user.isOrtho());
+        userInfo.setProfile(user.getProfile());
+        return userInfo;
     }
 }
