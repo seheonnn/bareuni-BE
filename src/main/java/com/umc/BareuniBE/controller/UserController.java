@@ -1,12 +1,10 @@
 package com.umc.BareuniBE.controller;
 
-import com.umc.BareuniBE.dto.PasswordUpdateReq;
 import com.umc.BareuniBE.dto.TokenDTO;
 import com.umc.BareuniBE.dto.UserReq;
 import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
-import com.umc.BareuniBE.global.BaseResponseStatus;
 import com.umc.BareuniBE.service.EmailService;
 import com.umc.BareuniBE.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -16,9 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
-
 import java.io.IOException;
+import java.util.List;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.SUCCESS;
 
@@ -54,24 +51,24 @@ public class UserController {
 
 
     //이메일 인증
-    @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n ")
+//    @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n ")
     @PostMapping("/email")
     public BaseResponse<String> emailConfirm(@RequestBody UserReq.EmailCheckReq emailCheckReq) throws Exception {
-        return new BaseResponse<>(emailService.sendSimpleMessage(emailCheckReq.getEmail()));
+        return new BaseResponse<>(emailService.sendSimpleMessage(emailCheckReq.getEmail(), false));
     }
 
     //비밀번호 찾기
-    @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n " +
-            "{\n\n" +
-            "    \"newPassword\": \"asdasd123\",\n\n" +
-            "    \"confirmPassword\"asdasd123,\n\n" +
-            "}")
+//    @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n " +
+//            "{\n\n" +
+//            "    \"newPassword\": \"asdasd123\",\n\n" +
+//            "    \"confirmPassword\"asdasd123,\n\n" +
+//            "}")
     @PostMapping("/password")
-    public BaseResponse<String> changePassword(
-            @RequestParam String email,
-            @RequestBody PasswordUpdateReq.NewPasswordUpdateReq passwordUpdateReq
-    ) throws BaseException {
-        return new BaseResponse<>(userService.changePassword(email, passwordUpdateReq));
+    public BaseResponse<String> changePassword(@RequestBody UserReq.EmailCheckReq emailCheckReq) throws Exception {
+        emailService.sendSimpleMessage(emailCheckReq.getEmail(), true);
+        Long userIdx = userService.findUserByEmail(emailCheckReq.getEmail());
+        System.out.println(userIdx);
+        return new BaseResponse<>(userService.updatePassword(userIdx, emailCheckReq.getEmail()));
     }
 
     // 로그인
