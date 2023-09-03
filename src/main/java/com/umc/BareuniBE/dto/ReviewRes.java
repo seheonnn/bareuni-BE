@@ -52,12 +52,22 @@ public class ReviewRes {
         private Long reviewIdx;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
-        private User user;
+        private UserRes.UserSummary user;
         private String content;
         private int totalScore;
         private boolean receipt;
         private List<String> images;
 
+        public ReviewSearchListRes(Review review, User user) {
+            this.reviewIdx = review.getReviewIdx();
+            this.createdAt = review.getCreatedAt();
+            this.updatedAt = review.getUpdatedAt();
+            this.user = new UserRes.UserSummary(user);
+            this.content = review.getContent();
+            this.totalScore = review.getTotalScore();
+            this.receipt = review.isReceipt();
+            this.images = List.of(review.getImages().split(","));
+        }
     }
 
     @Getter @Setter

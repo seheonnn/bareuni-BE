@@ -20,15 +20,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
         List<ReviewRes.ReviewSearchListRes> reviews = queryFactory
                 .select(
                         Projections.constructor(ReviewRes.ReviewSearchListRes.class,
-                                review.reviewIdx,
-                                review.createdAt,
-                                review.updatedAt,
-                                review.user,
-                                review.content,
-                                review.totalScore,
-                                review.receipt,
-                                review.images
-                        )
+                                review,
+                                review.user)
                 )
                 .from(review, review)
                 .where(review.content.contains(keyword))
