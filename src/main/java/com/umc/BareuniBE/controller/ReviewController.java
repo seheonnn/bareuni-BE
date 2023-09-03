@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @RestController
@@ -52,9 +53,8 @@ public class ReviewController {
     // 리뷰 조회 (최신순, 총점순)
     @ApiOperation(value = "리뷰 조회 (최신순, 총점순)", notes = "ex) http://localhost:8080/reviews?page=0&size=2&sort=created_at,desc")
     @GetMapping("")
-    public BaseResponse<Page<ReviewRes.ReviewListRes>> getReviewList(@PageableDefault(page = 0, size = 2) Pageable page) {
-        Page<ReviewRes.ReviewListRes> reviewListRes = reviewService.getReviewList(page);
-
+    public BaseResponse<Stream<ReviewRes.ReviewListRes>> getReviewList(@PageableDefault(page = 0, size = 2) Pageable page) {
+        Stream<ReviewRes.ReviewListRes> reviewListRes = reviewService.getReviewList(page);
         return new BaseResponse<>(reviewListRes);
     }
 
@@ -81,7 +81,7 @@ public class ReviewController {
     // 검색 - 치과 리뷰
     @ApiOperation(value = "검색 - 치과 리뷰", notes = "ex) http://localhost:8080/reviews/search?keyword=아쉽")
     @GetMapping("/search")
-    public BaseResponse<List<ReviewRes.ReviewListRes>> searchReview (
+    public BaseResponse<List<ReviewRes.ReviewSearchListRes>> searchReview (
             @RequestParam(value = "keyword") String keyword
     ) throws BaseException {
         return new BaseResponse<>(reviewService.searchReview(keyword));
