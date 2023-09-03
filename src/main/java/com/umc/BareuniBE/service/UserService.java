@@ -1,10 +1,12 @@
 package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
-import com.umc.BareuniBE.dto.*;
+import com.umc.BareuniBE.dto.PasswordUpdateReq;
+import com.umc.BareuniBE.dto.TokenDTO;
+import com.umc.BareuniBE.dto.UserReq;
+import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
-import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.global.enums.RoleType;
 import com.umc.BareuniBE.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +15,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -126,7 +127,7 @@ public class UserService {
 
     public String changePassword(String email, PasswordUpdateReq.NewPasswordUpdateReq passwordUpdateReq) throws BaseException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+                .orElseThrow(() -> new BaseException(POST_USERS_NOT_FOUND_EMAIL));
 
         // 새로운 비밀번호 형식이 맞는지 확인
         String newPassword = passwordUpdateReq.getNewPassword();

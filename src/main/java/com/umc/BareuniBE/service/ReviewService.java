@@ -72,9 +72,9 @@ public class ReviewService {
         Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page.getPageNumber(), page.getPageSize()));
 
         return reviews.stream().map(review -> {
-                    ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes(review, review.getUser());
-                    return reviewListRes;
-                });
+            ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes(review, review.getUser());
+            return reviewListRes;
+        });
     }
 
 
