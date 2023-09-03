@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
@@ -67,10 +68,10 @@ public class ReviewService {
     }
 
 
-    public Page<ReviewRes.ReviewListRes> getReviewList(Pageable page){
+    public Stream<ReviewRes.ReviewListRes> getReviewList(Pageable page){
         Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page.getPageNumber(), page.getPageSize()));
 
-        return reviews.map(review -> {
+        return reviews.stream().map(review -> {
                     ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes(review, review.getUser());
                     return reviewListRes;
                 });
@@ -82,15 +83,7 @@ public class ReviewService {
 
         return reviews.stream()
                 .map(review -> {
-                    ReviewRes.ReviewStatisticsRes reviewStatisticsRes = new ReviewRes.ReviewStatisticsRes();
-                    reviewStatisticsRes.setReviewIdx(review.getReviewIdx());
-                    reviewStatisticsRes.setCreatedAt(review.getCreatedAt());
-                    reviewStatisticsRes.setUpdatedAt(review.getUpdatedAt());
-                    reviewStatisticsRes.setUser(review.getUser());
-                    reviewStatisticsRes.setContent(review.getContent());
-                    reviewStatisticsRes.setTotalScore(review.getTotalScore());
-                    reviewStatisticsRes.setReceipt(review.isReceipt());
-
+                    ReviewRes.ReviewStatisticsRes reviewStatisticsRes = new ReviewRes.ReviewStatisticsRes(review);
                     return reviewStatisticsRes;
                 })
                 .collect(Collectors.toList());
@@ -113,8 +106,8 @@ public class ReviewService {
         return reviewDetailRes;
     }
 
-    public List<ReviewRes.ReviewListRes> searchReview(String keyword) throws BaseException {
-        List<ReviewRes.ReviewListRes> reviewList = reviewRepository.searchReview(keyword);
+    public List<ReviewRes.ReviewSearchListRes> searchReview(String keyword) throws BaseException {
+        List<ReviewRes.ReviewSearchListRes> reviewList = reviewRepository.searchReview(keyword);
 
         if (reviewList.isEmpty()) {
             throw new BaseException(EMPTY_SEARCH_KEYWORD);
