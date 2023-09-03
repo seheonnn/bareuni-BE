@@ -88,13 +88,13 @@ public class UserService {
 
     //임시비밀번호 발급 및 재설정
     @Transactional
-    public boolean updatePassword(Long userIdx, String newPassword) throws BaseException{
+    public String updatePassword(Long userIdx, String newPassword) throws BaseException{
         Optional<User> user = userRepository.findById(userIdx);
         user.ifPresent(u -> {
-            u.setPassword(newPassword);
+            u.setPassword(encoder.encode(newPassword));
             userRepository.saveAndFlush(u);
         });
-        return true;
+        throw new BaseException(SUCCESS);
     }
 
     public boolean emailValidation(String email) throws BaseException {
