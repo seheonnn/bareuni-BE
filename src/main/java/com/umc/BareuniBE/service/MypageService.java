@@ -132,10 +132,10 @@ public class MypageService {
     }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
-    public String userUpdate(Long userId, MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq) throws BaseException, IOException {
+    public String userUpdate(MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq, HttpServletRequest request) throws BaseException, IOException {
 
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
         if (myUpdateReq.getNickname() != null) {
@@ -199,7 +199,7 @@ public class MypageService {
 
         // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
         if (newPassword != null) {
-            user.setPassword(newPassword);
+            user.setPassword(encoder.encode(newPassword));
         }
         userRepository.save(user);
         return "비밀번호 변경 성공";

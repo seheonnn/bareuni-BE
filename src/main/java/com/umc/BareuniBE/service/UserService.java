@@ -64,7 +64,7 @@ public class UserService {
 
             String encryptedPw = encoder.encode(request.getPassword());
 
-            String profileUrl = file == null ? "기본 이미지" : uploadService.uploadImage(file);
+            String profileUrl = file == null ? null : uploadService.uploadImage(file);
 
             User newUser = User.builder()
                     .email(request.getEmail())
@@ -76,6 +76,7 @@ public class UserService {
                     .role(RoleType.USER)
                     .provider(request.getProvider())
                     .profile(profileUrl)
+                    .reception(request.isReception())
                     .build();
             User user = userRepository.saveAndFlush(newUser);
             return new UserRes.UserJoinRes(user);
@@ -141,7 +142,7 @@ public class UserService {
 
         // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
         if (newPassword != null) {
-            user.setPassword(newPassword);
+            user.setPassword(encoder.encode(newPassword));
         }
 
         userRepository.save(user);
@@ -330,5 +331,21 @@ public class UserService {
         } else {
             throw new BaseException(POST_USERS_NOT_FOUND_EMAIL); // 중복 안됨 사용가능
         }
+    }
+
+    // 회원정보 조회
+    public UserRes.UserInfo getUserInfo(HttpServletRequest request) throws BaseException {
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new BaseException(FAILED_TO_LOGIN));
+
+        UserRes.UserInfo userInfo = new UserRes.UserInfo();
+        userInfo.setEmail(user.getEmail());
+        userInfo.setNickname(user.getNickname());
+        userInfo.setNickname(user.getNickname());
+        userInfo.setAge(user.getAge());
+        userInfo.setOrtho(user.isOrtho());
+        userInfo.setProfile(user.getProfile());
+        return userInfo;
     }
 }

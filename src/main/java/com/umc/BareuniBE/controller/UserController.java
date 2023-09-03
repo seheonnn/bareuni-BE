@@ -134,4 +134,10 @@ public class UserController {
     public BaseResponse<Boolean> checkEmail(@RequestBody UserReq.EmailCheckReq request) throws BaseException {
         return new BaseResponse<>(userService.checkEmail(request));
     }
+
+    // 회원정보 조회
+    @GetMapping("/info")
+    public BaseResponse<UserRes.UserInfo> getUserInfo(HttpServletRequest request) throws BaseException {
+        return new BaseResponse<>(userService.getUserInfo(request));
+    }
 }
