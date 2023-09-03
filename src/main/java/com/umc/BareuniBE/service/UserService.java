@@ -1,10 +1,12 @@
 package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
-import com.umc.BareuniBE.dto.*;
+import com.umc.BareuniBE.dto.PasswordUpdateReq;
+import com.umc.BareuniBE.dto.TokenDTO;
+import com.umc.BareuniBE.dto.UserReq;
+import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
-import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.global.enums.RoleType;
 import com.umc.BareuniBE.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +15,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +65,7 @@ public class UserService {
 
             String encryptedPw = encoder.encode(request.getPassword());
 
-            String profileUrl = file == null ? "기본 이미지" : uploadService.uploadImage(file);
+            String profileUrl = file == null ? null : uploadService.uploadImage(file);
 
             User newUser = User.builder()
                     .email(request.getEmail())
@@ -76,6 +77,7 @@ public class UserService {
                     .role(RoleType.USER)
                     .provider(request.getProvider())
                     .profile(profileUrl)
+                    .reception(request.isReception())
                     .build();
             User user = userRepository.saveAndFlush(newUser);
             return new UserRes.UserJoinRes(user);
@@ -125,7 +127,7 @@ public class UserService {
 
     public String changePassword(String email, PasswordUpdateReq.NewPasswordUpdateReq passwordUpdateReq) throws BaseException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+                .orElseThrow(() -> new BaseException(POST_USERS_NOT_FOUND_EMAIL));
 
         // 새로운 비밀번호 형식이 맞는지 확인
         String newPassword = passwordUpdateReq.getNewPassword();
@@ -141,7 +143,7 @@ public class UserService {
 
         // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
         if (newPassword != null) {
-            user.setPassword(newPassword);
+            user.setPassword(encoder.encode(newPassword));
         }
 
         userRepository.save(user);
@@ -330,5 +332,21 @@ public class UserService {
         } else {
             throw new BaseException(POST_USERS_NOT_FOUND_EMAIL); // 중복 안됨 사용가능
         }
+    }
+
+    // 회원정보 조회
+    public UserRes.UserInfo getUserInfo(HttpServletRequest request) throws BaseException {
+        Long userIdx = jwtTokenProvider.getCurrentUser(request);
+        User user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new BaseException(FAILED_TO_LOGIN));
+
+        UserRes.UserInfo userInfo = new UserRes.UserInfo();
+        userInfo.setEmail(user.getEmail());
+        userInfo.setNickname(user.getNickname());
+        userInfo.setNickname(user.getNickname());
+        userInfo.setAge(user.getAge());
+        userInfo.setOrtho(user.isOrtho());
+        userInfo.setProfile(user.getProfile());
+        return userInfo;
     }
 }

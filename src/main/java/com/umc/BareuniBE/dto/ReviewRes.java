@@ -48,7 +48,7 @@ public class ReviewRes {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter @Setter
-    public static class ReviewStatisticsRes {
+    public static class ReviewSearchListRes {
         private Long reviewIdx;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -57,6 +57,53 @@ public class ReviewRes {
         private int totalScore;
         private boolean receipt;
         private List<String> images;
+
+    }
+
+    @Getter @Setter
+    public static class ReviewObjectListRes {
+        private Object reviewIdx;
+        private Object createdAt;
+        private Object updatedAt;
+        private UserRes.UserSummary user;
+        private Object content;
+        private Object totalScore;
+        private Object receipt;
+        private List<String> images;
+
+        public ReviewObjectListRes(Review review, User user) {
+            this.reviewIdx = review.getReviewIdx();
+            this.createdAt = review.getCreatedAt();
+            this.updatedAt = review.getUpdatedAt();
+            this.user = new UserRes.UserSummary(user);
+            this.content = review.getContent();
+            this.totalScore = review.getTotalScore();
+            this.receipt = review.isReceipt();
+            this.images = List.of(review.getImages().split(","));
+        }
+    }
+
+    @Getter @Setter
+    public static class ReviewStatisticsRes {
+        private Long reviewIdx;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private UserRes.UserSummary user;
+        private String content;
+        private int totalScore;
+        private boolean receipt;
+        private List<String> images;
+
+        public ReviewStatisticsRes(Review review) {
+            this.reviewIdx = review.getReviewIdx();
+            this.createdAt = review.getCreatedAt();
+            this.updatedAt = review.getUpdatedAt();
+            this.user = new UserRes.UserSummary(review.getUser());
+            this.content = review.getContent();
+            this.totalScore = review.getTotalScore();
+            this.receipt = review.isReceipt();
+            this.images = List.of(review.getImages().split(","));
+        }
     }
 
     @NoArgsConstructor
@@ -66,12 +113,24 @@ public class ReviewRes {
         private Long reviewIdx;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
-        private User user;
+        private UserRes.UserSummary user;
         private String content;
         private int totalScore;
         private boolean receipt;
         private Long payment;
         private List<String> images;
+
+        public ReviewDetailRes(Review review) {
+            this.reviewIdx = review.getReviewIdx();
+            this.createdAt = review.getCreatedAt();
+            this.updatedAt = review.getUpdatedAt();
+            this.user = new UserRes.UserSummary(review.getUser());
+            this.content = review.getContent();
+            this.totalScore = review.getTotalScore();
+            this.receipt = review.isReceipt();
+            this.payment = review.getPayment();
+            this.images = List.of(review.getImages().split(","));;
+        }
     }
 
 }

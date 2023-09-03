@@ -13,7 +13,7 @@ public class UserUpdateReq {
     @Setter
     public static class UpdateRequestWrapper { // 회원정보 수정 요청
         private MultipartFile file;
-        private UserUpdateReq.MyUpdateReq MyUpdateReq;
+        private UserUpdateReq.MyUpdateReq myUpdateReq;
 
     }
     @NoArgsConstructor
