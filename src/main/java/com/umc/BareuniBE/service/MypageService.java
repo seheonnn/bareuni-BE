@@ -132,10 +132,10 @@ public class MypageService {
     }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
-    public String userUpdate(Long userId, MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq) throws BaseException, IOException {
+    public String userUpdate(MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq, HttpServletRequest request) throws BaseException, IOException {
 
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
         if (myUpdateReq.getNickname() != null) {

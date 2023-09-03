@@ -93,15 +93,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewIdx)
                 .orElseThrow(() -> new BaseException(REVIEW_EMPTY_ID));
 
-        ReviewRes.ReviewDetailRes reviewDetailRes = new ReviewRes.ReviewDetailRes();
-        reviewDetailRes.setReviewIdx(review.getReviewIdx());
-        reviewDetailRes.setCreatedAt(review.getCreatedAt());
-        reviewDetailRes.setUpdatedAt(review.getUpdatedAt());
-        reviewDetailRes.setUser(review.getUser());
-        reviewDetailRes.setContent(review.getContent());
-        reviewDetailRes.setTotalScore(review.getTotalScore());
-        reviewDetailRes.setPayment(review.getPayment());
-        reviewDetailRes.setReceipt(review.isReceipt());
+        ReviewRes.ReviewDetailRes reviewDetailRes = new ReviewRes.ReviewDetailRes(review);
 
         return reviewDetailRes;
     }
