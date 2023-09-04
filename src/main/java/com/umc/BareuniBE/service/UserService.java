@@ -50,7 +50,7 @@ public class UserService {
 
     private final RedisTemplate redisTemplate;
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\-]).{8,20}$";
 
     //private final BCryptPasswordEncoder bCryptPasswordEncoder;
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -60,7 +60,8 @@ public class UserService {
 
         if(!request.getEmail().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$"))
             throw new BaseException(POST_USERS_INVALID_EMAIL);
-
+        if(!request.getPassword().matches(PASSWORD_PATTERN))
+            throw new BaseException(INVALID_PASSWORD_FORMAT);
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
         if(userOptional.isEmpty()){

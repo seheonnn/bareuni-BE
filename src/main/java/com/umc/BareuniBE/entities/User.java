@@ -34,7 +34,7 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
 
     @Column(name = "password")
-    @Pattern(regexp = "^(?=.*[a-zA-Z0-9]).{8,64}$", message = "비밀번호가 형식에 맞지 않습니다.")
+//    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$", message = "비밀번호가 형식에 맞지 않습니다.")
     private String password;
 
     @Column(name = "nickname", nullable = false)
