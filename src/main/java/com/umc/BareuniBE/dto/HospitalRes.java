@@ -1,7 +1,5 @@
 package com.umc.BareuniBE.dto;
 
-import com.umc.BareuniBE.entities.Hospital;
-import com.umc.BareuniBE.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,7 +64,7 @@ public class HospitalRes {
         private Long hospitalIdx;
         private String hosName;
         private boolean bookable;
-        private String closedDay;
+        private String[] closedDay;
         private boolean todayClosed;
         private String address;
         private String keywords;
@@ -74,7 +72,7 @@ public class HospitalRes {
         private String lunchTime;
         private String content;
         private String telephone;
-        private String image;
+        private List<String> images;
 
         private Double totalScore;
         private Integer reviewCnt;
@@ -96,7 +94,7 @@ public class HospitalRes {
         String getLunch_time();
         String getContent();
         String getAddress();
-        String getImage();
+        String getImages();
         boolean getBookable();
         String getTreatment();
         Double getTreatment_ratio();

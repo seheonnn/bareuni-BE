@@ -16,18 +16,12 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<ReviewRes.ReviewListRes> searchReview(String keyword) {
-        List<ReviewRes.ReviewListRes> reviews = queryFactory
+    public List<ReviewRes.ReviewSearchListRes> searchReview(String keyword) {
+        List<ReviewRes.ReviewSearchListRes> reviews = queryFactory
                 .select(
-                        Projections.constructor(ReviewRes.ReviewListRes.class,
-                                review.reviewIdx,
-                                review.createdAt,
-                                review.updatedAt,
-                                review.user,
-                                review.content,
-                                review.totalScore,
-                                review.receipt
-                        )
+                        Projections.constructor(ReviewRes.ReviewSearchListRes.class,
+                                review,
+                                review.user)
                 )
                 .from(review, review)
                 .where(review.content.contains(keyword))

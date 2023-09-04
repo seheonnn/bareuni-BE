@@ -53,6 +53,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath provider = createString("provider");
 
+    public final BooleanPath reception = createBoolean("reception");
+
     public final ListPath<Review, QReview> reviews = this.<Review, QReview>createList("reviews", Review.class, QReview.class, PathInits.DIRECT2);
 
     public final EnumPath<com.umc.BareuniBE.global.enums.RoleType> role = createEnum("role", com.umc.BareuniBE.global.enums.RoleType.class);

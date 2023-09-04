@@ -67,7 +67,6 @@ public class User extends BaseEntity implements UserDetails {
     private String provider;
 
     @Column(name = "profile")
-    @ColumnDefault("'기본 이미지'")
     private String profile;
 
     // 서비스 혜택 정보 수신 동의 여부
