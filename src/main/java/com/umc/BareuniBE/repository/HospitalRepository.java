@@ -36,7 +36,7 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long>, Hospi
                             "    h.lunch_time,\n" +
                             "    h.content,\n" +
                             "    h.address,\n" +
-                            "    h.image,\n" +
+                            "    h.images,\n" +
                             "    h.bookable,\n" +
                             "    (CASE\n" +
                             "        WHEN IFNULL(treatment_stats.bad, 0) >= IFNULL(treatment_stats.normal, 0) AND IFNULL(treatment_stats.bad, 0) >= IFNULL(treatment_stats.good, 0)\n" +
