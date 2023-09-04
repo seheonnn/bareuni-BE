@@ -27,7 +27,7 @@ public class HospitalRes {
         private Double score;
         private Long reviewCnt;
         private String summary;
-        private String image;
+        private String images;
     }
 
     @NoArgsConstructor
