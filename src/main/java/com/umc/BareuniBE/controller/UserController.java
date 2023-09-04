@@ -64,11 +64,8 @@ public class UserController {
 //            "    \"confirmPassword\"asdasd123,\n\n" +
 //            "}")
     @PostMapping("/password")
-    public BaseResponse<String> changePassword(@RequestBody UserReq.EmailCheckReq emailCheckReq) throws Exception {
-        emailService.sendSimpleMessage(emailCheckReq.getEmail(), true);
-        Long userIdx = userService.findUserByEmail(emailCheckReq.getEmail());
-        System.out.println(userIdx);
-        return new BaseResponse<>(userService.updatePassword(userIdx, emailCheckReq.getEmail()));
+    public BaseResponse<String> getEmPw(@RequestBody UserReq.EmailCheckReq emailCheckReq) throws Exception {
+        return new BaseResponse<>(userService.getEmPw(emailCheckReq));
     }
 
     // 로그인
