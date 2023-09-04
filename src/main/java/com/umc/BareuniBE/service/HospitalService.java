@@ -102,7 +102,9 @@ public class HospitalService {
         hospitalDetailRes.setLunchTime(result.getLunch_time());
         hospitalDetailRes.setContent(result.getContent());
         hospitalDetailRes.setTelephone(result.getTelephone());
-        hospitalDetailRes.setImage(result.getImage());
+
+        String imagesStr = result.getImages();
+        hospitalDetailRes.setImages(List.of(imagesStr.split(",")));
 
         // 오늘 휴무일인지 아닌지 여부
         GregorianCalendar calendar_new = new GregorianCalendar();
