@@ -53,5 +53,5 @@ public class UserRes {
         private String profile;
     }
 
-
+  
 }

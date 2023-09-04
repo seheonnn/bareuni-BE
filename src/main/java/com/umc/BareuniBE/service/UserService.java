@@ -345,7 +345,7 @@ public class UserService {
         UserRes.UserInfo userInfo = new UserRes.UserInfo();
         userInfo.setEmail(user.getEmail());
         userInfo.setNickname(user.getNickname());
-        userInfo.setNickname(user.getNickname());
+        userInfo.setGender(user.getGender());
         userInfo.setAge(user.getAge());
         userInfo.setOrtho(user.isOrtho());
         userInfo.setProfile(user.getProfile());
@@ -360,4 +360,5 @@ public class UserService {
         userRepository.saveAndFlush(user);
         return SUCCESS;
     }
+
 }
