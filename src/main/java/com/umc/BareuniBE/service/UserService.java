@@ -7,6 +7,7 @@ import com.umc.BareuniBE.dto.UserReq;
 import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
+import com.umc.BareuniBE.global.BaseResponseStatus;
 import com.umc.BareuniBE.global.enums.RoleType;
 import com.umc.BareuniBE.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,7 @@ public class UserService {
     private final ScrapRepository scrapRepository;
 
     private final ReviewRepository reviewRepository;
+    private final EmailService emailService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -109,47 +111,47 @@ public class UserService {
         return false;
     }
 
-    public Long findUserByEmail(String email) throws BaseException{
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return user.getUserIdx();
-        } else {
-            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL);
-        }
-    }
+//    public Long findUserByEmail(String email) throws BaseException{
+//        Optional<User> optionalUser = userRepository.findByEmail(email);
+//
+//        if (optionalUser.isPresent()) {
+//            User user = optionalUser.get();
+//            return user.getUserIdx();
+//        } else {
+//            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL);
+//        }
+//    }
 
     //코드확인 후 비밀번호 재설정
     private boolean isValidPassword(String password) {
         return password.matches(PASSWORD_PATTERN);
     }
 
-    public String changePassword(String email, PasswordUpdateReq.NewPasswordUpdateReq passwordUpdateReq) throws BaseException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(POST_USERS_NOT_FOUND_EMAIL));
-
-        // 새로운 비밀번호 형식이 맞는지 확인
-        String newPassword = passwordUpdateReq.getNewPassword();
-        if (!isValidPassword(newPassword)) {
-            throw new BaseException(INVALID_PASSWORD_FORMAT);
-        }
-
-        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
-        String confirmPassword = passwordUpdateReq.getConfirmPassword();
-        if (newPassword != null && !newPassword.equals(confirmPassword)) {
-            throw new BaseException(NEW_PASSWORD_INCORRECT);
-        }
-
-        // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
-        if (newPassword != null) {
-            user.setPassword(encoder.encode(newPassword));
-        }
-
-        userRepository.save(user);
-
-        return "비밀번호 변경 성공";
-    }
+//    public String changePassword(String email, PasswordUpdateReq.NewPasswordUpdateReq passwordUpdateReq) throws BaseException {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new BaseException(POST_USERS_NOT_FOUND_EMAIL));
+//
+//        // 새로운 비밀번호 형식이 맞는지 확인
+//        String newPassword = passwordUpdateReq.getNewPassword();
+//        if (!isValidPassword(newPassword)) {
+//            throw new BaseException(INVALID_PASSWORD_FORMAT);
+//        }
+//
+//        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
+//        String confirmPassword = passwordUpdateReq.getConfirmPassword();
+//        if (newPassword != null && !newPassword.equals(confirmPassword)) {
+//            throw new BaseException(NEW_PASSWORD_INCORRECT);
+//        }
+//
+//        // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
+//        if (newPassword != null) {
+//            user.setPassword(encoder.encode(newPassword));
+//        }
+//
+//        userRepository.save(user);
+//
+//        return "비밀번호 변경 성공";
+//    }
 
     // 로그인
     public List<TokenDTO> login(UserReq.UserLoginReq request) throws BaseException {
@@ -348,5 +350,14 @@ public class UserService {
         userInfo.setOrtho(user.isOrtho());
         userInfo.setProfile(user.getProfile());
         return userInfo;
+    }
+
+    public BaseResponseStatus getEmPw(UserReq.EmailCheckReq emailCheckReq) throws Exception {
+        User user = userRepository.findByEmail(emailCheckReq.getEmail())
+                .orElseThrow(() -> new BaseException(FAILED_TO_LOGIN));
+        String emPw = emailService.sendSimpleMessage(user.getEmail(), true);
+        user.setPassword(encoder.encode(emPw));
+        userRepository.saveAndFlush(user);
+        return SUCCESS;
     }
 }
