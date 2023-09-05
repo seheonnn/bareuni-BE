@@ -352,7 +352,7 @@ public class UserService {
         userInfo.setProfile(user.getProfile());
         return userInfo;
     }
-
+  
     public BaseResponseStatus getEmPw(UserReq.EmailCheckReq emailCheckReq) throws Exception {
         User user = userRepository.findByEmail(emailCheckReq.getEmail())
                 .orElseThrow(() -> new BaseException(FAILED_TO_LOGIN));
@@ -361,5 +361,4 @@ public class UserService {
         userRepository.saveAndFlush(user);
         return SUCCESS;
     }
-
 }
