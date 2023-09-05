@@ -190,13 +190,7 @@ public class MypageService {
         if (!isValidPassword(newPassword)) {
             throw new BaseException(INVALID_PASSWORD_FORMAT);
         }
-
-        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
-        String confirmPassword = passwordUpdateReq.getConfirmPassword();
-        if (newPassword != null && !newPassword.equals(confirmPassword)) {
-            throw new BaseException(NEW_PASSWORD_INCORRECT);
-        }
-
+        
         // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
         if (newPassword != null) {
             user.setPassword(newPassword);
