@@ -27,7 +27,7 @@ public class HospitalRes {
         private Double score;
         private Long reviewCnt;
         private String summary;
-        private String image;
+        private String images;
     }
 
     @NoArgsConstructor
@@ -72,7 +72,7 @@ public class HospitalRes {
         private String lunchTime;
         private String content;
         private String telephone;
-        private String image;
+        private List<String> images;
 
         private Double totalScore;
         private Integer reviewCnt;
@@ -94,7 +94,7 @@ public class HospitalRes {
         String getLunch_time();
         String getContent();
         String getAddress();
-        String getImage();
+        String getImages();
         boolean getBookable();
         String getTreatment();
         Double getTreatment_ratio();

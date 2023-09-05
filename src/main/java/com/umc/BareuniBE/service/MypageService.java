@@ -48,11 +48,10 @@ public class MypageService {
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
     private final ReviewRepository reviewRepository;
-    private final BookingRepository bookingRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final UploadService uploadService;
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\-]).{8,20}$";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -109,33 +108,33 @@ public class MypageService {
     }
 
     // 예약 내역 조회 (다가오는 예약 날짜 순?)
-    public List<BookingRes.BookingListRes> getMyBookingList(Long userId, Pageable page) throws BaseException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
-
-        List<Object[]> bookings = bookingRepository.MyBookingList(user, page);
-
-        return bookings.stream()
-                .map(bookingData -> {
-                    BookingRes.BookingListRes bookingListRes = new BookingRes.BookingListRes();
-                    bookingListRes.setBookingIdx(bookingData[0]);
-                    bookingListRes.setCreatedAt(bookingData[1]);
-                    bookingListRes.setUpdatedAt( bookingData[2]);
-                    bookingListRes.setUser(userRepository.findById((Long) bookingData[3]).orElse(null));
-                    bookingListRes.setHospital(bookingData[4]);
-                    bookingListRes.setMethod(bookingData[5]);
-                    bookingListRes.setBookingDate(bookingData[6]);
-
-                    return bookingListRes;
-                })
-                .collect(Collectors.toList());
-    }
+//    public List<BookingRes.BookingListRes> getMyBookingList(Long userId, Pageable page) throws BaseException {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+//
+//        List<Object[]> bookings = bookingRepository.MyBookingList(user, page);
+//
+//        return bookings.stream()
+//                .map(bookingData -> {
+//                    BookingRes.BookingListRes bookingListRes = new BookingRes.BookingListRes();
+//                    bookingListRes.setBookingIdx(bookingData[0]);
+//                    bookingListRes.setCreatedAt(bookingData[1]);
+//                    bookingListRes.setUpdatedAt( bookingData[2]);
+//                    bookingListRes.setUser(userRepository.findById((Long) bookingData[3]).orElse(null));
+//                    bookingListRes.setHospital(bookingData[4]);
+//                    bookingListRes.setMethod(bookingData[5]);
+//                    bookingListRes.setBookingDate(bookingData[6]);
+//
+//                    return bookingListRes;
+//                })
+//                .collect(Collectors.toList());
+//    }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
-    public String userUpdate(Long userId, MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq) throws BaseException, IOException {
+    public String userUpdate(MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq, HttpServletRequest request) throws BaseException, IOException {
 
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
         if (myUpdateReq.getNickname() != null) {
@@ -193,7 +192,7 @@ public class MypageService {
         
         // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
         if (newPassword != null) {
-            user.setPassword(newPassword);
+            user.setPassword(encoder.encode(newPassword));
         }
         userRepository.save(user);
         return "비밀번호 변경 성공";

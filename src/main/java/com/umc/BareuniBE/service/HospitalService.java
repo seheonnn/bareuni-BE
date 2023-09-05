@@ -1,5 +1,6 @@
 package com.umc.BareuniBE.service;
 
+import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.HospitalReq;
 import com.umc.BareuniBE.dto.HospitalRes;
 import com.umc.BareuniBE.entities.Hospital;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -31,6 +33,7 @@ public class HospitalService {
     private final HospitalRepository hospitalRepository;
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 홈 - 후기가 좋은 치과 목록 조회
     public List<HospitalRes.HospitalSummaryListRes> getBestHospitalList() {
@@ -44,7 +47,7 @@ public class HospitalService {
                     hospitalSummaryListRes.setHosName(String.valueOf(hospitalData[2]));
                     hospitalSummaryListRes.setScore(Double.parseDouble(String.valueOf(hospitalData[3])));
                     hospitalSummaryListRes.setReviewCnt(Long.parseLong(String.valueOf(hospitalData[4])));
-                    hospitalSummaryListRes.setImage(String.valueOf(hospitalData[5]));
+                    hospitalSummaryListRes.setImages(String.valueOf(hospitalData[5]));
 
                     return hospitalSummaryListRes;
                 })
@@ -58,8 +61,8 @@ public class HospitalService {
     }
 
     // 스크랩 추가
-    public HospitalRes.HospitalScrapCreateRes createScrap(HospitalReq.HospitalScrapReq request, Long hospitalIdx) throws BaseException {
-        User user = userRepository.findById(request.getUserIdx())
+    public HospitalRes.HospitalScrapCreateRes createScrap(HttpServletRequest request, Long hospitalIdx) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Hospital hospital = hospitalRepository.findById(hospitalIdx)
@@ -102,7 +105,9 @@ public class HospitalService {
         hospitalDetailRes.setLunchTime(result.getLunch_time());
         hospitalDetailRes.setContent(result.getContent());
         hospitalDetailRes.setTelephone(result.getTelephone());
-        hospitalDetailRes.setImage(result.getImage());
+
+        String imagesStr = result.getImages();
+        hospitalDetailRes.setImages(List.of(imagesStr.split(",")));
 
         // 오늘 휴무일인지 아닌지 여부
         GregorianCalendar calendar_new = new GregorianCalendar();
@@ -136,8 +141,8 @@ public class HospitalService {
     }
 
     // 스크랩 삭제
-    public String deleteScrap(HospitalReq.HospitalScrapReq request, Long hospitalIdx, Long scrapIdx) throws BaseException {
-        User user = userRepository.findById(request.getUserIdx())
+    public String deleteScrap(HttpServletRequest request, Long hospitalIdx, Long scrapIdx) throws BaseException {
+        User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() ->  new BaseException(USERS_EMPTY_USER_ID));
 
         Hospital hospital = hospitalRepository.findById(hospitalIdx)

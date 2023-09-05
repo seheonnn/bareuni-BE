@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -52,7 +53,7 @@ public class HospitalController {
     @PostMapping("/{hospitalIdx}/scrap")
     public BaseResponse<HospitalRes.HospitalScrapCreateRes> createScrap (
             @PathVariable Long hospitalIdx,
-            @RequestBody HospitalReq.HospitalScrapReq request
+            HttpServletRequest request
     ) throws BaseException {
         return new BaseResponse<>(hospitalService.createScrap(request, hospitalIdx));
     }
@@ -66,7 +67,7 @@ public class HospitalController {
     public BaseResponse<String> deleteScrap (
             @PathVariable Long hospitalIdx,
             @PathVariable Long scrapIdx,
-            @RequestBody HospitalReq.HospitalScrapReq request
+            HttpServletRequest request
     ) throws BaseException {
         return new BaseResponse<>(hospitalService.deleteScrap(request, hospitalIdx, scrapIdx));
     }

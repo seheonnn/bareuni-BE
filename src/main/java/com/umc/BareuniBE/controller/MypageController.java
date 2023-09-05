@@ -74,13 +74,13 @@ public class MypageController {
             "\"nickname\": \"바른이바른이22\",\n\n" +
             "\"ortho\": true\n\n" +
             "}")
-    @PatchMapping("/users/{userId}")
+    @PatchMapping("/users")
     public BaseResponse<String> userUpdate(
-            @PathVariable Long userId,
-            @ModelAttribute UserUpdateReq.UpdateRequestWrapper requestWrapper
+            @ModelAttribute UserUpdateReq.UpdateRequestWrapper requestWrapper,
+            HttpServletRequest request
 
     ) throws BaseException, IOException {
-        return new BaseResponse<>(mypageService.userUpdate(userId, requestWrapper.getFile(), requestWrapper.getMyUpdateReq()));
+        return new BaseResponse<>(mypageService.userUpdate(requestWrapper.getFile(), requestWrapper.getMyUpdateReq(), request));
     }
 
     // 비밀번호 변경
