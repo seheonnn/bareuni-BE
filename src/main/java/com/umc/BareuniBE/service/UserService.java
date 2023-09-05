@@ -275,18 +275,6 @@ public class UserService {
         return "test성공";
     }
 
-    // 회원가입 시 중복된 이메일인지 확인
-    public Boolean checkEmail(String email) throws BaseException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
-
-        if(user != null) {
-            return true; // 중복된 이메일
-        }else {
-            return false; // 사용가능한 이메일
-        }
-    }
-
     // 소셜로그인 - 프로필 설정
     public UserRes.SocialLoginRes createProfile(MultipartFile file, UserReq.UserProfileReq request) throws BaseException, IOException {
         String profileUrl = uploadService.uploadImage(file);
@@ -333,6 +321,18 @@ public class UserService {
             return true; // 중복됨
         } else {
             throw new BaseException(POST_USERS_NOT_FOUND_EMAIL); // 중복 안됨 사용가능
+        }
+    }
+
+    // 회원가입 시 닉네임 중복 확인
+    public Boolean checkNickname(UserReq.NicknameCheckReq request) throws BaseException {
+        Optional<User> optionalUser = userRepository.findByNickname(request.getNickname());
+
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return true; // 닉네임 중복됨
+        } else {
+            throw new BaseException(POST_USERS_NOT_FOUND_NICKNAME); // 닉네임 사용가능
         }
     }
 

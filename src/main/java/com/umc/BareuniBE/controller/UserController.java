@@ -133,4 +133,10 @@ public class UserController {
     public BaseResponse<UserRes.UserInfo> getUserInfo(HttpServletRequest request) throws BaseException {
         return new BaseResponse<>(userService.getUserInfo(request));
     }
+
+    // 회원가입 시 닉네임 중복 확인
+    @PostMapping("join/check-nickname")
+    public BaseResponse<Boolean> checkEmail(@RequestBody UserReq.NicknameCheckReq request) throws BaseException {
+        return new BaseResponse<>(userService.checkNickname(request));
+    }
 }
