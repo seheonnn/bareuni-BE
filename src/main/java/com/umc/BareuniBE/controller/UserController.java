@@ -93,7 +93,7 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public BaseResponse<String> deactivateUser(HttpServletRequest request) throws BaseException {
         return new BaseResponse<>(userService.deactivateUser(request));
     }

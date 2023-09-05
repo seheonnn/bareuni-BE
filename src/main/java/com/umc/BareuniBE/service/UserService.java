@@ -255,12 +255,12 @@ public class UserService {
         redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
 
         // 해당 회원 삭제
-        communityRepository.deleteAllByUser(user);
-        likeRepository.deleteAllByUser(user);
-        commentRepository.deleteAllByUser(user);
-        bookingRepository.deleteAllByUser(user);
-        scrapRepository.deleteAllByUser(user);
-        reviewRepository.deleteAllByUser(user);
+//        communityRepository.deleteAllByUser(user);
+//        likeRepository.deleteAllByUser(user);
+//        commentRepository.deleteAllByUser(user);
+//        bookingRepository.deleteAllByUser(user);
+//        scrapRepository.deleteAllByUser(user);
+//        reviewRepository.deleteAllByUser(user);
         userRepository.deleteById(user.getUserIdx());
 
         //시큐리티
