@@ -4,9 +4,7 @@ import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.*;
 
 import com.umc.BareuniBE.dto.UserUpdateReq;
-import com.umc.BareuniBE.entities.Hospital;
 import com.umc.BareuniBE.entities.Review;
-import com.umc.BareuniBE.entities.Scrap;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
@@ -29,6 +27,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
+import static com.umc.BareuniBE.service.UserService.PASSWORD_PATTERN;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +50,6 @@ public class MypageService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UploadService uploadService;
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\-]).{8,20}$";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
