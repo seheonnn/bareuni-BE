@@ -50,15 +50,15 @@ public class UserService {
 
     private final RedisTemplate redisTemplate;
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\-]).{8,20}$";
+    static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z]+)(?=.*\\d)(?=.*[!@#$%^&*]).{8,64}$";
+    private static final String EMAIL_PATTERN = "^.{5,254}$|^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$\n";
 
-    //private final BCryptPasswordEncoder bCryptPasswordEncoder;
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public UserRes.UserJoinRes join(MultipartFile file, UserReq.UserJoinReq request) throws BaseException, IOException {
         //System.out.println("Service의 join함수 실행중");
 
-        if(!request.getEmail().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$"))
+        if(!request.getEmail().matches(EMAIL_PATTERN))
             throw new BaseException(POST_USERS_INVALID_EMAIL);
         if(!request.getPassword().matches(PASSWORD_PATTERN))
             throw new BaseException(INVALID_PASSWORD_FORMAT);
