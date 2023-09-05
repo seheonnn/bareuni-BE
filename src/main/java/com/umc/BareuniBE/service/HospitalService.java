@@ -85,13 +85,16 @@ public class HospitalService {
 //        hospitalDetailRes.setClosedDay(result.getClosed_day());
 
         String closed_days_str = result.getClosed_day();
-        StringTokenizer st = new StringTokenizer(closed_days_str);
-        String[] closed_days = new String[st.countTokens()];
+        String[] closed_days = null;
+        if (closed_days_str != null) {
+            StringTokenizer st = new StringTokenizer(closed_days_str);
+            closed_days = new String[st.countTokens()];
 
-        int idx = 0;
-        while (st.hasMoreTokens()) {
-            closed_days[idx] = st.nextToken();
-            idx++;
+            int idx = 0;
+            while (st.hasMoreTokens()) {
+                closed_days[idx] = st.nextToken();
+                idx++;
+            }
         }
 
         hospitalDetailRes.setClosedDay(closed_days);
@@ -115,10 +118,12 @@ public class HospitalService {
 
         System.out.println(week);
 
-        for (String closedDay : closed_days) {
-            if (weekname[week].equals(closedDay)) {
-                todayClosed = true;
-                break;
+        if (closed_days != null) {
+            for (String closedDay : closed_days) {
+                if (weekname[week].equals(closedDay)) {
+                    todayClosed = true;
+                    break;
+                }
             }
         }
 
