@@ -76,7 +76,7 @@ public class MypageController {
             "}")
     @PatchMapping("/users")
     public BaseResponse<String> userUpdate(
-            @ModelAttribute UserUpdateReq.UpdateRequestWrapper requestWrapper,
+            @ModelAttribute MypageReq.UpdateRequestWrapper requestWrapper,
             HttpServletRequest request
 
     ) throws BaseException, IOException {
@@ -92,7 +92,7 @@ public class MypageController {
             "}")
     @PatchMapping("/users/password")
     public BaseResponse<String> changePassword(
-            @RequestBody PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq,
+            @RequestBody MypageReq.MyPasswordUpdateReq passwordUpdateReq,
             HttpServletRequest request
     ) throws BaseException {
         return new BaseResponse<>(mypageService.changePassword(passwordUpdateReq, request));

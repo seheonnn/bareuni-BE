@@ -1,7 +1,6 @@
 package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
-import com.umc.BareuniBE.dto.PasswordUpdateReq;
 import com.umc.BareuniBE.dto.TokenDTO;
 import com.umc.BareuniBE.dto.UserReq;
 import com.umc.BareuniBE.dto.UserRes;
