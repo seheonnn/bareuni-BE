@@ -39,7 +39,7 @@ public class HospitalRepositoryImpl implements HospitalRepositoryCustom {
                         )
                 )
                 .from(review, review)
-                .join(review.hospital, hospital)
+                .rightJoin(review.hospital, hospital)
                 .where(builder)
                 .groupBy(hospital.hospitalIdx)
                 .orderBy(review.totalScore.avg().desc(), review.count().desc())
