@@ -3,7 +3,6 @@ package com.umc.BareuniBE.service;
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.*;
 
-import com.umc.BareuniBE.dto.UserUpdateReq;
 import com.umc.BareuniBE.entities.Review;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
@@ -129,7 +128,7 @@ public class MypageService {
 //    }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
-    public String userUpdate(MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq, HttpServletRequest request) throws BaseException, IOException {
+    public String userUpdate(MultipartFile file, MypageReq.MyUpdateReq myUpdateReq, HttpServletRequest request) throws BaseException, IOException {
 
 
         User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
@@ -173,7 +172,7 @@ public class MypageService {
         return password.matches(PASSWORD_PATTERN);
     }
 
-    public String changePassword(PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq, HttpServletRequest request) throws BaseException {
+    public String changePassword(MypageReq.MyPasswordUpdateReq passwordUpdateReq, HttpServletRequest request) throws BaseException {
         User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
