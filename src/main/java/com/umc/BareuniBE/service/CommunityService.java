@@ -59,7 +59,7 @@ public class  CommunityService {
     public List<CommunityRes.CommunityListRes> getCommunityList(String sort) throws BaseException {
 //        List<Object[]> communities = communityRepository.findAllCommunity_Pagination(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
 
-        List<Object[]> communities = sort.equals("like") ? communityRepository.findAllCommunity_like() : communityRepository.findAllCommunity_created();
+        List<Object[]> communities = communityRepository.findAllCommunity_custom(sort);
 
         return communities.stream()
                 .map(communityData -> {
