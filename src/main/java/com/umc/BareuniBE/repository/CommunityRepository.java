@@ -25,17 +25,6 @@ public interface CommunityRepository extends JpaRepository<Community, Long>, Com
 //    )
 //    List<Object []> findAllCommunity_Pagination(Pageable pageable);
 
-    @Query(
-            value =
-                    "select c.*, COUNT(le.community) as likeCnt " +
-                            "from community c " +
-                            "left outer join like_entity le " +
-                            "on c.community_idx = le.community " +
-                            "group by c.community_idx " +
-                            "order by c.created_at DESC ; ",
-            nativeQuery = true
-    )
-    List<Object []> findAllCommunity_created();
 
     @Query(
             value =
@@ -44,10 +33,14 @@ public interface CommunityRepository extends JpaRepository<Community, Long>, Com
                             "left outer join like_entity le " +
                             "on c.community_idx = le.community " +
                             "group by c.community_idx " +
-                            "order by likeCnt DESC ; ",
+                            "order by case " +
+                            "when :val = 'created' then c.created_at " +
+                            "when :val = 'like' then likeCnt " +
+                            "else c.created_at " +
+                            "end desc ; ",
             nativeQuery = true
     )
-    List<Object []> findAllCommunity_like();
+    List<Object []> findAllCommunity_custom(@Param("val") String val);
 
     @Query(
             value =
