@@ -49,7 +49,6 @@ public class CommunityRes {
         private Object content;
         private Object like;
 
-
         public void setUser(User user) {
             this.user = new UserRes.UserSummary(user);
         }
