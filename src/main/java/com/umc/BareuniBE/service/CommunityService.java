@@ -56,8 +56,7 @@ public class  CommunityService {
     }
 
 //    public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
-    public List<CommunityRes.CommunityListRes> getCommunityList(String sort, HttpServletRequest request) throws BaseException {
-        jwtTokenProvider.getCurrentUser(request);
+    public List<CommunityRes.CommunityListRes> getCommunityList(String sort) throws BaseException {
 //        List<Object[]> communities = communityRepository.findAllCommunity_Pagination(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
 
         List<Object[]> communities = sort.equals("like") ? communityRepository.findAllCommunity_like() : communityRepository.findAllCommunity_created();

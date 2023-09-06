@@ -47,10 +47,9 @@ public class CommunityController {
     @GetMapping("")
     public BaseResponse<List<CommunityRes.CommunityListRes>> getCommunityList(
 //            @PageableDefault(page = 0, size = 3, sort = "created_at", direction = Sort.Direction.DESC) Pageable page,
-            @RequestParam(value = "sort", required = false, defaultValue = "created_at") String sort,
-            HttpServletRequest request
+            @RequestParam(value = "sort", required = false, defaultValue = "created_at") String sort
     ) throws BaseException {
-        return new BaseResponse<>(communityService.getCommunityList(sort, request));
+        return new BaseResponse<>(communityService.getCommunityList(sort));
     }
 
 
