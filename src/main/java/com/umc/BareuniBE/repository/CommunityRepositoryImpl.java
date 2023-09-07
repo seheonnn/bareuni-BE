@@ -3,6 +3,7 @@ package com.umc.BareuniBE.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.umc.BareuniBE.dto.CommunityRes;
+import com.umc.BareuniBE.dto.UserRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +25,8 @@ public class CommunityRepositoryImpl implements CommunityRepositoryCustom {
                                 community.communityIdx,
                                 community.createdAt,
                                 community.updatedAt,
-                                community.user,
+                                Projections.bean(UserRes.UserSummary.class,
+                                        community.user),
                                 community.content,
                                 likeEntity.community.count().as("like")
                         )
