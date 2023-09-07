@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,9 +55,11 @@ public class  CommunityService {
         return new CommunityRes.CommunityCreateRes(communityRepository.saveAndFlush(newCommunity));
     }
 
-    public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
-        jwtTokenProvider.getCurrentUser(request);
-        List<Object[]> communities = communityRepository.findAllCommunity_Pagination(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
+//    public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
+    public List<CommunityRes.CommunityListRes> getCommunityList(String sort) throws BaseException {
+//        List<Object[]> communities = communityRepository.findAllCommunity_Pagination(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
+
+        List<Object[]> communities = communityRepository.findAllCommunity_custom(sort);
 
         return communities.stream()
                 .map(communityData -> {
