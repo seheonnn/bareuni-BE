@@ -13,7 +13,6 @@ import com.umc.BareuniBE.repository.ReviewRepository;
 import com.umc.BareuniBE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
 
@@ -68,18 +66,20 @@ public class ReviewService {
     }
 
 
-    public Stream<ReviewRes.ReviewListRes> getReviewList(Pageable page){
-        Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page.getPageNumber(), page.getPageSize()));
+    public List<ReviewRes.ReviewListRes> getReviewList(Long hospitalIdx, Pageable page){
+        List<Review> reviews = reviewRepository.findByHospital_HospitalIdx(PageRequest.of(page.getPageNumber(), page.getPageSize()), hospitalIdx);
 
-        return reviews.stream().map(review -> {
-            ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes(review, review.getUser());
-            return reviewListRes;
-        });
+        return reviews.stream().
+                map(review -> {
+                ReviewRes.ReviewListRes reviewListRes = new ReviewRes.ReviewListRes(review, review.getUser());
+                return reviewListRes;
+                })
+                .collect(Collectors.toList());
     }
 
 
-    public List<ReviewRes.ReviewStatisticsRes> getReviewStatisticsList(boolean receipt, GenderType gender, Pageable page) {
-        List<Review> reviews = reviewRepository.findByReceiptAndUserGender(receipt, gender, PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
+    public List<ReviewRes.ReviewStatisticsRes> getReviewStatisticsList(Long hospitalIdx, boolean receipt, GenderType gender, Pageable page) {
+        List<Review> reviews = reviewRepository.findByHospital_HospitalIdxAndReceiptAndUser_GenderOrUser_GenderIsNull(hospitalIdx, receipt, gender, PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
 
         return reviews.stream()
                 .map(review -> {
@@ -88,6 +88,13 @@ public class ReviewService {
                 })
                 .collect(Collectors.toList());
     }
+
+
+
+
+
+
+
 
     public ReviewRes.ReviewDetailRes getReviewDetail(Long reviewIdx) throws BaseException {
         Review review = reviewRepository.findById(reviewIdx)
