@@ -5,21 +5,14 @@ import com.umc.BareuniBE.dto.CommunityRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
 import com.umc.BareuniBE.global.BaseResponseStatus;
+import com.umc.BareuniBE.global.enums.AlarmType;
 import com.umc.BareuniBE.service.CommunityService;
-
-import lombok.RequiredArgsConstructor;
-
 import io.swagger.annotations.ApiOperation;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,6 +20,7 @@ import java.util.Map;
 public class CommunityController {
 
     private final CommunityService communityService;
+    private final AlarmController alarmController;
 
     // 커뮤니티 글 작성
     @ApiOperation(value = "커뮤니티 글 작성", notes = "ex) http://localhost:8080/community\n\n" +
@@ -39,7 +33,9 @@ public class CommunityController {
             "}")
     @PostMapping("")
     public BaseResponse<CommunityRes.CommunityCreateRes> createCommunity(@RequestBody CommunityReq.CommunityCreateReq communityCreateReq, HttpServletRequest request) throws BaseException {
-        return new BaseResponse<>(communityService.createCommunity(communityCreateReq, request));
+        CommunityRes.CommunityCreateRes res = communityService.createCommunity(communityCreateReq, request);
+        alarmController.subscribe(res.getCommunityIdx()); // 이 커뮤니티 글에 대해 알림 구독
+        return new BaseResponse<>(res);
     }
 
     // 커뮤니티 글 조회 (최신순, 좋아요순)
@@ -99,7 +95,12 @@ public class CommunityController {
             "}")
     @PostMapping("/{communityIdx}/comment")
     public BaseResponse<CommunityRes.CommentSummary> createComment(@PathVariable Long communityIdx, @RequestBody CommunityReq.CommentCreateReq commentCreateReq, HttpServletRequest request) throws BaseException {
-        return new BaseResponse<>(communityService.createComment(communityIdx, commentCreateReq, request));
+        CommunityRes.CommentSummary res = communityService.createComment(communityIdx, commentCreateReq, request); // 댓글 작성
+
+        Long communityWriterIdx = communityService.getCommunityDetails(communityIdx, request).getUser().getUserIdx();
+        alarmController.sendData(AlarmType.COMMENT, communityIdx, res.getComment(), communityWriterIdx); // 글 작성자에게 알림 생성
+
+        return new BaseResponse<>(res);
     }
 
     // 커뮤니티 댓글 삭제
