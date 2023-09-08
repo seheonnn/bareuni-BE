@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 public class ReviewRes {
@@ -41,7 +42,7 @@ public class ReviewRes {
             this.content = review.getContent();
             this.totalScore = review.getTotalScore();
             this.receipt = review.isReceipt();
-            this.images = List.of(review.getImages().split(","));
+            this.images = (review.getImages() != null) ? List.of(review.getImages().split(",")) : Collections.emptyList();
         }
     }
 
@@ -68,12 +69,7 @@ public class ReviewRes {
             this.content = review.getContent();
             this.totalScore = review.getTotalScore();
             this.receipt = review.isReceipt();
-
-            if (review.getImages() != null) {
-                this.images = List.of(review.getImages().split(","));
-            } else {
-                this.images = null;
-            }
+            this.images = (review.getImages() != null) ? List.of(review.getImages().split(",")) : Collections.emptyList();
         }
     }
 
@@ -96,7 +92,7 @@ public class ReviewRes {
             this.content = review.getContent();
             this.totalScore = review.getTotalScore();
             this.receipt = review.isReceipt();
-            this.images = List.of(review.getImages().split(","));
+            this.images = (review.getImages() != null) ? List.of(review.getImages().split(",")) : Collections.emptyList();
         }
     }
 
@@ -119,7 +115,7 @@ public class ReviewRes {
             this.content = review.getContent();
             this.totalScore = review.getTotalScore();
             this.receipt = review.isReceipt();
-            this.images = List.of(review.getImages().split(","));
+            this.images = (review.getImages() != null) ? List.of(review.getImages().split(",")) : Collections.emptyList();
         }
     }
 
@@ -146,7 +142,7 @@ public class ReviewRes {
             this.totalScore = review.getTotalScore();
             this.receipt = review.isReceipt();
             this.payment = review.getPayment();
-            this.images = List.of(review.getImages().split(","));;
+            this.images = (review.getImages() != null) ? List.of(review.getImages().split(",")) : Collections.emptyList();
         }
     }
 

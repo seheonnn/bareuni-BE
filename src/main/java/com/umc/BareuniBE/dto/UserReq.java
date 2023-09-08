@@ -65,4 +65,12 @@ public class UserReq {
         private String email;
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class NicknameCheckReq {
+        private String nickname;
+    }
+
 }

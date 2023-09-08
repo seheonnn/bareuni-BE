@@ -5,21 +5,19 @@ import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.entities.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
-//    @Query(
-//            value =
-//                    "SELECT r.reviewIdx, r.createdAt, r.updatedAt, r.user.userIdx, r.content, r.equipmentScore, r.receipt, r.serviceScore, r.payment, r.totalScore, r.treatmentScore, r.hospital " +
-//                            "FROM Review r " +
-//                            "WHERE r.user = :user " +
-//                            "ORDER BY r.createdAt DESC"
-//    )
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom, JpaSpecificationExecutor<Review> {
     List<Review> findReviewByUser(Pageable pageable, User user);
+
+    List<Review> findByHospital_HospitalIdx(Pageable pageable, Long hospitalIdx);
     List<Review> findByReceiptAndUserGender(boolean receipt, GenderType gender, Pageable pageable);
+
+    List<Review> findByHospital_HospitalIdxAndReceiptAndUser_GenderOrUser_GenderIsNull(Long hospitalIdx,boolean receipt, GenderType gender, Pageable pageable);
 
     void deleteAllByUser(User user);
 }

@@ -1,12 +1,10 @@
 package com.umc.BareuniBE.controller;
 
-import com.umc.BareuniBE.dto.PasswordUpdateReq;
 import com.umc.BareuniBE.dto.TokenDTO;
 import com.umc.BareuniBE.dto.UserReq;
 import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.global.BaseResponse;
-import com.umc.BareuniBE.global.BaseResponseStatus;
 import com.umc.BareuniBE.service.EmailService;
 import com.umc.BareuniBE.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -16,9 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
-
 import java.io.IOException;
+import java.util.List;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.SUCCESS;
 
@@ -45,7 +42,6 @@ public class UserController {
     @PostMapping(value = "/join", consumes = {"multipart/form-data"})
     public BaseResponse<Void> join(
             @ModelAttribute UserReq.UserJoinRequestWrapper requestWrapper
-
     ) throws BaseException, IOException {
         System.out.println("controller에서 Service로 join함수 실행직전");
         userService.join(requestWrapper.getFile(), requestWrapper.getUserJoinReq());
@@ -54,24 +50,21 @@ public class UserController {
 
 
     //이메일 인증
-    @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n ")
+//    @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n ")
     @PostMapping("/email")
     public BaseResponse<String> emailConfirm(@RequestBody UserReq.EmailCheckReq emailCheckReq) throws Exception {
-        return new BaseResponse<>(emailService.sendSimpleMessage(emailCheckReq.getEmail()));
+        return new BaseResponse<>(emailService.sendSimpleMessage(emailCheckReq.getEmail(), false));
     }
 
     //비밀번호 찾기
-    @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n " +
-            "{\n\n" +
-            "    \"newPassword\": \"asdasd123\",\n\n" +
-            "    \"confirmPassword\"asdasd123,\n\n" +
-            "}")
+//    @ApiOperation(value = "이메일 인증", notes = "ex)http://localhost:8080/users/email?email=exemail@exnet.com \n\n " +
+//            "{\n\n" +
+//            "    \"newPassword\": \"asdasd123\",\n\n" +
+//            "    \"confirmPassword\"asdasd123,\n\n" +
+//            "}")
     @PostMapping("/password")
-    public BaseResponse<String> changePassword(
-            @RequestParam String email,
-            @RequestBody PasswordUpdateReq.NewPasswordUpdateReq passwordUpdateReq
-    ) throws BaseException {
-        return new BaseResponse<>(userService.changePassword(email, passwordUpdateReq));
+    public BaseResponse<String> getEmPw(@RequestBody UserReq.EmailCheckReq emailCheckReq) throws Exception {
+        return new BaseResponse<>(userService.getEmPw(emailCheckReq));
     }
 
     // 로그인
@@ -100,7 +93,7 @@ public class UserController {
     }
 
     // 회원 탈퇴
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public BaseResponse<String> deactivateUser(HttpServletRequest request) throws BaseException {
         return new BaseResponse<>(userService.deactivateUser(request));
     }
@@ -139,5 +132,11 @@ public class UserController {
     @GetMapping("/info")
     public BaseResponse<UserRes.UserInfo> getUserInfo(HttpServletRequest request) throws BaseException {
         return new BaseResponse<>(userService.getUserInfo(request));
+    }
+
+    // 회원가입 시 닉네임 중복 확인
+    @PostMapping("join/check-nickname")
+    public BaseResponse<Boolean> checkEmail(@RequestBody UserReq.NicknameCheckReq request) throws BaseException {
+        return new BaseResponse<>(userService.checkNickname(request));
     }
 }

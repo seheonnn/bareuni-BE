@@ -3,10 +3,7 @@ package com.umc.BareuniBE.service;
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
 import com.umc.BareuniBE.dto.*;
 
-import com.umc.BareuniBE.dto.UserUpdateReq;
-import com.umc.BareuniBE.entities.Hospital;
 import com.umc.BareuniBE.entities.Review;
-import com.umc.BareuniBE.entities.Scrap;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
 import com.umc.BareuniBE.repository.*;
@@ -29,6 +26,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.umc.BareuniBE.global.BaseResponseStatus.*;
+import static com.umc.BareuniBE.service.UserService.PASSWORD_PATTERN;
 
 @Service
 @RequiredArgsConstructor
@@ -48,11 +46,9 @@ public class MypageService {
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
     private final ReviewRepository reviewRepository;
-    private final BookingRepository bookingRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final UploadService uploadService;
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -109,30 +105,30 @@ public class MypageService {
     }
 
     // 예약 내역 조회 (다가오는 예약 날짜 순?)
-    public List<BookingRes.BookingListRes> getMyBookingList(Long userId, Pageable page) throws BaseException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
-
-        List<Object[]> bookings = bookingRepository.MyBookingList(user, page);
-
-        return bookings.stream()
-                .map(bookingData -> {
-                    BookingRes.BookingListRes bookingListRes = new BookingRes.BookingListRes();
-                    bookingListRes.setBookingIdx(bookingData[0]);
-                    bookingListRes.setCreatedAt(bookingData[1]);
-                    bookingListRes.setUpdatedAt( bookingData[2]);
-                    bookingListRes.setUser(userRepository.findById((Long) bookingData[3]).orElse(null));
-                    bookingListRes.setHospital(bookingData[4]);
-                    bookingListRes.setMethod(bookingData[5]);
-                    bookingListRes.setBookingDate(bookingData[6]);
-
-                    return bookingListRes;
-                })
-                .collect(Collectors.toList());
-    }
+//    public List<BookingRes.BookingListRes> getMyBookingList(Long userId, Pageable page) throws BaseException {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
+//
+//        List<Object[]> bookings = bookingRepository.MyBookingList(user, page);
+//
+//        return bookings.stream()
+//                .map(bookingData -> {
+//                    BookingRes.BookingListRes bookingListRes = new BookingRes.BookingListRes();
+//                    bookingListRes.setBookingIdx(bookingData[0]);
+//                    bookingListRes.setCreatedAt(bookingData[1]);
+//                    bookingListRes.setUpdatedAt( bookingData[2]);
+//                    bookingListRes.setUser(userRepository.findById((Long) bookingData[3]).orElse(null));
+//                    bookingListRes.setHospital(bookingData[4]);
+//                    bookingListRes.setMethod(bookingData[5]);
+//                    bookingListRes.setBookingDate(bookingData[6]);
+//
+//                    return bookingListRes;
+//                })
+//                .collect(Collectors.toList());
+//    }
 
     // 회원 정보 수정 (닉네임, 이름, 성별, 연령대, 교정 여부)
-    public String userUpdate(MultipartFile file, UserUpdateReq.MyUpdateReq myUpdateReq, HttpServletRequest request) throws BaseException, IOException {
+    public String userUpdate(MultipartFile file, MypageReq.MyUpdateReq myUpdateReq, HttpServletRequest request) throws BaseException, IOException {
 
 
         User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
@@ -176,7 +172,7 @@ public class MypageService {
         return password.matches(PASSWORD_PATTERN);
     }
 
-    public String changePassword(PasswordUpdateReq.MyPasswordUpdateReq passwordUpdateReq, HttpServletRequest request) throws BaseException {
+    public String changePassword(MypageReq.MyPasswordUpdateReq passwordUpdateReq, HttpServletRequest request) throws BaseException {
         User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
 
@@ -190,13 +186,7 @@ public class MypageService {
         if (!isValidPassword(newPassword)) {
             throw new BaseException(INVALID_PASSWORD_FORMAT);
         }
-
-        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
-        String confirmPassword = passwordUpdateReq.getConfirmPassword();
-        if (newPassword != null && !newPassword.equals(confirmPassword)) {
-            throw new BaseException(NEW_PASSWORD_INCORRECT);
-        }
-
+        
         // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
         if (newPassword != null) {
             user.setPassword(encoder.encode(newPassword));

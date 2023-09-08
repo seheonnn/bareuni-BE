@@ -8,18 +8,13 @@ import com.umc.BareuniBE.global.enums.GenderType;
 import com.umc.BareuniBE.service.ReviewService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @RestController
@@ -50,30 +45,31 @@ public class ReviewController {
     }
 
 
-    // 리뷰 조회 (최신순, 총점순)
-    @ApiOperation(value = "리뷰 조회 (최신순, 총점순)", notes = "ex) http://localhost:8080/reviews?page=0&size=2&sort=created_at,desc")
-    @GetMapping("")
-    public BaseResponse<Stream<ReviewRes.ReviewListRes>> getReviewList(@PageableDefault(page = 0, size = 2) Pageable page) {
-        Stream<ReviewRes.ReviewListRes> reviewListRes = reviewService.getReviewList(page);
+    // 리뷰 조회
+    @ApiOperation(value = "리뷰 조회", notes = "ex) http://localhost:8080/reviews?page=0&size=2&sort=created_at,desc")
+    @GetMapping("/{hospitalIdx}")
+    public BaseResponse<List<ReviewRes.ReviewListRes>> getReviewList(@PathVariable Long hospitalIdx, @PageableDefault(page = 0, size = 2) Pageable page) {
+        List<ReviewRes.ReviewListRes> reviewListRes = reviewService.getReviewList(hospitalIdx, page);
         return new BaseResponse<>(reviewListRes);
     }
 
     // 리뷰 통계 조회
     @ApiOperation(value = "리뷰 통계 조회", notes = "ex) http://localhost:8080/reviews/statistics?receipt=true&gender=MALE&page=0&size=2&sort=createdAt,desc")
-    @GetMapping("/statistics")
+    @GetMapping("/statistics/{hospitalIdx}")
     public BaseResponse<List<ReviewRes.ReviewStatisticsRes>> getReviewStatisticsList(
-            @RequestParam boolean receipt,
-            @RequestParam GenderType gender,
+            @PathVariable Long hospitalIdx,
+            @RequestParam(required = false) boolean receipt,
+            @RequestParam(required = false) GenderType gender,
             @PageableDefault(page = 0, size = 2, sort = "createdAt", direction = Sort.Direction.DESC) Pageable page
     ) {
-        List<ReviewRes.ReviewStatisticsRes> reviewStatisticsList = reviewService.getReviewStatisticsList(receipt, gender, page);
+        List<ReviewRes.ReviewStatisticsRes> reviewStatisticsList = reviewService.getReviewStatisticsList(hospitalIdx, receipt, gender, page);
 
         return new BaseResponse<>(reviewStatisticsList);
     }
 
     // 리뷰 상세 조회
     @ApiOperation(value = "리뷰 상세 조회", notes = "ex) http://localhost:8080/reviews/1")
-    @GetMapping("/{reviewIdx}")
+    @GetMapping("/detail/{reviewIdx}")
     public BaseResponse<ReviewRes.ReviewDetailRes> getReviewDetail( @PathVariable Long reviewIdx) throws BaseException {
         return new BaseResponse<>(reviewService.getReviewDetail(reviewIdx));
     }

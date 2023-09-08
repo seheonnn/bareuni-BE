@@ -1,12 +1,12 @@
 package com.umc.BareuniBE.service;
 
 import com.umc.BareuniBE.config.security.JwtTokenProvider;
-import com.umc.BareuniBE.dto.PasswordUpdateReq;
 import com.umc.BareuniBE.dto.TokenDTO;
 import com.umc.BareuniBE.dto.UserReq;
 import com.umc.BareuniBE.dto.UserRes;
 import com.umc.BareuniBE.entities.User;
 import com.umc.BareuniBE.global.BaseException;
+import com.umc.BareuniBE.global.BaseResponseStatus;
 import com.umc.BareuniBE.global.enums.RoleType;
 import com.umc.BareuniBE.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -43,22 +43,24 @@ public class UserService {
     private final ScrapRepository scrapRepository;
 
     private final ReviewRepository reviewRepository;
+    private final EmailService emailService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
     private final RedisTemplate redisTemplate;
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d|[^A-Za-z\\d]).{8,20}$";
+    static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z]+)(?=.*\\d)(?=.*[!@#$%^&*]).{8,64}$";
+    private static final String EMAIL_PATTERN = "^.{5,254}$|^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$\n";
 
-    //private final BCryptPasswordEncoder bCryptPasswordEncoder;
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public UserRes.UserJoinRes join(MultipartFile file, UserReq.UserJoinReq request) throws BaseException, IOException {
         //System.out.println("Service의 join함수 실행중");
 
-        if(!request.getEmail().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$"))
+        if(!request.getEmail().matches(EMAIL_PATTERN))
             throw new BaseException(POST_USERS_INVALID_EMAIL);
-
+        if(!request.getPassword().matches(PASSWORD_PATTERN))
+            throw new BaseException(INVALID_PASSWORD_FORMAT);
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
         if(userOptional.isEmpty()){
@@ -88,13 +90,13 @@ public class UserService {
 
     //임시비밀번호 발급 및 재설정
     @Transactional
-    public boolean updatePassword(Long userIdx, String newPassword) throws BaseException{
+    public String updatePassword(Long userIdx, String newPassword) throws BaseException{
         Optional<User> user = userRepository.findById(userIdx);
         user.ifPresent(u -> {
-            u.setPassword(newPassword);
+            u.setPassword(encoder.encode(newPassword));
             userRepository.saveAndFlush(u);
         });
-        return true;
+        throw new BaseException(SUCCESS);
     }
 
     public boolean emailValidation(String email) throws BaseException {
@@ -109,47 +111,47 @@ public class UserService {
         return false;
     }
 
-    public Long findUserByEmail(String email) throws BaseException{
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return user.getUserIdx();
-        } else {
-            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL);
-        }
-    }
+//    public Long findUserByEmail(String email) throws BaseException{
+//        Optional<User> optionalUser = userRepository.findByEmail(email);
+//
+//        if (optionalUser.isPresent()) {
+//            User user = optionalUser.get();
+//            return user.getUserIdx();
+//        } else {
+//            throw new BaseException(POST_USERS_NOT_FOUND_EMAIL);
+//        }
+//    }
 
     //코드확인 후 비밀번호 재설정
     private boolean isValidPassword(String password) {
         return password.matches(PASSWORD_PATTERN);
     }
 
-    public String changePassword(String email, PasswordUpdateReq.NewPasswordUpdateReq passwordUpdateReq) throws BaseException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(POST_USERS_NOT_FOUND_EMAIL));
-
-        // 새로운 비밀번호 형식이 맞는지 확인
-        String newPassword = passwordUpdateReq.getNewPassword();
-        if (!isValidPassword(newPassword)) {
-            throw new BaseException(INVALID_PASSWORD_FORMAT);
-        }
-
-        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
-        String confirmPassword = passwordUpdateReq.getConfirmPassword();
-        if (newPassword != null && !newPassword.equals(confirmPassword)) {
-            throw new BaseException(NEW_PASSWORD_INCORRECT);
-        }
-
-        // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
-        if (newPassword != null) {
-            user.setPassword(encoder.encode(newPassword));
-        }
-
-        userRepository.save(user);
-
-        return "비밀번호 변경 성공";
-    }
+//    public String changePassword(String email, PasswordUpdateReq.NewPasswordUpdateReq passwordUpdateReq) throws BaseException {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new BaseException(POST_USERS_NOT_FOUND_EMAIL));
+//
+//        // 새로운 비밀번호 형식이 맞는지 확인
+//        String newPassword = passwordUpdateReq.getNewPassword();
+//        if (!isValidPassword(newPassword)) {
+//            throw new BaseException(INVALID_PASSWORD_FORMAT);
+//        }
+//
+//        // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
+//        String confirmPassword = passwordUpdateReq.getConfirmPassword();
+//        if (newPassword != null && !newPassword.equals(confirmPassword)) {
+//            throw new BaseException(NEW_PASSWORD_INCORRECT);
+//        }
+//
+//        // 새로운 비밀번호가 null이 아닌 경우, 사용자의 비밀번호를 새로운 값으로 업데이트
+//        if (newPassword != null) {
+//            user.setPassword(encoder.encode(newPassword));
+//        }
+//
+//        userRepository.save(user);
+//
+//        return "비밀번호 변경 성공";
+//    }
 
     // 로그인
     public List<TokenDTO> login(UserReq.UserLoginReq request) throws BaseException {
@@ -253,12 +255,12 @@ public class UserService {
         redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
 
         // 해당 회원 삭제
-        communityRepository.deleteAllByUser(user);
-        likeRepository.deleteAllByUser(user);
-        commentRepository.deleteAllByUser(user);
-        bookingRepository.deleteAllByUser(user);
-        scrapRepository.deleteAllByUser(user);
-        reviewRepository.deleteAllByUser(user);
+//        communityRepository.deleteAllByUser(user);
+//        likeRepository.deleteAllByUser(user);
+//        commentRepository.deleteAllByUser(user);
+//        bookingRepository.deleteAllByUser(user);
+//        scrapRepository.deleteAllByUser(user);
+//        reviewRepository.deleteAllByUser(user);
         userRepository.deleteById(user.getUserIdx());
 
         //시큐리티
@@ -271,18 +273,6 @@ public class UserService {
         Long userIdx = jwtTokenProvider.getCurrentUser(request);
         System.out.println("getCurrentUser()로 가져온 userIdx: "+userIdx);
         return "test성공";
-    }
-
-    // 회원가입 시 중복된 이메일인지 확인
-    public Boolean checkEmail(String email) throws BaseException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
-
-        if(user != null) {
-            return true; // 중복된 이메일
-        }else {
-            return false; // 사용가능한 이메일
-        }
     }
 
     // 소셜로그인 - 프로필 설정
@@ -334,6 +324,18 @@ public class UserService {
         }
     }
 
+    // 회원가입 시 닉네임 중복 확인
+    public Boolean checkNickname(UserReq.NicknameCheckReq request) throws BaseException {
+        Optional<User> optionalUser = userRepository.findByNickname(request.getNickname());
+
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return true; // 닉네임 중복됨
+        } else {
+            throw new BaseException(POST_USERS_NOT_FOUND_NICKNAME); // 닉네임 사용가능
+        }
+    }
+
     // 회원정보 조회
     public UserRes.UserInfo getUserInfo(HttpServletRequest request) throws BaseException {
         Long userIdx = jwtTokenProvider.getCurrentUser(request);
@@ -343,10 +345,19 @@ public class UserService {
         UserRes.UserInfo userInfo = new UserRes.UserInfo();
         userInfo.setEmail(user.getEmail());
         userInfo.setNickname(user.getNickname());
-        userInfo.setNickname(user.getNickname());
+        userInfo.setGender(user.getGender());
         userInfo.setAge(user.getAge());
         userInfo.setOrtho(user.isOrtho());
         userInfo.setProfile(user.getProfile());
         return userInfo;
+    }
+  
+    public BaseResponseStatus getEmPw(UserReq.EmailCheckReq emailCheckReq) throws Exception {
+        User user = userRepository.findByEmail(emailCheckReq.getEmail())
+                .orElseThrow(() -> new BaseException(FAILED_TO_LOGIN));
+        String emPw = emailService.sendSimpleMessage(user.getEmail(), true);
+        user.setPassword(encoder.encode(emPw));
+        userRepository.saveAndFlush(user);
+        return SUCCESS;
     }
 }
