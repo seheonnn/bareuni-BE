@@ -48,7 +48,7 @@ public class HospitalService {
                     hospitalSummaryListRes.setScore(Double.parseDouble(String.valueOf(hospitalData[3])));
                     hospitalSummaryListRes.setReviewCnt(Long.parseLong(String.valueOf(hospitalData[4])));
                     String[] images = String.valueOf(hospitalData[5]).split(",");
-                    hospitalSummaryListRes.setImage(images[0]);
+                    hospitalSummaryListRes.setImages(images[0]);
                     return hospitalSummaryListRes;
                 })
                 .collect(Collectors.toList());
