@@ -46,6 +46,17 @@ jobs:
     - name: docker Hub push
       run: docker push ${{ secrets.DOCKER_USERNAME }}/spring-docker
 
+    - name: Clear
+      run: |
+          sudo docker stop spring-docker
+          sudo docker rm spring-docker
+          sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/spring-docker
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/spring-docker
+
+          docker stop my-redis
+          docker rm my-redis
+          docker rmi redis
+
     # AWS EC2 Server Connect & Docker 명령어 실행 (8)
     - name: Deploy
       uses: appleboy/ssh-action@master
@@ -56,15 +67,6 @@ jobs:
         
         # 도커 작업
         script: |
-          sudo docker stop spring-docker
-          sudo docker rm spring-docker
-          sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/spring-docker
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/spring-docker
-
-          docker stop my-redis
-          docker rm my-redis
-          docker rmi redis
-
           docker pull redis
           docker network create my-network
           docker run --name my-redis --network my-network -d redis
