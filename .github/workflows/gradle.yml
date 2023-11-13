@@ -61,6 +61,7 @@ jobs:
           sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/spring-docker
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/spring-docker
 
+          # redis
           docker stop my-redis
           docker rm my-redis
           docker rmi redis
