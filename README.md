@@ -1,4 +1,4 @@
-# bareuni-BE
+### 치과정보를 한 번에, 바른이
 ## Commit Message Convention
 
 |    Type     | Description  |
