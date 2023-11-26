@@ -22,22 +22,17 @@ Front-End : <img src="https://img.shields.io/badge/Swift-FA7343?style=for-the-fl
 Back-End : <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-flat&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-flat&logo=spring-boot"> <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-flat&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-flat&logo=amazonaws&logoColor=white"> <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-flat&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-flat&logo=redis&logoColor=white"> <img src="https://img.shields.io/badge/Github%20Actions-282a2e?style=for-the-flat&logo=githubactions&logoColor=367cfe">
 # 📺 프로젝트 화면 구성
 
-| 메인 화면 | 설문 화면 |
+| 메인 화면 | 치과 목록 화면 |
 | ------------ | ------------ |
-| <img width="500" alt="7" src=""> | <img width="500" alt="2" src=""> |
+| <img width="500" alt="7" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/1c9f2951-1a3b-4565-947e-5da7133d5466"> | <img width="500" alt="2" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/052714ef-6506-46bd-a346-c5f14448f9fb"> |
 
-| 설정 화면 | 알림 설정 | 사용자 맞춤 설정 | 풍량, 풍속 설정 |
+|   로그인 화면  |  치과 정보 화면 | 커뮤니티 화면  |  예약 화면 |
 | ------------ | ----------- | ----------- | ----------- |
-| <img width="500" alt="3" src=""> | <img width="500" alt="4" src=""> | <img width="500" alt="5" src=""> | <img width="500" alt="6" src=""> |
+| <img width="500" alt="3" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/d637dd40-a7c2-4378-9583-4a3727a1344d"> | <img width="500" alt="4" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/d774b6cf-01e1-4a10-bb9b-a457cf1a06a9"> | <img width="500" alt="5" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/e7f24a17-4743-4db1-ae98-dbf20108c650"> | <img width="500" alt="6" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/d9b304c4-a4f4-43b6-bb06-0beccbf26c27"> |
 
 | ERD | API |
 | ------------ | ------------ |
-| <img width="860" alt="ERD" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/2485138e-60a1-4a5f-8280-17ec994598f4"> | <img width="1278" alt="api 명세서" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/175d66d4-49f0-4f31-a810-ac1876cee765"> |
-
-
-
-
-
+| <img width="860" alt="ERD" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/a02dc13e-7c9c-49ed-aaf7-0a3db343a8aa"> | <img width="1278" alt="api 명세서" src="https://github.com/seheonnn/bareuni-BE/assets/101795921/a32c67d1-ee62-4d8a-b77d-03a00131fab3"> |
 
 # 📢 프로젝트 홍보 포스터
 ![포스터2](https://github.com/seheonnn/bareuni-BE/assets/101795921/f1c12a42-7d31-4996-b508-12cd299153e0)
