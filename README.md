@@ -19,7 +19,10 @@
 # 🛠️ 사용 기술
 Front-End : <img src="https://img.shields.io/badge/Swift-FA7343?style=for-the-flat&logo=swift&logoColor=white">
 <br>
-Back-End : <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-flat&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-flat&logo=spring-boot"> <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-flat&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-flat&logo=amazonaws&logoColor=white"> <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-flat&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-flat&logo=redis&logoColor=white"> <img src="https://img.shields.io/badge/Github%20Actions-282a2e?style=for-the-flat&logo=githubactions&logoColor=367cfe">
+Back-End : <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-flat&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-flat&logo=spring-boot"> <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-flat&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-flat&logo=redis&logoColor=white"> 
+<br>
+배포 환경 : <img src="https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-flat&logo=amazonaws&logoColor=white"> <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-flat&logo=linux&logoColor=black"> <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-flat&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/Github%20Actions-282a2e?style=for-the-flat&logo=githubactions&logoColor=367cfe">
+
 # 📺 프로젝트 화면 구성
 
 | 메인 화면 | 치과 목록 화면 |
