@@ -7,7 +7,7 @@
 - 사용자는 커뮤니티를 통해 교정 및 관련 정보를 습득할 수 있습니다.
 - 영수증 인증 후기를 통하여 보다 정확한 후기를 참고할 수 있습니다. 
 
-# 🎯 프로젝트 목표
+# 🎯 프로젝트 목표 및 역할
 - JWT 토큰 및 Spring Security 학습
 - [Redis](https://redis.io/)를 이용한 JWT 토큰 관리
 - Swagger 및 Postman을 사용한 Api 테스트
