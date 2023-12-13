@@ -15,6 +15,7 @@
 - Amazon S3를 이용한 이미지 처리
 - Inner Class 기반 DTO 관리
 - [Docker](https://www.docker.com/) + [Github Actions](https://docs.github.com/ko/actions)를 이용한 CI/CD 자동화
+- ZeroSSL 이용하여 SSL 인증서 발급 후 https 적용
 
 # 🛠️ 사용 기술
 Front-End : <img src="https://img.shields.io/badge/Swift-FA7343?style=for-the-flat&logo=swift&logoColor=white">
