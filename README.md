@@ -17,6 +17,10 @@
 - [Docker](https://www.docker.com/) + [Github Actions](https://docs.github.com/ko/actions)를 이용한 CI/CD 자동화
 - [ZeroSSL](https://zerossl.com/) 이용하여 SSL 인증서 발급 후 https 적용
 
+# ✨ 트러블슈팅 ✨
+- Docker + GitHub Actions 배포 자동화 시 수정 사항 반영 문제
+  - https://seheonnn.tistory.com/4
+
 # 🛠️ 사용 기술
 Front-End : <img src="https://img.shields.io/badge/Swift-FA7343?style=for-the-flat&logo=swift&logoColor=white">
 <br>
