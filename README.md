@@ -18,8 +18,8 @@
 - [ZeroSSL](https://zerossl.com/) 이용하여 SSL 인증서 발급 후 https 적용
 
 # ✨ 트러블슈팅 ✨
-- Docker + GitHub Actions 배포 자동화 시 수정 사항 반영 문제 - [블로그](https://seheonnn.tistory.com/4)
-- Docker + GitHub Actions 배포 환경 Redis Connection refused 문제 - [블로그](https://seheonnn.tistory.com/5)
+- Docker + GitHub Actions 배포 자동화 시 수정 사항 반영 이슈 - [블로그](https://seheonnn.tistory.com/4)
+- Docker + GitHub Actions 배포 환경 Redis Connection refused 이슈 - [블로그](https://seheonnn.tistory.com/5)
 
 # 🛠️ 사용 기술
 Front-End : <img src="https://img.shields.io/badge/Swift-FA7343?style=for-the-flat&logo=swift&logoColor=white">
