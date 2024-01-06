@@ -57,21 +57,24 @@ public class MypageService {
     public List<CommunityRes.CommunityListRes> getMyCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
         User user = userRepository.findById(jwtTokenProvider.getCurrentUser(request))
                 .orElseThrow(() -> new BaseException(USERS_EMPTY_USER_ID));
-        List<Object[]> communities = communityRepository.MyCommunityList(user, page);
+        // List<Object[]> communities = communityRepository.MyCommunityList(user, page);
+        //
+        // return communities.stream()
+        //         .map(communityData -> {
+        //             CommunityRes.CommunityListRes communityRes = new CommunityRes.CommunityListRes();
+        //             communityRes.setCommunityIdx(communityData[0]);
+        //             communityRes.setCreatedAt( communityData[1]);
+        //             communityRes.setUpdatedAt( communityData[2]);
+        //             communityRes.setContent( communityData[3]);
+        //             communityRes.setUser(userRepository.findById(((BigInteger)communityData[4]).longValue()).orElse(null));
+        //             communityRes.setLike(communityData[5]);
+        //
+        //             return communityRes;
+        //         })
+        //         .collect(Collectors.toList());
 
-        return communities.stream()
-                .map(communityData -> {
-                    CommunityRes.CommunityListRes communityRes = new CommunityRes.CommunityListRes();
-                    communityRes.setCommunityIdx(communityData[0]);
-                    communityRes.setCreatedAt( communityData[1]);
-                    communityRes.setUpdatedAt( communityData[2]);
-                    communityRes.setContent( communityData[3]);
-                    communityRes.setUser(userRepository.findById(((BigInteger)communityData[4]).longValue()).orElse(null));
-                    communityRes.setLike(communityData[5]);
-
-                    return communityRes;
-                })
-                .collect(Collectors.toList());
+        // QueryDSL 이용
+        return communityRepository.getMyCommunityList(user, page);
     }
 
     // 치과 저장 목록 조회

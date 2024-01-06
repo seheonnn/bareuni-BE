@@ -53,14 +53,14 @@ public interface CommunityRepository extends JpaRepository<Community, Long>, Com
                             "WHERE c.user = :user " +
                             "GROUP BY c.community_idx " +
                             "ORDER BY c.created_at DESC",
-            countQuery =
-                    "SELECT COUNT(c.community_idx) " +
-                            "FROM community c " +
-                            "LEFT OUTER JOIN like_entity l " +
-                            "ON c.community_idx = l.community " +
-                            "LEFT OUTER JOIN user u " +
-                            "ON c.user = u.user_idx " +
-                            "WHERE c.user = :user",
+            // countQuery =
+            //         "SELECT COUNT(c.community_idx) " +
+            //                 "FROM community c " +
+            //                 "LEFT OUTER JOIN like_entity l " +
+            //                 "ON c.community_idx = l.community " +
+            //                 "LEFT OUTER JOIN user u " +
+            //                 "ON c.user = u.user_idx " +
+            //                 "WHERE c.user = :user",
             nativeQuery = true
     )
     List<Object[]> MyCommunityList(@Param("user") User user, Pageable pageable);
