@@ -57,23 +57,28 @@ public class  CommunityService {
 
 //    public List<CommunityRes.CommunityListRes> getCommunityList(Pageable page, HttpServletRequest request) throws BaseException {
     public List<CommunityRes.CommunityListRes> getCommunityList(String sort) throws BaseException {
+        // Paging 처리
 //        List<Object[]> communities = communityRepository.findAllCommunity_Pagination(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
 
-        List<Object[]> communities = communityRepository.findAllCommunity_custom(sort);
+        // native query 이용
+        // List<Object[]> communities = communityRepository.findAllCommunity_custom(sort);
+        //
+        // return communities.stream()
+        //         .map(communityData -> {
+        //             CommunityRes.CommunityListRes communityRes = new CommunityRes.CommunityListRes();
+        //             communityRes.setCommunityIdx(communityData[0]);
+        //             communityRes.setCreatedAt(communityData[1]);
+        //             communityRes.setUpdatedAt(communityData[2]);
+        //             communityRes.setContent(communityData[3]);
+        //             communityRes.setUser(userRepository.findById(((BigInteger)communityData[4]).longValue()).orElse(null));
+        //             communityRes.setLike(communityData[5]);
+        //
+        //             return communityRes;
+        //         })
+        //         .collect(Collectors.toList());
 
-        return communities.stream()
-                .map(communityData -> {
-                    CommunityRes.CommunityListRes communityRes = new CommunityRes.CommunityListRes();
-                    communityRes.setCommunityIdx(communityData[0]);
-                    communityRes.setCreatedAt(communityData[1]);
-                    communityRes.setUpdatedAt(communityData[2]);
-                    communityRes.setContent(communityData[3]);
-                    communityRes.setUser(userRepository.findById(((BigInteger)communityData[4]).longValue()).orElse(null));
-                    communityRes.setLike(communityData[5]);
-
-                    return communityRes;
-                })
-                .collect(Collectors.toList());
+        // QueryDSL 이용
+        return communityRepository.getCommunityList(sort);
     }
 
     public CommunityRes.CommunityDetailRes getCommunityDetails(Long communityIdx, HttpServletRequest request) throws BaseException {

@@ -70,7 +70,7 @@ public class User extends BaseEntity implements UserDetails {
     private String profile;
 
     // 서비스 혜택 정보 수신 동의 여부
-    @Column(name = "reception")
+    @Column(name = "reception", nullable = false)
     private boolean reception;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
