@@ -9,6 +9,7 @@
 
 # 🎯 프로젝트 목표 및 역할
 - JWT 토큰 및 Spring Security 학습
+- QueryDSL 활용
 - [Redis](https://redis.io/)를 이용한 JWT 토큰 관리
 - Swagger 및 Postman을 사용한 Api 테스트
 - [Amazon AWS, RDS](https://aws.amazon.com/ko/)를 이용한 배포
